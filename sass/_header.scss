@@ -1,0 +1,29 @@
+.header-bar {
+    background-color: $light-blue;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem;
+    .button {
+        background-color: $med-blue;
+        border-color: $med-blue;
+    }
+}
+
+
+.button, .logo, .header-admin {
+    display: inline-block;
+}
+
+
+.button-menu {
+    display: inline-block;
+    @include bp($kid-bear) {
+        display: none;
+    }
+}
+
+.logo {
+    margin: 0;
+    padding: .25rem;
+}

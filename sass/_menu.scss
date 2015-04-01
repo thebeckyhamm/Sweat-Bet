@@ -1,0 +1,55 @@
+.menu-wrapper {
+    display: none;
+    @include bp($kid-bear) {
+        display: block;
+    }
+    &.active {
+        display: block;
+    }
+}
+
+.main-menu {
+    ul {
+        background-color: $dark-blue;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        @include bp($kid-bear) {
+            display: flex;
+        }
+    }
+    li {
+        display: inline-block;
+        list-style: none;
+        text-align: center;
+        width: 50%;
+        @include bp($kid-bear) {
+            width: 25%;
+        }
+    }
+    a {
+        color: white;
+        display: inline-block;
+        font-family: $heading-font;
+        line-height: 1;
+        padding: 1em .5em;
+        text-decoration: none;
+        text-transform: uppercase;
+        width: 100%;
+        &:hover {
+            background-color: darken($dark-blue, 10%);
+        }
+    }
+    .button {
+        border-color: white;
+        padding: .5em;
+        text-transform: capitalize;
+        width: auto;
+    }
+
+    .first-to-last {
+        @include bp($kid-bear) {
+            order: 8; 
+        }
+    }
+}

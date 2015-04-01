@@ -1,0 +1,32 @@
+@font-face {
+    font-family: 'clearSansMedium';
+    src: url('../fonts/ClearSans-Medium-webfont.eot');
+    src: url('../fonts/ClearSans-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/ClearSans-Medium-webfont.woff') format('woff'),
+         url('../fonts/ClearSans-Medium-webfont.ttf') format('truetype'),
+         url('../fonts/ClearSans-Medium-webfont.svg#clearSansMedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'clearSansLight';
+    src: url('../fonts/ClearSans-Light-webfont.eot');
+    src: url('../fonts/ClearSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/ClearSans-Light-webfont.woff') format('woff'),
+         url('../fonts/ClearSans-Light-webfont.ttf') format('truetype'),
+         url('../fonts/ClearSans-Light-webfont.svg#clearSansLight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+
+h1 {
+    font-size: 1.5rem;
+}

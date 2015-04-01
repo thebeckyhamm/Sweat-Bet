@@ -1,0 +1,39 @@
+$base-color: $med-blue;
+$primary-color: $crimson;
+
+.button {
+    background-color: transparent;
+    border: 1px solid $base-color;
+    border-radius: 3px;
+    color: $base-color;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 1;
+    padding: .5em;
+    text-decoration: none;
+    &:hover {
+        background-color: $base-color;
+        color: white;
+    }
+}
+
+.button-primary {
+    background-color: $primary-color;
+    border: 1px solid $primary-color;
+    border-radius: 3px;
+    color: white;
+    &:hover {
+        background-color: transparent;
+        color: $primary-color;
+    }
+}
+
+
+.button-secondary {
+    background-color: $base-color;
+    color: white;
+    &:hover {
+        background-color: transparent;
+        color: $base-color;
+    }
+}
