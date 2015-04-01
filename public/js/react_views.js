@@ -1,12 +1,12 @@
 (function(views){
 
-    views.MainDash = React.createClass({displayName: "MainDash",
+    views.MainDash = React.createBackboneClass({
 
         render: function() {
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", {className: "team-name"}, "Eat My Dust"), 
+                        React.createElement(views.TeamName, {model: this.props.model}), 
                         React.createElement("button", {className: "button button-primary"}, "+ Entry")
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
@@ -96,5 +96,20 @@
         }
 
     });
+
+})(app.views);
+(function(views){
+
+    views.TeamName = React.createBackboneClass({
+
+        render: function() {
+            return (
+                React.createElement("h2", {className: "team-name"}, this.props.model.get("name"))  
+            );
+        }
+
+    });
+
+
 
 })(app.views);

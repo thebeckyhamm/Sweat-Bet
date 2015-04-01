@@ -6,7 +6,7 @@ var react       = require("gulp-react");
 var notify      = require("gulp-notify");
 var plumber     = require("gulp-plumber");
 var _           = require("underscore");
-var browserSync = require("browser-sync");
+//var browserSync = require("browser-sync");
 
 
 var notifyError = function() {
@@ -21,11 +21,11 @@ var notifyError = function() {
 //  DEFAULT/WATCH
 //================================================
 
-gulp.task("default", ["sass", "react", "bower:assets", "browser-sync"], function() {
-  gulp.watch("*.html").on("change", browserSync.reload);
-  gulp.watch(sassPath, ["sass"]).on('change', browserSync.reload);
-  gulp.watch(jsxPath, ["react"]).on('change', browserSync.reload);
-  gulp.watch("bower.json", ["bower:assets"]).on('change', browserSync.reload);
+gulp.task("default", ["sass", "react", "bower:assets"], function() {
+  gulp.watch("./public/*.html");
+  gulp.watch(sassPath, ["sass"]);
+  gulp.watch(jsxPath, ["react"]);
+  gulp.watch("bower.json", ["bower:assets"]);
 });
 
 
@@ -45,7 +45,7 @@ gulp.task('react', function () {
     .pipe(notifyError())
     .pipe(react())
     .pipe(concat("react_views.js"))
-    .pipe(gulp.dest("./js/"));
+    .pipe(gulp.dest("./public/js/"));
 });
 
 
@@ -55,7 +55,7 @@ gulp.task("sass", function() {
   gulp.src(sassPath)
     .pipe(notifyError())
     .pipe(sass())
-    .pipe(gulp.dest("./css"));
+    .pipe(gulp.dest("./public/css"));
 });
 
 
@@ -92,7 +92,7 @@ gulp.task("bower:assets:js", function() {
   gulp.src(sorted)
     .pipe(notifyError())
     .pipe(concat("vendor.js"))
-    .pipe(gulp.dest("vendor/js"));
+    .pipe(gulp.dest("./public/vendor/js"));
 });
 
 
@@ -106,7 +106,7 @@ gulp.task("bower:assets:fonts", function(){
 
   gulp.src(files)
     .pipe(notifyError())
-    .pipe(gulp.dest("vendor/fonts"));
+    .pipe(gulp.dest("./public/vendor/fonts"));
 });
 
 // -- DEV ASSETS -- //
@@ -118,19 +118,19 @@ gulp.task("bower:assets:dev", function(){
 
   gulp.src(files)
     .pipe(notifyError())
-    .pipe(gulp.dest("vendor/dev"));
+    .pipe(gulp.dest("./public/vendor/dev"));
 });
 
 
-//================================================
-//  BROWSERSYNC
-//================================================
+// //================================================
+// //  BROWSERSYNC
+// //================================================
 
 
-gulp.task('browser-sync', function() {
-    browserSync({
-        server: {
-            baseDir: "./"
-        }
-    });
-});
+// gulp.task('browser-sync', function() {
+//     browserSync({
+//         server: {
+//             baseDir: "./"
+//         }
+//     });
+// });

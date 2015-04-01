@@ -1,12 +1,12 @@
 (function(views){
 
-    views.MainDash = React.createClass({
+    views.MainDash = React.createBackboneClass({
 
         render: function() {
             return (
                 <section className="main">
                     <header className="header-main">
-                        <h2 className="team-name">Eat My Dust</h2>
+                        <views.TeamName model={this.props.model} />
                         <button className="button button-primary">+ Entry</button>
                     </header>
                     <div className="results-toggle">

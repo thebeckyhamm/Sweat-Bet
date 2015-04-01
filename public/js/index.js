@@ -9,9 +9,7 @@ var app = express();
 // so express can read the body of the request
 app.use(require("body-parser").json());
 
-app.use(express.static("./"));
-
-//app.set("view engine", "jade");
+app.use(express.static("public"));
 
 // create a db with the correct filepath name
 // pass in the name when creating the db
@@ -44,10 +42,6 @@ app.use("/teams",   new modelRouter(teamsDB).router);
 app.use("/users",   new modelRouter(usersDB).router);
 app.use("/goals",   new modelRouter(goalsDB).router);
 app.use("/entries", new modelRouter(entryDB).router);
-
-app.get("/", function(req, res) {
-  res.render("index");
-});
 
 var port = process.env.PORT || 8025;
 console.log("listening on :" + port);
