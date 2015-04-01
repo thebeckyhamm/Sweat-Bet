@@ -1,6 +1,7 @@
 $(function() {
+    app.init();
 
-    window.router = new app.Router();
+    app.router = new app.Router();
     
 
 });
