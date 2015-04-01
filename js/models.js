@@ -1,5 +1,9 @@
 (function(models){
 
+    // var BaseModel = Backbone.Model.extend({
+    //     idAttribute: "_id"
+    // })
+
     // User model and Collection
     models.User = Backbone.Model.extend({
         idAttribute: "_id",
@@ -22,6 +26,11 @@
 
         initialize: function(data, options) {
              this.team = options.team;
+             this.on("add", function(model){
+                if(model.isNew()) {
+                    model.set("_team_id", this.team.id);
+                }
+             });
         }
     });
 
@@ -31,9 +40,11 @@
     models.Team = Backbone.Model.extend({
         idAttribute: "_id",
 
-        url: function() {
-                return this.collection.url() + "/" + this.id;
-        }
+        // url: function() {
+        //     return this.collection.url + "/" + this.id;
+        // },
+
+        urlRoot: "/teams"
     });
 
     models.Teams = Backbone.Collection.extend({
@@ -65,6 +76,12 @@
 
         initialize: function(data, options) {
              this.user = options.user;
+             this.on("add", function(model){
+                if(model.isNew()) {
+                    model.set("_user_id", this.user.id);
+                }
+             });
+
         }
     });
 
@@ -91,6 +108,11 @@
 
         initialize: function(data, options) {
              this.goal = options.goal;
+             this.on("add", function(model){
+                if(model.isNew()) {
+                    model.set("_goal_id", this.goal.id);
+                }
+             });
         }
     });
 

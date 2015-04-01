@@ -9,9 +9,9 @@ var app = express();
 // so express can read the body of the request
 app.use(require("body-parser").json());
 
-app.use(express.static("vendor"));
+app.use(express.static("./"));
 
-app.set("view engine", "jade");
+//app.set("view engine", "jade");
 
 // create a db with the correct filepath name
 // pass in the name when creating the db
@@ -36,9 +36,9 @@ var modelRouter = require("./express_routers/model_router");
 
 // tell express to "mount" the routers to particular dbs and locations
 app.use("/teams",             new collectionRouter(teamsDB).router);
-app.use("/teams/:id/users",   new collectionRouter(usersDB).router);
-app.use("/users/:id/goals",   new collectionRouter(goalsDB).router);
-app.use("/goals/:id/entries", new collectionRouter(entryDB).router);
+app.use("/teams/:id/users",   new collectionRouter(usersDB, "_team_id").router);
+app.use("/users/:id/goals",   new collectionRouter(goalsDB, "_user_id").router);
+app.use("/goals/:id/entries", new collectionRouter(entryDB, "_goal_id").router);
 
 app.use("/teams",   new modelRouter(teamsDB).router);
 app.use("/users",   new modelRouter(usersDB).router);

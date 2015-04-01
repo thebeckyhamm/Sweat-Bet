@@ -1,6 +1,7 @@
-function CollectionRouter(db) {
+function CollectionRouter(db, scope) {
   var Router = require("express").Router;
   this.db = db;
+  this.scope = scope;
   this.router = new Router({
     mergeParams: true
   });
@@ -14,8 +15,8 @@ CollectionRouter.prototype = {
     // INDEX
     this.router.get("/", function(req, res) {
       var query = {}
-      if (req.params.id) {
-        query._id = req.params.id;
+      if (req.params.id && this.scope) {
+        query[this.scope] = req.params.id;
       }
 
       this.db.find(query, function(err, data){
