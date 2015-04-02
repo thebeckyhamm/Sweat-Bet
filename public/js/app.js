@@ -15,11 +15,10 @@ app = {
         _.extend(this, Backbone.Events);
 
         // create a model to store our current user
-        this.currentUser = new Backbone.Model();
+        this.currentUser = new app.models.User();
 
         // connect to firebase
         this.fireRef = new Firebase(this.baseURL);
-
         // give firebase a callback when a user signs in or out
         this.fireRef.onAuth(this.onAuthCallback);
     },
@@ -28,9 +27,29 @@ app = {
     onAuthCallback: function(authData) {
         if (authData) {
             app.authData = authData;
-            app.currentUser.set(authData.twitter.cachedUserProfile);
-            console.log("A user is logged in:", app.currentUser.get("name"));
-            app.trigger("sign:in");
+            // app.currentUser.set(authData.twitter.cachedUserProfile);
+            console.log("A twitter user is logged in");
+
+            var twitterProf = authData.twitter.cachedUserProfile;
+            var url = "/find_user_by_twitter_id/" + twitterProf.id
+            $.getJSON(url, function(data){
+              if(data) {
+                // user exists
+                app.currentUser.set(data);
+                app.currentUser.save({
+                    twitter_profile: twitterProf
+                });
+              } else {
+                // user is new
+                app.currentUser.set({
+                    name: twitterProf.name,
+                    twitter_id: twitterProf.id,
+                    twitter_profile: twitterProf
+                });
+                app.currentUser.save();
+              }
+                app.trigger("sign:in");
+            });
         }
         else {
             app.authData = null;
@@ -44,6 +63,7 @@ app = {
     // log in to twitter
     twitterLogin: function() {
         console.log("logging in attempt");
+        console.log(this.fireRef);
         this.fireRef.authWithOAuthRedirect("twitter", function(error, authData) {
             if (error) {
                 console.log("Login failed", error);

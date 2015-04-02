@@ -34,7 +34,7 @@ var modelRouter = require("./express_routers/model_router");
 
 // tell express to "mount" the routers to particular dbs and locations
 app.use("/teams",             new collectionRouter(teamsDB).router);
-app.use("/teams/:id/users",   new collectionRouter(usersDB, "_team_id").router);
+app.use("/users",             new collectionRouter(usersDB).router);
 app.use("/users/:id/goals",   new collectionRouter(goalsDB, "_user_id").router);
 app.use("/goals/:id/entries", new collectionRouter(entryDB, "_goal_id").router);
 
@@ -42,6 +42,16 @@ app.use("/teams",   new modelRouter(teamsDB).router);
 app.use("/users",   new modelRouter(usersDB).router);
 app.use("/goals",   new modelRouter(goalsDB).router);
 app.use("/entries", new modelRouter(entryDB).router);
+
+app.get("/find_user_by_twitter_id/:twitter_id", function(req, res){
+    usersDB.findOne({twitter_id: req.params.twitter_id}, function(err, data){
+        if (err) {
+            res.status(500).json({error: err.toString()});
+        } else {
+            res.json(data);
+        }
+    });
+});
 
 var port = process.env.PORT || 8025;
 console.log("listening on :" + port);

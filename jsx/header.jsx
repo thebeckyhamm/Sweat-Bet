@@ -51,7 +51,7 @@
                         <div className="button button-menu" onClick={this.setActiveMenu}>Menu</div>
                         <h1 className="logo">Final Project</h1>
                         <div className="header-admin">
-                            <button className="button button-secondary">Sign In/Up</button>
+                            <views.LogInOut model={this.props.model} />
                         </div>
                     </div>
                     <div className={menuClass}>

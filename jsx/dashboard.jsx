@@ -6,7 +6,7 @@
             return (
                 <section className="main">
                     <header className="header-main">
-                        <views.TeamName model={this.props.model} />
+                        <h2>Test</h2>
                         <button className="button button-primary">+ Entry</button>
                     </header>
                     <div className="results-toggle">

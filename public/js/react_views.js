@@ -1,12 +1,62 @@
 (function(views){
 
+    views.TwitterLogin = React.createBackboneClass({
+
+        render: function() {
+            return (
+                React.createElement("button", {
+                    className: "button button-secondary", 
+                    onClick: app.twitterLogin.bind(app)}, "Sign In / Up"
+                )  
+            );     
+        }
+
+    });
+
+
+    views.TwitterLogout = React.createBackboneClass({
+
+        render: function() {
+            return (
+                React.createElement("button", {
+                    className: "button button-secondary", 
+                    onClick: app.logout.bind(app)}, "Sign Out"
+                )  
+            )
+        }
+    });
+
+
+    views.LogInOut = React.createBackboneClass({
+
+        getCorrectButton: function() {
+            if (this.props.model.id) {
+                return React.createElement(views.TwitterLogout, null);
+            }
+            else {
+                return React.createElement(views.TwitterLogin, null)
+            }
+        },
+
+        render: function() {
+            return (
+               React.createElement("div", {className: "log-in-out"}, this.getCorrectButton())
+            )
+        }
+    });
+
+
+
+})(app.views);
+(function(views){
+
     views.MainDash = React.createBackboneClass({
 
         render: function() {
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement(views.TeamName, {model: this.props.model}), 
+                        React.createElement("h2", null, "Test"), 
                         React.createElement("button", {className: "button button-primary"}, "+ Entry")
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
@@ -84,7 +134,7 @@
                         React.createElement("div", {className: "button button-menu", onClick: this.setActiveMenu}, "Menu"), 
                         React.createElement("h1", {className: "logo"}, "Final Project"), 
                         React.createElement("div", {className: "header-admin"}, 
-                            React.createElement("button", {className: "button button-secondary"}, "Sign In/Up")
+                            React.createElement(views.LogInOut, {model: this.props.model})
                         )
                     ), 
                     React.createElement("div", {className: menuClass}, 

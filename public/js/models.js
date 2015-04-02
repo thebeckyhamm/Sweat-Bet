@@ -8,30 +8,38 @@
     models.User = Backbone.Model.extend({
         idAttribute: "_id",
 
-        url: function() {
-            if(this.isNew()) {
-                return this.collection.url();
-            } else {
-                return "/users/" + this.id;
-            }
-        }
+        // url: function() {
+        //     if(this.isNew()) {
+        //         if(this.get("_team_id")) {
+        //             return "/teams/" + this.get("_team_id") + "/users"
+        //         } else {
+
+        //         }
+        //     } else {
+        //         return "/users/" + this.id;
+        //     }
+        // }
+
+        urlRoot: "/users"
     });
 
     models.Users = Backbone.Collection.extend({
         model: models.User,
 
-        url: function() {
-             return "/teams/" + this.team.id + "/users"
-        },
+        // url: function() {
+        //      return "/teams/" + this.team.id + "/users"
+        // },
 
-        initialize: function(data, options) {
-             this.team = options.team;
-             this.on("add", function(model){
-                if(model.isNew()) {
-                    model.set("_team_id", this.team.id);
-                }
-             });
-        }
+        url: "/users",
+
+        // initialize: function(data, options) {
+        //      this.team = options.team;
+        //      this.on("add", function(model){
+        //         if(model.isNew()) {
+        //             model.set("_team_id", this.team.id);
+        //         }
+        //      });
+        // }
     });
 
 
