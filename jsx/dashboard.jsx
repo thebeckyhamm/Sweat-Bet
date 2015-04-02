@@ -7,6 +7,7 @@
                 <section className="main">
                     <header className="header-main">
                         <h2>{this.props.getTeamName()}</h2>
+                        <button className="button button-primary">+ Goal</button>
                         <button className="button button-primary">+ Entry</button>
                     </header>
                     <div className="results-toggle">

@@ -149,6 +149,12 @@ views.Select = Select;
                         options: this.weeks, 
                         name: "weeks", 
                         defaultValue: "12"}), 
+                    React.createElement(views.Input, {
+                        label: "Start Date (please enter as 'MM/DD/YYYY')", 
+                        type: "text", 
+                        name: "start_date", 
+                        placeholder: "ex: 11/14/2015", 
+                        required: "required"}), 
                     React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Create Team"))
                 )
 
@@ -169,6 +175,7 @@ views.Select = Select;
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
                         React.createElement("h2", null, this.props.getTeamName()), 
+                        React.createElement("button", {className: "button button-primary"}, "+ Goal"), 
                         React.createElement("button", {className: "button button-primary"}, "+ Entry")
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 

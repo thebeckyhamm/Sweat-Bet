@@ -61,6 +61,9 @@ app.Router = Backbone.Router.extend({
 
 
         this.listenTo(app, "add:team", function(teamInfo) {
+            var startDate = teamInfo.start_date;
+            var realDate = new Date(startDate).toString();
+            teamInfo.start_date = realDate;
             var newTeam = app.teams.add(teamInfo);
             newTeam.save(null, 
                 {success: function(model) {

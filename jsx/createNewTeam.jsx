@@ -37,6 +37,12 @@
                         options={this.weeks} 
                         name="weeks"
                         defaultValue="12" />
+                    <views.Input 
+                        label="Start Date (please enter as 'MM/DD/YYYY')" 
+                        type="text" 
+                        name="start_date"
+                        placeholder="ex: 11/14/2015"
+                        required="required" />  
                     <div className="text-right"><button className="button button-primary">Create Team</button></div>
                 </form>
 
