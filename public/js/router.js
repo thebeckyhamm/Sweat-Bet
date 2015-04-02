@@ -4,11 +4,16 @@ app.Router = Backbone.Router.extend({
 
         // create teams
         app.teams = new app.models.Teams();
-
+        // render header
         React.render(
             React.createElement(app.views.Header, {model: app.currentUser}),
             document.querySelector(".header")
         );
+
+        // when sign in triggered, look for teams
+        this.listenTo(app, "sign:in", function(){
+            app.trigger("check:for:teams");
+        });
 
         // fetch teams
         this.listenTo(app, "check:for:teams", function() {
@@ -17,26 +22,24 @@ app.Router = Backbone.Router.extend({
             }.bind(this)); 
         });
 
-
-        // when sign in triggered
-        this.listenTo(app, "sign:in", function(){
-            app.trigger("check:for:teams");
-        });
-
         this.listenTo(app, "teams:fetched", function() {
             // check if user has a team id
             if (app.currentUser.get("team_id")) {
                 console.log("User has a team");
+                // if so, show them their main dashboard
                 React.render(
                     React.createElement(app.views.MainDash, {
                         model: app.currentUser,
-                        getTeamName: this.getTeamNameFromTeams.bind(this)
+                        getTeamName: this.getTeamNameFromTeams.bind(this),
+                        addGoal: this.showGoalForm
+
                     }),
                     document.querySelector(".main-wrapper")
                 ); 
             }
 
             else {
+                // if not, ask them to create or join a team
                 console.log("user doesn't have a team yet");
                 React.render(
                     React.createElement(app.views.JoinOrCreateTeam, {
@@ -53,7 +56,8 @@ app.Router = Backbone.Router.extend({
             React.render(
                 React.createElement(app.views.MainDash, {
                     model: app.currentUser,
-                    getTeamName: this.getTeamNameFromTeams.bind(this)
+                    getTeamName: this.getTeamNameFromTeams.bind(this),
+                    addGoal: this.showGoalForm
                 }),
                 document.querySelector(".main-wrapper")
             ); 
@@ -61,9 +65,11 @@ app.Router = Backbone.Router.extend({
 
 
         this.listenTo(app, "add:team", function(teamInfo) {
+
             var startDate = teamInfo.start_date;
             var realDate = new Date(startDate).toString();
             teamInfo.start_date = realDate;
+
             var newTeam = app.teams.add(teamInfo);
             newTeam.save(null, 
                 {success: function(model) {
@@ -92,8 +98,6 @@ app.Router = Backbone.Router.extend({
 
     },
 
-
-
     addUserToTeam: function(model) {
         app.currentUser.save({team_id: model.id},
             {success: function() {
@@ -108,6 +112,15 @@ app.Router = Backbone.Router.extend({
         var teamId = app.currentUser.get("team_id");
         var team = app.teams.get(teamId);
         return team.get("name");
+    },
+
+    showGoalForm: function() {
+        // this is still not triggering
+        console.log("clicked");
+        // React.render(
+        //     React.createElement(app.views.GoalForm),
+        //     document.querySelector(".main-wrapper")
+        // ); 
     }
 
 });
