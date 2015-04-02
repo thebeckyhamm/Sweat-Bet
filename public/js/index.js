@@ -44,10 +44,12 @@ app.use("/goals",   new modelRouter(goalsDB).router);
 app.use("/entries", new modelRouter(entryDB).router);
 
 app.get("/find_user_by_twitter_id/:twitter_id", function(req, res){
-    usersDB.findOne({twitter_id: req.params.twitter_id}, function(err, data){
+    usersDB.findOne({twitter_id: Number(req.params.twitter_id)}, function(err, data){
         if (err) {
             res.status(500).json({error: err.toString()});
         } else {
+            // console.log("data from find user", data);
+            // console.log(data.length);
             res.json(data);
         }
     });

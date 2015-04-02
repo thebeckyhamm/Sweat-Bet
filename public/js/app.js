@@ -27,20 +27,23 @@ app = {
     onAuthCallback: function(authData) {
         if (authData) {
             app.authData = authData;
-            // app.currentUser.set(authData.twitter.cachedUserProfile);
-            console.log("A twitter user is logged in");
 
             var twitterProf = authData.twitter.cachedUserProfile;
             var url = "/find_user_by_twitter_id/" + twitterProf.id
+            console.log("url", url);
             $.getJSON(url, function(data){
-              if(data) {
+              if (data && data.length !== 0) {
                 // user exists
+                console.log("user exists", data);
                 app.currentUser.set(data);
                 app.currentUser.save({
                     twitter_profile: twitterProf
                 });
-              } else {
+              } 
+              else {
                 // user is new
+                console.log("user is new");
+                console.log("data returned for new user", data);
                 app.currentUser.set({
                     name: twitterProf.name,
                     twitter_id: twitterProf.id,
@@ -64,7 +67,7 @@ app = {
     twitterLogin: function() {
         console.log("logging in attempt");
         console.log(this.fireRef);
-        this.fireRef.authWithOAuthRedirect("twitter", function(error, authData) {
+        this.fireRef.authWithOAuthPopup("twitter", function(error, authData) {
             if (error) {
                 console.log("Login failed", error);
             }

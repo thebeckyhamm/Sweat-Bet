@@ -1,3 +1,65 @@
+(function(views) {
+
+var Input = React.createClass({displayName: "Input",
+    render: function() {
+        var htmlID = "textinput-" + name + Math.random();
+        var type = this.props.type || "text";
+        var label = this.props.label || this.props.name;
+        var placeholder = this.props.placeholder || "";
+        var value = this.props.value || "";
+        var required = this.props.required || "";
+        return (
+            React.createElement("div", {className: "field"}, 
+                React.createElement("label", {htmlFor: htmlID}, label), 
+                React.createElement("input", {
+                    type: type, 
+                    name: this.props.name, 
+                    htmlID: htmlID, 
+                    placeholder: placeholder, 
+                    defaultValue: value, 
+                    required: required}
+                )
+            )
+        );
+    }
+
+});
+
+var Select = React.createClass({displayName: "Select",
+
+    makeOption: function(option, index) {
+
+        return React.createElement("option", {key: index, value: option}, option);
+
+    },
+
+    render: function() {
+        var htmlID = "select-" + name + Math.random();
+        var label = this.props.label || this.props.name;
+
+
+        return (
+            React.createElement("div", {className: "field field-select"}, 
+                React.createElement("label", {htmlFor: htmlID}, label), 
+                React.createElement("select", {htmlID: htmlID, 
+                        defaultValue: this.props.defaultValue, 
+                        name: this.props.name}, 
+                    this.props.options.map(this.makeOption)
+                )
+                
+            )
+        );
+    }
+
+});
+
+
+views.Input = Input;
+views.Select = Select;
+
+
+})(app.views);
+
 (function(views){
 
     views.TwitterLogin = React.createBackboneClass({
@@ -50,13 +112,63 @@
 })(app.views);
 (function(views){
 
+    views.CreateTeamForm = React.createClass({displayName: "CreateTeamForm",
+
+        weeks: [8,9,10,11,12,13,14,15],
+
+        onSubmit: function(e) {
+            e.preventDefault();
+            var teamOptions = $(e.target).serializeJSON();
+            var states = _.map(teamOptions, function(item) {
+                return !!item;
+            });
+            var containsFalse = _.contains(states, false);
+            if (!containsFalse) {
+                app.trigger("add:team", teamOptions);   
+            }
+        },
+
+        render: function() {
+            return (
+
+                React.createElement("form", {onSubmit: this.onSubmit, className: "form create-team-form"}, 
+                    React.createElement(views.Input, {
+                        label: "Team Name", 
+                        type: "text", 
+                        name: "name", 
+                        placeholder: "ex: Eat My Dust", 
+                        required: "required"}), 
+                    React.createElement(views.Input, {
+                        label: "Bet per Person (in $)", 
+                        type: "number", 
+                        name: "number", 
+                        placeholder: "ex: 25.00", 
+                        required: "required"}), 
+                    React.createElement(views.Select, {
+                        label: "# of Weeks for Competition", 
+                        options: this.weeks, 
+                        name: "weeks", 
+                        defaultValue: "12"}), 
+                    React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Create Team"))
+                )
+
+            );
+        }
+
+    });
+
+
+
+})(app.views);
+(function(views){
+
     views.MainDash = React.createBackboneClass({
 
         render: function() {
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, "Test"), 
+                        React.createElement("h2", null, this.props.getTeamName.bind(this, this.props.model)), 
                         React.createElement("button", {className: "button button-primary"}, "+ Entry")
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
@@ -182,7 +294,7 @@
         render: function() {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h2", null, "Hi ", this.props.model.get("name"), "! ", React.createElement("br", null), "Welcome to BetYourButt!"), 
+                    React.createElement("h2", null, "Hi ", this.props.model.get("name"), "! ", React.createElement("br", null), "Welcome to the app!"), 
                     React.createElement("div", {className: "buttons-toggle"}, 
                         React.createElement("button", {className: "button button-primary", onClick: this.props.onJoinSelect}, "Join a Team"), 
                         React.createElement("button", {className: "button button-primary", onClick: this.props.onCreateNew}, "Create New Team ")
