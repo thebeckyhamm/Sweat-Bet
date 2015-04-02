@@ -367,6 +367,10 @@ h1 {
     background-color: transparent;
     color: #007E80; }
 
+.buttons-toggle .button {
+  margin: 0 .5rem;
+  width: calc(50% - 1rem); }
+
 .header-bar {
   background-color: #00B9BD;
   display: flex;
@@ -433,6 +437,16 @@ h1 {
 @media all and (min-width: 30em) {
   .main-menu .first-to-last {
     order: 8; } }
+
+.list {
+  margin: 0;
+  padding: 0; }
+
+.list-buttons li {
+  list-style-type: none;
+  margin-bottom: .5rem; }
+  .list-buttons li .button {
+    width: 100%; }
 
 .header-main {
   display: flex;

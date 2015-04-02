@@ -37,3 +37,15 @@ $primary-color: $crimson;
         color: $base-color;
     }
 }
+
+.button-large {
+    
+}
+
+
+.buttons-toggle {
+    .button {
+        margin: 0 .5rem;
+        width: calc(50% - 1rem);
+    }
+}

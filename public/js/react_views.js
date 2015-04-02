@@ -150,11 +150,45 @@
 })(app.views);
 (function(views){
 
-    views.TeamName = React.createBackboneClass({
+    views.JoinTeam = React.createBackboneClass({
+        selectTeam: function(model) {
+            this.props.onTeamSelect(model);            
+        },
+
+        getTeam: function(model, index) {
+            return (
+                React.createElement("li", {key: index}, React.createElement("button", {className: "button", onClick: this.selectTeam.bind(this, model)}, model.get("name")))
+            );
+        },
 
         render: function() {
             return (
-                React.createElement("h2", {className: "team-name"}, this.props.model.get("name"))  
+                React.createElement("div", null, 
+                    React.createElement("h4", null, "Choose the team you'd like to join."), 
+                    React.createElement("ul", {className: "list list-buttons"}, this.props.collection.map(this.getTeam))
+                )
+            );
+        }
+
+    });
+
+
+
+})(app.views);
+(function(views){
+
+    views.JoinOrCreateTeam = React.createBackboneClass({
+
+        render: function() {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("h2", null, "Hi ", this.props.model.get("name"), "! ", React.createElement("br", null), "Welcome to BetYourButt!"), 
+                    React.createElement("div", {className: "buttons-toggle"}, 
+                        React.createElement("button", {className: "button button-primary", onClick: this.props.onJoinSelect}, "Join a Team"), 
+                        React.createElement("button", {className: "button button-primary", onClick: this.props.onCreateNew}, "Create New Team ")
+                    )
+                )
+  
             );
         }
 
