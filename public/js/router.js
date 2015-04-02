@@ -68,8 +68,6 @@ app.Router = Backbone.Router.extend({
             var newTeam = this.teams.add(teamInfo);
             newTeam.save();
         });
-
-
     },
 
     showTeamList: function() {
@@ -95,17 +93,13 @@ app.Router = Backbone.Router.extend({
 
     addUserToTeam: function(model) {
         console.log("this model's id", model.id);
-        app.currentUser.save({
-            team_id: model.id
-            // ,
-            // err: function() {
-            //     console.log(err);
-            // },
-            // success: function() {
-            //     app.trigger("user:added:to:team");
-            //     console.log("user team added", app.currentUser.get("team_id"))  
-            // }  
-        });
+        app.currentUser.save({team_id: model.id},
+            {success: function() {
+                app.trigger("user:added:to:team");
+                console.log("user team added", app.currentUser.get("team_id"))  
+                }  
+            }
+        );
     },
 
     getTeamName: function() {
