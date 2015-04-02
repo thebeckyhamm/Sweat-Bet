@@ -3,24 +3,20 @@ app.Router = Backbone.Router.extend({
     initialize: function() {
 
         // create teams
-        this.teams = new app.models.Teams();
-
-
-        // fetch teams
-        this.listenTo(app, "check:for:teams", function() {
-            this.teams.fetch().done(function(){
-                app.trigger("teams:fetched");
-                console.log("current user:", app.currentUser);
-            }.bind(this)); 
-        });
-
-
-
+        app.teams = new app.models.Teams();
 
         React.render(
             React.createElement(app.views.Header, {model: app.currentUser}),
             document.querySelector(".header")
         );
+
+        // fetch teams
+        this.listenTo(app, "check:for:teams", function() {
+            app.teams.fetch().done(function(){
+                app.trigger("teams:fetched");
+            }.bind(this)); 
+        });
+
 
         // when sign in triggered
         this.listenTo(app, "sign:in", function(){
@@ -34,7 +30,7 @@ app.Router = Backbone.Router.extend({
                 React.render(
                     React.createElement(app.views.MainDash, {
                         model: app.currentUser,
-                        getTeamName: this.getTeamName.bind(this)
+                        getTeamName: this.getTeamNameFromTeams.bind(this)
                     }),
                     document.querySelector(".main-wrapper")
                 ); 
@@ -57,7 +53,7 @@ app.Router = Backbone.Router.extend({
             React.render(
                 React.createElement(app.views.MainDash, {
                     model: app.currentUser,
-                    getTeamName: this.getTeamName.bind(this)
+                    getTeamName: this.getTeamNameFromTeams.bind(this)
                 }),
                 document.querySelector(".main-wrapper")
             ); 
@@ -65,15 +61,19 @@ app.Router = Backbone.Router.extend({
 
 
         this.listenTo(app, "add:team", function(teamInfo) {
-            var newTeam = this.teams.add(teamInfo);
-            newTeam.save();
+            var newTeam = app.teams.add(teamInfo);
+            newTeam.save(null, 
+                {success: function(model) {
+                    this.addUserToTeam(model);
+                }.bind(this)
+            });
         });
     },
 
     showTeamList: function() {
         React.render(
             React.createElement(app.views.JoinTeam, {
-                collection: this.teams,
+                collection: app.teams,
                 onTeamSelect: this.addUserToTeam.bind(this)
             }),
             document.querySelector(".main-wrapper")
@@ -92,7 +92,6 @@ app.Router = Backbone.Router.extend({
 
 
     addUserToTeam: function(model) {
-        console.log("this model's id", model.id);
         app.currentUser.save({team_id: model.id},
             {success: function() {
                 app.trigger("user:added:to:team");
@@ -102,8 +101,10 @@ app.Router = Backbone.Router.extend({
         );
     },
 
-    getTeamName: function() {
-        console.log("getting team name from", app.currentUser.get("team_id"));
+    getTeamNameFromTeams: function() {
+        var teamId = app.currentUser.get("team_id");
+        var team = app.teams.get(teamId);
+        return team.get("name");
     }
 
 });

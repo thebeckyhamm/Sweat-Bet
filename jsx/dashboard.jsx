@@ -6,7 +6,7 @@
             return (
                 <section className="main">
                     <header className="header-main">
-                        <h2>{this.props.getTeamName.bind(this, this.props.model)}</h2>
+                        <h2>{this.props.getTeamName()}</h2>
                         <button className="button button-primary">+ Entry</button>
                     </header>
                     <div className="results-toggle">

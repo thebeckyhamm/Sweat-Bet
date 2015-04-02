@@ -168,7 +168,7 @@ views.Select = Select;
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, this.props.getTeamName.bind(this, this.props.model)), 
+                        React.createElement("h2", null, this.props.getTeamName()), 
                         React.createElement("button", {className: "button button-primary"}, "+ Entry")
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 

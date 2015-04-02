@@ -30,7 +30,6 @@ app = {
 
             var twitterProf = authData.twitter.cachedUserProfile;
             var url = "/find_user_by_twitter_id/" + twitterProf.id
-            console.log("url", url);
             $.getJSON(url, function(data){
               if (data && data.length !== 0) {
                 // user exists
@@ -43,7 +42,6 @@ app = {
               else {
                 // user is new
                 console.log("user is new");
-                console.log("data returned for new user", data);
                 app.currentUser.set({
                     name: twitterProf.name,
                     twitter_id: twitterProf.id,
