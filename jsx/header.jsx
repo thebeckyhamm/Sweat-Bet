@@ -13,7 +13,7 @@
                             <a href="#">Dashboard</a>
                         </li>
                         <li>
-                            <a href="#">My Goals</a>
+                            <a href="#" onClick={this.props.goToGoals}>My Goals</a>
                         </li>
                         <li>
                             <a href="#">My Profile</a>
@@ -26,6 +26,10 @@
     });
 
     views.Header = React.createClass({ 
+        goToGoals: function() {
+            app.trigger("fetch:goals:collection");
+        },
+
         getInitialState: function() {
            return {
                 activeMenu: ''
@@ -55,7 +59,7 @@
                         </div>
                     </div>
                     <div className={menuClass}>
-                        <Menu />
+                        <Menu goToGoals={this.goToGoals} />
                     </div>
                 </div>
 

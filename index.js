@@ -35,7 +35,7 @@ var modelRouter = require("./express_routers/model_router");
 // tell express to "mount" the routers to particular dbs and locations
 app.use("/teams",             new collectionRouter(teamsDB).router);
 app.use("/users",             new collectionRouter(usersDB).router);
-app.use("/users/:id/goals",   new collectionRouter(goalsDB, "_user_id").router);
+app.use("/users/:id/goals",   new collectionRouter(goalsDB, "user_id").router);
 app.use("/goals/:id/entries", new collectionRouter(entryDB, "_goal_id").router);
 
 app.use("/teams",   new modelRouter(teamsDB).router);

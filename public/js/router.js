@@ -1,20 +1,43 @@
 app.Router = Backbone.Router.extend({
 
     routes: {
-        "/" : "showLandingPage",
+        "/"                : "showLandingPage",
         "join-create-team" : "joinOrCreateTeam",
-        "join-a-team" : "showTeamList",
-        "create-a-team" : "showNewTeamForm",
-        "main-dashboard" : "showMain"
+        "join-a-team"      : "showTeamList",
+        "create-a-team"    : "showNewTeamForm",
+        "main-dashboard"   : "showMain",
+        "add-a-goal"       : "showGoalForm",
+        "my-dashboard"     : "showMyDash"
     },
 
     initialize: function() {
 
         // create teams
         app.teams = new app.models.Teams();
+
+        app.goalCollection = new app.models.Goals(null, {
+            user: app.currentUser
+        });
+
+        this.listenTo(app, "fetch:goals:collection", function(goalInfo) {
+            app.goalCollection.fetch().done(function(){
+                console.log("collection in fetch:goals", app.goalCollection);
+                this.showMyDash();
+            }.bind(this)); 
+        });
+
+        this.listenTo(app, "create:goals:collection", function(goalInfo) {
+            app.goalCollection.fetch().done(function(){
+                app.trigger("goals:created", goalInfo);
+            }.bind(this)); 
+        });
+
         // render header
         React.render(
-            React.createElement(app.views.Header, {model: app.currentUser}),
+            React.createElement(app.views.Header, {
+                model: app.currentUser,
+                goToGoals: this.showMyDash.bind(this)
+            }),
             document.querySelector(".header")
         );
 
@@ -54,12 +77,7 @@ app.Router = Backbone.Router.extend({
                 this.joinOrCreateTeam();
                 this.navigate("join-create-team", {replace: true});
             }
-        })
-
-        this.listenTo(app, "user:added:to:team", function() {
-            this.showMain();
         });
-
 
         this.listenTo(app, "add:team", function(teamInfo) {
 
@@ -73,6 +91,23 @@ app.Router = Backbone.Router.extend({
                     this.addUserToTeam(model);
                 }.bind(this)
             });
+        });
+
+        this.listenTo(app, "user:added:to:team", function() {
+            this.showMain();
+        });
+
+        this.listenTo(app, "goals:created", function(goalInfo) {
+            var newGoal = app.goalCollection.add(goalInfo);
+            newGoal.save(null, {
+                success: function() {
+                    app.trigger("goal:added");
+                }  
+            });
+        });
+
+        this.listenTo(app, "goal:added", function() {
+            this.showMyDash();
         });
     },
 
@@ -90,7 +125,18 @@ app.Router = Backbone.Router.extend({
             React.createElement(app.views.MainDash, {
                 model: app.currentUser,
                 getTeamName: this.getTeamName.bind(this),
-                addGoal: this.showGoalForm
+                addGoal: this.showGoalForm.bind(this)
+            }),
+            document.querySelector(".main-wrapper")
+        ); 
+    },
+
+    showMyDash: function() {
+        this.navigate("my-dashboard");
+        console.log("collection in showmydash", app.goalCollection);
+        React.render(
+            React.createElement(app.views.MyDash, {
+                collection: app.goalCollection
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -144,11 +190,11 @@ app.Router = Backbone.Router.extend({
     },
 
     showGoalForm: function() {
-        console.log("clicked");
-        // React.render(
-        //     React.createElement(app.views.GoalForm),
-        //     document.querySelector(".main-wrapper")
-        // ); 
+        this.navigate("add-a-goal");
+        React.render(
+            React.createElement(app.views.GoalForm),
+            document.querySelector(".main-wrapper")
+        ); 
     }
 
 });

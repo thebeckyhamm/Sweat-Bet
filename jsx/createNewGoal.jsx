@@ -13,7 +13,8 @@
             });
             var containsFalse = _.contains(states, false);
             if (!containsFalse) {
-                app.trigger("add:goal", goalItems);   
+                //app.trigger("add:goal", goalItems);   
+                app.trigger("create:goals:collection", goalItems);
             }
         },
 
@@ -24,7 +25,7 @@
                     <views.Input 
                         label="Goal Name" 
                         type="text" 
-                        name="goalName"
+                        name="name"
                         placeholder="ex: Run"
                         required="required" />
                     <views.Input 
@@ -41,7 +42,7 @@
                                 options={this.time}
                                 name="amountOfTime"
                                 defaultValue="per week" />
-                    <div className="text-right"><button>Add Goal</button></div>
+                    <div className="text-right"><button className="button button-primary">Add Goal</button></div>
                     
                 </form>
 

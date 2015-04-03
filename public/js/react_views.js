@@ -125,7 +125,8 @@ views.Select = Select;
             });
             var containsFalse = _.contains(states, false);
             if (!containsFalse) {
-                app.trigger("add:goal", goalItems);   
+                //app.trigger("add:goal", goalItems);   
+                app.trigger("create:goals:collection", goalItems);
             }
         },
 
@@ -136,7 +137,7 @@ views.Select = Select;
                     React.createElement(views.Input, {
                         label: "Goal Name", 
                         type: "text", 
-                        name: "goalName", 
+                        name: "name", 
                         placeholder: "ex: Run", 
                         required: "required"}), 
                     React.createElement(views.Input, {
@@ -153,7 +154,7 @@ views.Select = Select;
                                 options: this.time, 
                                 name: "amountOfTime", 
                                 defaultValue: "per week"}), 
-                    React.createElement("div", {className: "text-right"}, React.createElement("button", null, "Add Goal"))
+                    React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Add Goal"))
                     
                 )
 
@@ -271,7 +272,7 @@ views.Select = Select;
                             React.createElement("a", {href: "#"}, "Dashboard")
                         ), 
                         React.createElement("li", null, 
-                            React.createElement("a", {href: "#"}, "My Goals")
+                            React.createElement("a", {href: "#", onClick: this.props.goToGoals}, "My Goals")
                         ), 
                         React.createElement("li", null, 
                             React.createElement("a", {href: "#"}, "My Profile")
@@ -284,6 +285,10 @@ views.Select = Select;
     });
 
     views.Header = React.createClass({displayName: "Header", 
+        goToGoals: function() {
+            app.trigger("fetch:goals:collection");
+        },
+
         getInitialState: function() {
            return {
                 activeMenu: ''
@@ -313,7 +318,7 @@ views.Select = Select;
                         )
                     ), 
                     React.createElement("div", {className: menuClass}, 
-                        React.createElement(Menu, null)
+                        React.createElement(Menu, {goToGoals: this.goToGoals})
                     )
                 )
 
@@ -366,6 +371,53 @@ views.Select = Select;
                         React.createElement("h3", null, "Win $$")
                     )
                 ) 
+            );
+        }
+
+    });
+
+
+
+})(app.views);
+(function(views){
+
+    views.MyDash = React.createBackboneClass({
+
+        getGoal: function(model, index) {
+            var goalName;
+            var name = model.get("name");
+            var number = model.get("number");
+            var unit = model.get("unit");
+            var amountOfTime = model.get("amountOfTime");
+            goalName = name + " " + number + " " + unit + " " + amountOfTime;
+            return React.createElement("h4", {key: index}, goalName);
+        },
+
+        render: function() {
+
+            return (
+                React.createElement("section", {className: "main"}, 
+                    React.createElement("header", {className: "header-main"}, 
+                        React.createElement("h2", null, "My Goals"), 
+                        React.createElement("button", {
+                            className: "button button-primary", 
+                            onClick: this.props.addGoal}, "+ Goal"
+                        ), 
+                        React.createElement("button", {className: "button button-primary"}, "+ Entry")
+                    ), 
+                    React.createElement("div", {className: "results-toggle"}, 
+                        React.createElement("button", {className: "button button-secondary"}, "To Date"), 
+                        React.createElement("button", {className: "button"}, "Week 5")
+                    ), 
+                    React.createElement("article", {className: "all-goals"}, 
+                        React.createElement("h3", null, "Total Progress"), 
+                        React.createElement("span", {className: "completion-rate completion-rate-lg"}, "45%"), 
+                        React.createElement("div", {className: "progress-bar progress-bar-lg"}), 
+                        React.createElement("hr", null), 
+                        React.createElement("h3", null, "Individual Goals"), 
+                        React.createElement("div", null, this.props.collection.map(this.getGoal))
+                    )
+                )
             );
         }
 
