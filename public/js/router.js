@@ -1,5 +1,13 @@
 app.Router = Backbone.Router.extend({
 
+    routes: {
+        "/" : "showLandingPage",
+        "join-create-team" : "joinOrCreateTeam",
+        "join-a-team" : "showTeamList",
+        "create-a-team" : "showNewTeamForm",
+        "main-dashboard" : "showMain"
+    },
+
     initialize: function() {
 
         // create teams
@@ -10,9 +18,20 @@ app.Router = Backbone.Router.extend({
             document.querySelector(".header")
         );
 
+        React.render(
+            React.createElement(app.views.LandingPage),
+            document.querySelector(".main-wrapper")
+        );
+
         // when sign in triggered, look for teams
         this.listenTo(app, "sign:in", function(){
             app.trigger("check:for:teams");
+        });
+
+
+        // when sign out triggered load landing page
+        this.listenTo(app, "sign:out", function(){
+            this.showLandingPage();
         });
 
         // fetch teams
@@ -27,40 +46,18 @@ app.Router = Backbone.Router.extend({
             if (app.currentUser.get("team_id")) {
                 console.log("User has a team");
                 // if so, show them their main dashboard
-                React.render(
-                    React.createElement(app.views.MainDash, {
-                        model: app.currentUser,
-                        getTeamName: this.getTeamNameFromTeams.bind(this),
-                        addGoal: this.showGoalForm
-
-                    }),
-                    document.querySelector(".main-wrapper")
-                ); 
+                this.showMain();
             }
-
             else {
                 // if not, ask them to create or join a team
                 console.log("user doesn't have a team yet");
-                React.render(
-                    React.createElement(app.views.JoinOrCreateTeam, {
-                        model: app.currentUser,
-                        onJoinSelect: this.showTeamList.bind(this),
-                        onCreateNew: this.showNewTeamForm.bind(this)
-                    }),
-                    document.querySelector(".main-wrapper")
-                ); 
+                this.joinOrCreateTeam();
+                this.navigate("join-create-team", {replace: true});
             }
         })
 
         this.listenTo(app, "user:added:to:team", function() {
-            React.render(
-                React.createElement(app.views.MainDash, {
-                    model: app.currentUser,
-                    getTeamName: this.getTeamNameFromTeams.bind(this),
-                    addGoal: this.showGoalForm
-                }),
-                document.querySelector(".main-wrapper")
-            ); 
+            this.showMain();
         });
 
 
@@ -79,7 +76,39 @@ app.Router = Backbone.Router.extend({
         });
     },
 
+    showLandingPage: function() {
+        this.navigate("/");
+        React.render(
+            React.createElement(app.views.LandingPage),
+            document.querySelector(".main-wrapper")
+        );
+    },
+
+    showMain: function() {
+        this.navigate("main-dashboard");
+        React.render(
+            React.createElement(app.views.MainDash, {
+                model: app.currentUser,
+                getTeamName: this.getTeamName.bind(this),
+                addGoal: this.showGoalForm
+            }),
+            document.querySelector(".main-wrapper")
+        ); 
+    },
+
+    joinOrCreateTeam: function() {
+        React.render(
+            React.createElement(app.views.JoinOrCreateTeam, {
+                model: app.currentUser,
+                onJoinSelect: this.showTeamList.bind(this),
+                onCreateNew: this.showNewTeamForm.bind(this)
+            }),
+            document.querySelector(".main-wrapper")
+        ); 
+    },
+
     showTeamList: function() {
+        this.navigate("join-a-team");
         React.render(
             React.createElement(app.views.JoinTeam, {
                 collection: app.teams,
@@ -87,35 +116,34 @@ app.Router = Backbone.Router.extend({
             }),
             document.querySelector(".main-wrapper")
         ); 
-
     },
 
     showNewTeamForm: function() {
+        this.navigate("create-a-team");
         React.render(
             React.createElement(app.views.CreateTeamForm),
             document.querySelector(".main-wrapper")
         ); 
-
     },
 
     addUserToTeam: function(model) {
         app.currentUser.save({team_id: model.id},
-            {success: function() {
-                app.trigger("user:added:to:team");
-                console.log("user team added", app.currentUser.get("team_id"))  
+            {
+                success: function() {
+                    app.trigger("user:added:to:team");
+                    console.log("user added to team:", app.currentUser.get("team_id"))  
                 }  
             }
         );
     },
 
-    getTeamNameFromTeams: function() {
+    getTeamName: function() {
         var teamId = app.currentUser.get("team_id");
         var team = app.teams.get(teamId);
         return team.get("name");
     },
 
     showGoalForm: function() {
-        // this is still not triggering
         console.log("clicked");
         // React.render(
         //     React.createElement(app.views.GoalForm),

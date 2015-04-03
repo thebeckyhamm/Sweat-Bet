@@ -112,6 +112,59 @@ views.Select = Select;
 })(app.views);
 (function(views){
 
+    views.GoalForm = React.createBackboneClass({
+
+        units: ["miles", "minutes", "reps", "lbs", "times", "days"],
+        time: ["per day", "per week", "per month", "in total"],
+
+        onSubmit: function(e) {
+            e.preventDefault();
+            var goalItems = $(e.target).serializeJSON();
+            var states = _.map(goalItems, function(item) {
+                return !!item;
+            });
+            var containsFalse = _.contains(states, false);
+            if (!containsFalse) {
+                app.trigger("add:goal", goalItems);   
+            }
+        },
+
+        render: function() {
+            return (
+
+                React.createElement("form", {onSubmit: this.onSubmit, className: "goal-form"}, 
+                    React.createElement(views.Input, {
+                        label: "Goal Name", 
+                        type: "text", 
+                        name: "goalName", 
+                        placeholder: "ex: Run", 
+                        required: "required"}), 
+                    React.createElement(views.Input, {
+                        label: "Number", 
+                        type: "number", 
+                        name: "number", 
+                        placeholder: "5", 
+                        required: "required"}), 
+                    React.createElement(views.Select, {label: "Unit", 
+                                options: this.units, 
+                                name: "unit", 
+                                defaultValue: "times"}), 
+                    React.createElement(views.Select, {label: "Time Interval", 
+                                options: this.time, 
+                                name: "amountOfTime", 
+                                defaultValue: "per week"}), 
+                    React.createElement("div", {className: "text-right"}, React.createElement("button", null, "Add Goal"))
+                    
+                )
+
+            );
+        }
+
+    });
+
+})(app.views);
+(function(views){
+
     views.CreateTeamForm = React.createClass({displayName: "CreateTeamForm",
 
         weeks: [8,9,10,11,12,13,14,15],
@@ -175,7 +228,10 @@ views.Select = Select;
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
                         React.createElement("h2", null, this.props.getTeamName()), 
-                        React.createElement("button", {className: "button button-primary"}, "+ Goal"), 
+                        React.createElement("button", {
+                            className: "button button-primary", 
+                            onClick: this.props.addGoal}, "+ Goal"
+                        ), 
                         React.createElement("button", {className: "button button-primary"}, "+ Entry")
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
@@ -286,6 +342,30 @@ views.Select = Select;
                     React.createElement("h4", null, "Choose the team you'd like to join."), 
                     React.createElement("ul", {className: "list list-buttons"}, this.props.collection.map(this.getTeam))
                 )
+            );
+        }
+
+    });
+
+
+
+})(app.views);
+(function(views){
+
+    views.LandingPage = React.createBackboneClass({
+
+        render: function() {
+            return (
+                React.createElement("section", {className: "main"}, 
+                    React.createElement("header", {className: "header-main"}, 
+                        React.createElement("h2", null, "Name TBD")
+                    ), 
+                    React.createElement("article", null, 
+                        React.createElement("h3", null, "Beat your friends"), 
+                        React.createElement("h3", null, "Get in shape"), 
+                        React.createElement("h3", null, "Win $$")
+                    )
+                ) 
             );
         }
 
