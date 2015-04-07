@@ -79,14 +79,14 @@
         model: models.Entry,
 
         url: function() {
-             return "/goals/" + this.goal.id + "/entries"
+             return "/goals/" + this.goal_id + "/entries"
         },
 
         initialize: function(data, options) {
              this.goal = options.goal;
              this.on("add", function(model){
-                if(model.isNew()) {
-                    model.set("goal_id", this.goal.id);
+                if(model.isNew() && !model.get("goal_id")) {
+                    model.set("goal_id", this.goal_id);
                 }
              });
         }

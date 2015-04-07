@@ -38,7 +38,6 @@
 
         setActiveMenu: function(e) {
             e.preventDefault();
-            console.log(this.state.activeMenu);
             if (this.state.activeMenu !== "active") {
                 this.setState({activeMenu: "active"});
             }

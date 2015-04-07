@@ -29,7 +29,7 @@ var Select = React.createClass({displayName: "Select",
 
     makeOption: function(option, index) {   
         var data = option;
-        console.log(option);
+        //console.log(option);
         var value = option["_id"] || option;
 
         if (option["name"]) {
@@ -39,8 +39,8 @@ var Select = React.createClass({displayName: "Select",
                              option["amountOfTime"];
         }
         var name = concatName || option;
-        console.log(name, value);
-        return React.createElement("option", {key: index, value: value, name: name}, name);
+        //console.log(name, value);
+        return React.createElement("option", {key: index, value: value}, name);
 
     },
 
@@ -88,19 +88,16 @@ views.Select = Select;
 
         getInitialState: function() {
           return {
-            start_date: moment(),
-            end_date: moment(),
-            new_date: null,
-            bound_date: null,
-            example5Selected: null
+            start_date: null
           };
         },
 
         handleStartDateChange: function(date) {
-          this.setState({
-            start_date: date
-          });
+            this.setState({
+                start_date: date
+            });
         },
+
 
         getGoalNames: function() {
             var collection = this.props.collection.toJSON();
@@ -108,23 +105,7 @@ views.Select = Select;
             var userGoals = _.filter(collection, function(goal) {
                 return app.currentUser.id === goal.user_id
             });
-
             return userGoals;
-
-            // var userGoals = _.filter(collection, function(goal) {
-            //     return app.currentUser.id === goal.user_id
-            // });
-
-            // var goalNames = [];
-            // _.each(userGoals, function(goal) {
-            //     var vals = _.values(goal);
-            //     vals = vals.slice(0, 4);
-            //     vals = vals.join(" ");
-            //     goalNames.push(vals);
-            // });
-            // console.log(goalNames);
-            // return goalNames;
-
 
         },
 
@@ -134,7 +115,7 @@ views.Select = Select;
                 React.createElement("form", {onSubmit: this.onSubmit, className: "form form-entry"}, 
                     React.createElement(views.Select, {label: "Goal", 
                         options: this.getGoalNames(), 
-                        name: "name"}), 
+                        name: "goal_id"}), 
                     React.createElement(views.Input, {
                         label: "Number Completed", 
                         type: "number", 
@@ -142,7 +123,13 @@ views.Select = Select;
                         placeholder: "5", 
                         required: "required"}), 
                     React.createElement("label", null, "Date Completed"), 
-                    React.createElement(DatePicker, {selected: this.state.start_date, onChange: this.handleStartDateChange}), 
+                    React.createElement(DatePicker, {
+                        selected: this.state.start_date, 
+                        onChange: this.handleStartDateChange, 
+                        placeholderText: "Click to select a date", 
+                        maxDate: moment(), 
+                        weekStart: "0"}), 
+
                     React.createElement("div", {className: "text-right"}, 
                         React.createElement("button", {className: "button button-primary"}, "Add Entry")
                     )
@@ -394,7 +381,6 @@ views.Select = Select;
 
         setActiveMenu: function(e) {
             e.preventDefault();
-            console.log(this.state.activeMenu);
             if (this.state.activeMenu !== "active") {
                 this.setState({activeMenu: "active"});
             }

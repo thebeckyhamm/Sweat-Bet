@@ -29,7 +29,7 @@ var Select = React.createClass({
 
     makeOption: function(option, index) {   
         var data = option;
-        console.log(option);
+        //console.log(option);
         var value = option["_id"] || option;
 
         if (option["name"]) {
@@ -39,8 +39,8 @@ var Select = React.createClass({
                              option["amountOfTime"];
         }
         var name = concatName || option;
-        console.log(name, value);
-        return <option key={index} value={value} name={name}>{name}</option>;
+        //console.log(name, value);
+        return <option key={index} value={value}>{name}</option>;
 
     },
 

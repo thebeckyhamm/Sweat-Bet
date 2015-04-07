@@ -44287,8 +44287,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return React.createElement("input", {
 	      ref: "input",
 	      type: "text",
+	      name: "datepicker",
 	      value: this.state.value,
-	      name: "date",
 	      onClick: this.handleClick,
 	      onKeyDown: this.handleKeyDown,
 	      onFocus: this.props.onFocus,
