@@ -90,6 +90,12 @@
                 }
              });
         }
+
+        // sumProgress: function(goal_id) {
+        //     var _.filter(data, function(entry) {
+        //         return  
+        //     })
+        // }
     });
 
 

@@ -16,6 +16,8 @@ app.Router = Backbone.Router.extend({
         // create teams
         app.teams = new app.models.Teams();
 
+        app.teams.fetch();
+
         app.goals = new app.models.Goals(null, {
             user: app.currentUser
         });
@@ -168,7 +170,8 @@ app.Router = Backbone.Router.extend({
             React.createElement(app.views.MyDash, {
                 collection: app.goals,
                 addGoal: this.showGoalForm.bind(this),
-                addEntry: this.showEntryForm.bind(this)
+                addEntry: this.showEntryForm.bind(this),
+                getWeeks: this.getNumWeeks
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -237,8 +240,19 @@ app.Router = Backbone.Router.extend({
 
     getTeamName: function() {
         var teamId = app.currentUser.get("team_id");
+        app.teams.fetch().done(function(){
+            var team = app.teams.get(teamId);
+            return team.get("name");
+
+        });
+    },
+
+    getNumWeeks: function() {
+        var teamId = app.currentUser.get("team_id");
         var team = app.teams.get(teamId);
-        return team.get("name");
+        var weeks = team.get("weeks");
+        return weeks;
+
     },
 
     getGoalNames: function() {

@@ -129,11 +129,9 @@ views.Select = Select;
                         placeholderText: "Click to select a date", 
                         maxDate: moment(), 
                         weekStart: "0"}), 
-
                     React.createElement("div", {className: "text-right"}, 
                         React.createElement("button", {className: "button button-primary"}, "Add Entry")
                     )
-                    
                 )
 
             );
@@ -304,45 +302,6 @@ views.Select = Select;
 })(app.views);
 (function(views){
 
-    views.MainDash = React.createBackboneClass({
-
-        render: function() {
-            return (
-                React.createElement("section", {className: "main"}, 
-                    React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, this.props.getTeamName()), 
-                        React.createElement("button", {
-                            className: "button button-primary", 
-                            onClick: this.props.addGoal}, "+ Goal"
-                        ), 
-                        React.createElement("button", {className: "button button-primary", 
-                            onClick: this.props.addEntry}, "+ Entry"
-                        )
-                    ), 
-                    React.createElement("div", {className: "results-toggle"}, 
-                        React.createElement("button", {className: "button button-secondary"}, "To Date"), 
-                        React.createElement("button", {className: "button"}, "Week 5")
-                    ), 
-                    React.createElement("article", {className: "all-goals"}, 
-                        React.createElement("h3", null, "All Goals"), 
-                        React.createElement("span", {className: "completion-rate completion-rate-lg"}, "45%"), 
-                        React.createElement("div", {className: "progress-bar progress-bar-lg"}), 
-                        React.createElement("hr", null), 
-                        React.createElement("h4", null, "Run 15 mi per week"), 
-                        React.createElement("span", {className: "completion-rate"}, "55%"), 
-                        React.createElement("div", {className: "progress-bar"})
-                    )
-                )
-            );
-        }
-
-    });
-
-
-
-})(app.views);
-(function(views){
-
     var Menu = React.createClass({displayName: "Menu",
 
         render: function() {
@@ -464,20 +423,97 @@ views.Select = Select;
 })(app.views);
 (function(views){
 
+    views.MainDash = React.createBackboneClass({
+
+        render: function() {
+            return (
+                React.createElement("section", {className: "main"}, 
+                    React.createElement("header", {className: "header-main"}, 
+                        React.createElement("h2", null, this.props.getTeamName()), 
+                        React.createElement("button", {
+                            className: "button button-primary", 
+                            onClick: this.props.addGoal}, "+ Goal"
+                        ), 
+                        React.createElement("button", {className: "button button-primary", 
+                            onClick: this.props.addEntry}, "+ Entry"
+                        )
+                    ), 
+                    React.createElement("div", {className: "results-toggle"}, 
+                        React.createElement("button", {className: "button button-secondary"}, "To Date"), 
+                        React.createElement("button", {className: "button"}, "Week 5")
+                    ), 
+                    React.createElement("article", {className: "all-goals"}, 
+                        React.createElement("h3", null, "All Goals"), 
+                        React.createElement("span", {className: "completion-rate completion-rate-lg"}, "45%"), 
+                        React.createElement("div", {className: "progress-bar progress-bar-lg"}), 
+                        React.createElement("hr", null), 
+                        React.createElement("h4", null, "Run 15 mi per week"), 
+                        React.createElement("span", {className: "completion-rate"}, "55%"), 
+                        React.createElement("div", {className: "progress-bar"})
+                    )
+                )
+            );
+        }
+
+    });
+
+
+
+})(app.views);
+(function(views){
+    var Progress = React.createBackboneClass({
+        // getGoalDetail: function(goal_id, e) {
+        //     e.preventDefault();
+        //     app.trigger("get:goal:detail", goal_id);
+
+        // },
+
+        getCurrentTotal: function(entries) {
+            var entryNumbers = [];
+            _.each(entries, function(obj) {
+                entryNumbers.push(parseInt(obj.number));
+            });
+            return _.reduce(entryNumbers, function(a, b) {
+                return a + b;
+            });
+        },
+        render: function() {
+            var goal = this.props.model.toJSON();
+            var entries = goal.entries;
+
+            var currentProgress = this.getCurrentTotal(entries);
+            var totalGoal = goal.number * this.props.weeks;
+            var percentComplete = ((currentProgress / totalGoal) * 100).toFixed(1);
+            percentComplete = percentComplete + "%";
+            var unit = goal.unit;
+            var goalName = goal.name + " " + 
+                       goal.number + " " + 
+                       goal.unit + " " + 
+                       goal.amountOfTime;
+            var progressStyle = {
+                width: percentComplete 
+            }
+            return (
+                React.createElement("div", {className: "goal-progress", key: this.props.key}, 
+                    React.createElement("h4", null, goalName, " - ", percentComplete), 
+                    React.createElement("div", {className: "progress-container"}, 
+                        React.createElement("div", {className: "progress-bar", style: progressStyle})
+                    ), 
+                    React.createElement("span", null, currentProgress, " ", unit, " out of ", totalGoal, " ")
+                )
+            );
+        }
+
+    });
+
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(model, index) {
-            var goalName;
-            var name = model.get("name");
-            var number = model.get("number");
-            var unit = model.get("unit");
-            var amountOfTime = model.get("amountOfTime");
-            goalName = name + " " + number + " " + unit + " " + amountOfTime;
-            return React.createElement("h4", {key: index}, goalName);
+        getGoal: function(weeks, model, index) {
+            return React.createElement(Progress, {key: index, model: model, weeks: weeks});
         },
 
         render: function() {
-
+            var weeks = this.props.getWeeks();
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
@@ -500,7 +536,7 @@ views.Select = Select;
                         React.createElement("div", {className: "progress-bar progress-bar-lg"}), 
                         React.createElement("hr", null), 
                         React.createElement("h3", null, "Individual Goals"), 
-                        React.createElement("div", null, this.props.collection.map(this.getGoal))
+                        React.createElement("div", null, this.props.collection.map(this.getGoal.bind(this, weeks)))
                     )
                 )
             );

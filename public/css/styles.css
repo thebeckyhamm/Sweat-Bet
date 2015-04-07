@@ -460,6 +460,15 @@ h1 {
   margin: .25rem;
   width: calc(50% - .5em); }
 
+.progress-container {
+  background-color: #004853;
+  height: 2em;
+  width: 100%; }
+
+.progress-bar {
+  background-color: #00B9BD;
+  height: 100%; }
+
 *, *:after, *:before {
   box-sizing: border-box; }
 

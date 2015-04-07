@@ -57,11 +57,9 @@
                         placeholderText="Click to select a date" 
                         maxDate={moment()}
                         weekStart="0" />  
-
                     <div className="text-right">
                         <button className="button button-primary">Add Entry</button>
                     </div>
-                    
                 </form>
 
             );
