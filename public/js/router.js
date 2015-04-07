@@ -7,7 +7,8 @@ app.Router = Backbone.Router.extend({
         "create-a-team"    : "showNewTeamForm",
         "main-dashboard"   : "showMain",
         "add-a-goal"       : "showGoalForm",
-        "my-dashboard"     : "showMyDash"
+        "my-dashboard"     : "showMyDash",
+        "add-an-entry"     : "showEntryForm"
     },
 
     initialize: function() {
@@ -15,20 +16,29 @@ app.Router = Backbone.Router.extend({
         // create teams
         app.teams = new app.models.Teams();
 
-        app.goalCollection = new app.models.Goals(null, {
+        app.goals = new app.models.Goals(null, {
             user: app.currentUser
         });
 
         this.listenTo(app, "fetch:goals:collection", function(goalInfo) {
-            app.goalCollection.fetch().done(function(){
-                console.log("collection in fetch:goals", app.goalCollection);
+            app.goals.fetch().done(function(){
+                console.log("collection in fetch:goals", app.goals);
                 this.showMyDash();
             }.bind(this)); 
         });
 
         this.listenTo(app, "create:goals:collection", function(goalInfo) {
-            app.goalCollection.fetch().done(function(){
+            app.goals.fetch().done(function(){
                 app.trigger("goals:created", goalInfo);
+            }.bind(this)); 
+        });
+
+        this.listenTo(app, "create:entries:collection", function(entriesInfo) {
+
+            console.log(entriesInfo);
+            app.entries = new app.models.Entries(null, {goal: entriesInfo.name});
+            app.entries.fetch().done(function(){
+                app.trigger("entries:created", entriesInfo);
             }.bind(this)); 
         });
 
@@ -98,7 +108,7 @@ app.Router = Backbone.Router.extend({
         });
 
         this.listenTo(app, "goals:created", function(goalInfo) {
-            var newGoal = app.goalCollection.add(goalInfo);
+            var newGoal = app.goals.add(goalInfo);
             newGoal.save(null, {
                 success: function() {
                     app.trigger("goal:added");
@@ -106,7 +116,17 @@ app.Router = Backbone.Router.extend({
             });
         });
 
-        this.listenTo(app, "goal:added", function() {
+        this.listenTo(app, "entries:created", function(entryInfo) {
+            var newEntry = app.entries.add(entryInfo);
+            newEntry.save(null, {
+                success: function() {
+                    app.trigger("entry:added");
+                }  
+            });
+        });
+
+
+        this.listenTo(app, "goal:added entry:added", function() {
             this.showMyDash();
         });
     },
@@ -125,7 +145,8 @@ app.Router = Backbone.Router.extend({
             React.createElement(app.views.MainDash, {
                 model: app.currentUser,
                 getTeamName: this.getTeamName.bind(this),
-                addGoal: this.showGoalForm.bind(this)
+                addGoal: this.showGoalForm.bind(this),
+                addEntry: this.showEntryForm.bind(this)
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -133,10 +154,10 @@ app.Router = Backbone.Router.extend({
 
     showMyDash: function() {
         this.navigate("my-dashboard");
-        console.log("collection in showmydash", app.goalCollection);
+        console.log("collection in showmydash", app.goals);
         React.render(
             React.createElement(app.views.MyDash, {
-                collection: app.goalCollection
+                collection: app.goals
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -189,12 +210,32 @@ app.Router = Backbone.Router.extend({
         return team.get("name");
     },
 
+    getGoalNames: function() {
+        var userID = app.goals.get("user_id");
+        return _.filter(app.goals, function(goal) {
+            return userID === goal.user_id;
+        });
+    },
+
     showGoalForm: function() {
         this.navigate("add-a-goal");
         React.render(
             React.createElement(app.views.GoalForm),
             document.querySelector(".main-wrapper")
         ); 
+    },
+
+    showEntryForm: function() {
+        this.navigate("add-an-entry");
+        app.goals.fetch().done(function() {
+            React.render(
+                React.createElement(app.views.EntryForm, {
+                    collection: app.goals
+                }),
+                document.querySelector(".main-wrapper")
+            ); 
+            
+        });
     }
 
 });

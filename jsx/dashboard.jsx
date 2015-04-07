@@ -11,7 +11,9 @@
                             className="button button-primary"
                             onClick={this.props.addGoal}>+ Goal
                         </button>
-                        <button className="button button-primary">+ Entry</button>
+                        <button className="button button-primary"
+                            onClick={this.props.addEntry}>+ Entry
+                        </button>
                     </header>
                     <div className="results-toggle">
                         <button className="button button-secondary">To Date</button>

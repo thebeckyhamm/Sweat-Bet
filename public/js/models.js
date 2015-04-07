@@ -86,7 +86,7 @@
              this.goal = options.goal;
              this.on("add", function(model){
                 if(model.isNew()) {
-                    model.set("_goal_id", this.goal.id);
+                    model.set("goal_id", this.goal.id);
                 }
              });
         }

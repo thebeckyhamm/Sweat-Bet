@@ -465,4 +465,5 @@ h1 {
 
 body {
   background-color: #f0f0f0;
-  font-family: "clearSansLight", Helvetica, Arial, sans-serif; }
+  font-family: "clearSansLight", Helvetica, Arial, sans-serif;
+  min-height: 500px; }

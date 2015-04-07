@@ -29,10 +29,23 @@
     "react": "~0.13.1",
     "react.backbone": "~0.6.0",
     "jquery.serializeJSON": "~2.5.0",
-    "backbonefire": "~0.5.1"
+    "backbonefire": "~0.5.1",
+    "react-date-picker": "~0.6.0",
+    "moment": "~2.9.0"
   },
   "devDependencies": {
     "mocha": "~2.2.1",
     "chai": "~2.2.0"
+  },
+  "overrides": {
+      "react": {
+        "main": "react-with-addons.js"
+      },
+      "react-date-picker": {
+        "main": "dist/react-datepicker.js"
+      },
+      "react-onclickoutside": {
+        "main": "index.js"
+      }
   }
 }

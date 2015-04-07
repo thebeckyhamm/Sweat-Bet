@@ -14489,7 +14489,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 }));
 
 /**
- * React v0.13.1
+ * React (with addons) v0.13.1
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.React = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 /**
@@ -14500,148 +14500,52 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule React
+ * @providesModule ReactWithAddons
  */
 
-/* globals __REACT_DEVTOOLS_GLOBAL_HOOK__*/
+/**
+ * This module exists purely in the open source project, and is meant as a way
+ * to create a separate standalone build of React. This build has "addons", or
+ * functionality we've built and think might be useful but doesn't have a good
+ * place to live inside React core.
+ */
 
 'use strict';
 
-var EventPluginUtils = _dereq_(19);
-var ReactChildren = _dereq_(32);
-var ReactComponent = _dereq_(34);
-var ReactClass = _dereq_(33);
-var ReactContext = _dereq_(38);
-var ReactCurrentOwner = _dereq_(39);
-var ReactElement = _dereq_(57);
-var ReactElementValidator = _dereq_(58);
-var ReactDOM = _dereq_(40);
-var ReactDOMTextComponent = _dereq_(51);
-var ReactDefaultInjection = _dereq_(54);
-var ReactInstanceHandles = _dereq_(66);
-var ReactMount = _dereq_(70);
-var ReactPerf = _dereq_(75);
-var ReactPropTypes = _dereq_(78);
-var ReactReconciler = _dereq_(81);
-var ReactServerRendering = _dereq_(84);
+var LinkedStateMixin = _dereq_(25);
+var React = _dereq_(31);
+var ReactComponentWithPureRenderMixin =
+  _dereq_(42);
+var ReactCSSTransitionGroup = _dereq_(34);
+var ReactFragment = _dereq_(69);
+var ReactTransitionGroup = _dereq_(98);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
-var findDOMNode = _dereq_(117);
-var onlyChild = _dereq_(144);
+var cx = _dereq_(127);
+var cloneWithProps = _dereq_(122);
+var update = _dereq_(170);
 
-ReactDefaultInjection.inject();
+React.addons = {
+  CSSTransitionGroup: ReactCSSTransitionGroup,
+  LinkedStateMixin: LinkedStateMixin,
+  PureRenderMixin: ReactComponentWithPureRenderMixin,
+  TransitionGroup: ReactTransitionGroup,
 
-var createElement = ReactElement.createElement;
-var createFactory = ReactElement.createFactory;
-var cloneElement = ReactElement.cloneElement;
-
-if ("production" !== "development") {
-  createElement = ReactElementValidator.createElement;
-  createFactory = ReactElementValidator.createFactory;
-  cloneElement = ReactElementValidator.cloneElement;
-}
-
-var render = ReactPerf.measure('React', 'render', ReactMount.render);
-
-var React = {
-  Children: {
-    map: ReactChildren.map,
-    forEach: ReactChildren.forEach,
-    count: ReactChildren.count,
-    only: onlyChild
-  },
-  Component: ReactComponent,
-  DOM: ReactDOM,
-  PropTypes: ReactPropTypes,
-  initializeTouchEvents: function(shouldUseTouch) {
-    EventPluginUtils.useTouchEvents = shouldUseTouch;
-  },
-  createClass: ReactClass.createClass,
-  createElement: createElement,
-  cloneElement: cloneElement,
-  createFactory: createFactory,
-  createMixin: function(mixin) {
-    // Currently a noop. Will be used to validate and trace mixins.
-    return mixin;
-  },
-  constructAndRenderComponent: ReactMount.constructAndRenderComponent,
-  constructAndRenderComponentByID: ReactMount.constructAndRenderComponentByID,
-  findDOMNode: findDOMNode,
-  render: render,
-  renderToString: ReactServerRendering.renderToString,
-  renderToStaticMarkup: ReactServerRendering.renderToStaticMarkup,
-  unmountComponentAtNode: ReactMount.unmountComponentAtNode,
-  isValidElement: ReactElement.isValidElement,
-  withContext: ReactContext.withContext,
-
-  // Hook for JSX spread, don't use this for anything else.
-  __spread: assign
+  batchedUpdates: ReactUpdates.batchedUpdates,
+  classSet: cx,
+  cloneWithProps: cloneWithProps,
+  createFragment: ReactFragment.create,
+  update: update
 };
 
-// Inject the runtime into a devtools global hook regardless of browser.
-// Allows for debugging when the hook is injected on the page.
-if (
-  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
-  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.inject === 'function') {
-  __REACT_DEVTOOLS_GLOBAL_HOOK__.inject({
-    CurrentOwner: ReactCurrentOwner,
-    InstanceHandles: ReactInstanceHandles,
-    Mount: ReactMount,
-    Reconciler: ReactReconciler,
-    TextComponent: ReactDOMTextComponent
-  });
-}
-
 if ("production" !== "development") {
-  var ExecutionEnvironment = _dereq_(21);
-  if (ExecutionEnvironment.canUseDOM && window.top === window.self) {
-
-    // If we're in Chrome, look for the devtools marker and provide a download
-    // link if not installed.
-    if (navigator.userAgent.indexOf('Chrome') > -1) {
-      if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined') {
-        console.debug(
-          'Download the React DevTools for a better development experience: ' +
-          'http://fb.me/react-devtools'
-        );
-      }
-    }
-
-    var expectedFeatures = [
-      // shims
-      Array.isArray,
-      Array.prototype.every,
-      Array.prototype.forEach,
-      Array.prototype.indexOf,
-      Array.prototype.map,
-      Date.now,
-      Function.prototype.bind,
-      Object.keys,
-      String.prototype.split,
-      String.prototype.trim,
-
-      // shams
-      Object.create,
-      Object.freeze
-    ];
-
-    for (var i = 0; i < expectedFeatures.length; i++) {
-      if (!expectedFeatures[i]) {
-        console.error(
-          'One or more ES5 shim/shams expected by React are not available: ' +
-          'http://fb.me/react-warning-polyfills'
-        );
-        break;
-      }
-    }
-  }
+  React.addons.Perf = _dereq_(61);
+  React.addons.TestUtils = _dereq_(95);
 }
-
-React.version = '0.13.1';
 
 module.exports = React;
 
-},{"117":117,"144":144,"19":19,"21":21,"27":27,"32":32,"33":33,"34":34,"38":38,"39":39,"40":40,"51":51,"54":54,"57":57,"58":58,"66":66,"70":70,"75":75,"78":78,"81":81,"84":84}],2:[function(_dereq_,module,exports){
+},{"100":100,"122":122,"127":127,"170":170,"25":25,"31":31,"34":34,"42":42,"61":61,"69":69,"95":95,"98":98}],2:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -14656,7 +14560,7 @@ module.exports = React;
 
 'use strict';
 
-var focusNode = _dereq_(119);
+var focusNode = _dereq_(134);
 
 var AutoFocusMixin = {
   componentDidMount: function() {
@@ -14668,7 +14572,7 @@ var AutoFocusMixin = {
 
 module.exports = AutoFocusMixin;
 
-},{"119":119}],3:[function(_dereq_,module,exports){
+},{"134":134}],3:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015 Facebook, Inc.
  * All rights reserved.
@@ -14683,14 +14587,14 @@ module.exports = AutoFocusMixin;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPropagators = _dereq_(20);
-var ExecutionEnvironment = _dereq_(21);
-var FallbackCompositionState = _dereq_(22);
-var SyntheticCompositionEvent = _dereq_(93);
-var SyntheticInputEvent = _dereq_(97);
+var EventConstants = _dereq_(16);
+var EventPropagators = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
+var FallbackCompositionState = _dereq_(23);
+var SyntheticCompositionEvent = _dereq_(106);
+var SyntheticInputEvent = _dereq_(110);
 
-var keyOf = _dereq_(141);
+var keyOf = _dereq_(157);
 
 var END_KEYCODES = [9, 13, 27, 32]; // Tab, Return, Esc, Space
 var START_KEYCODE = 229;
@@ -15163,7 +15067,117 @@ var BeforeInputEventPlugin = {
 
 module.exports = BeforeInputEventPlugin;
 
-},{"141":141,"15":15,"20":20,"21":21,"22":22,"93":93,"97":97}],4:[function(_dereq_,module,exports){
+},{"106":106,"110":110,"157":157,"16":16,"21":21,"22":22,"23":23}],4:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule CSSCore
+ * @typechecks
+ */
+
+var invariant = _dereq_(150);
+
+/**
+ * The CSSCore module specifies the API (and implements most of the methods)
+ * that should be used when dealing with the display of elements (via their
+ * CSS classes and visibility on screen. It is an API focused on mutating the
+ * display and not reading it as no logical state should be encoded in the
+ * display of elements.
+ */
+
+var CSSCore = {
+
+  /**
+   * Adds the class passed in to the element if it doesn't already have it.
+   *
+   * @param {DOMElement} element the element to set the class on
+   * @param {string} className the CSS className
+   * @return {DOMElement} the element passed in
+   */
+  addClass: function(element, className) {
+    ("production" !== "development" ? invariant(
+      !/\s/.test(className),
+      'CSSCore.addClass takes only a single class name. "%s" contains ' +
+      'multiple classes.', className
+    ) : invariant(!/\s/.test(className)));
+
+    if (className) {
+      if (element.classList) {
+        element.classList.add(className);
+      } else if (!CSSCore.hasClass(element, className)) {
+        element.className = element.className + ' ' + className;
+      }
+    }
+    return element;
+  },
+
+  /**
+   * Removes the class passed in from the element
+   *
+   * @param {DOMElement} element the element to set the class on
+   * @param {string} className the CSS className
+   * @return {DOMElement} the element passed in
+   */
+  removeClass: function(element, className) {
+    ("production" !== "development" ? invariant(
+      !/\s/.test(className),
+      'CSSCore.removeClass takes only a single class name. "%s" contains ' +
+      'multiple classes.', className
+    ) : invariant(!/\s/.test(className)));
+
+    if (className) {
+      if (element.classList) {
+        element.classList.remove(className);
+      } else if (CSSCore.hasClass(element, className)) {
+        element.className = element.className
+          .replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)', 'g'), '$1')
+          .replace(/\s+/g, ' ') // multiple spaces to one
+          .replace(/^\s*|\s*$/g, ''); // trim the ends
+      }
+    }
+    return element;
+  },
+
+  /**
+   * Helper to add or remove a class from an element based on a condition.
+   *
+   * @param {DOMElement} element the element to set the class on
+   * @param {string} className the CSS className
+   * @param {*} bool condition to whether to add or remove the class
+   * @return {DOMElement} the element passed in
+   */
+  conditionClass: function(element, className, bool) {
+    return (bool ? CSSCore.addClass : CSSCore.removeClass)(element, className);
+  },
+
+  /**
+   * Tests whether the element has the class specified.
+   *
+   * @param {DOMNode|DOMWindow} element the element to set the class on
+   * @param {string} className the CSS className
+   * @return {boolean} true if the element has the class, false if not
+   */
+  hasClass: function(element, className) {
+    ("production" !== "development" ? invariant(
+      !/\s/.test(className),
+      'CSS.hasClass takes only a single class name.'
+    ) : invariant(!/\s/.test(className)));
+    if (element.classList) {
+      return !!className && element.classList.contains(className);
+    }
+    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
+  }
+
+};
+
+module.exports = CSSCore;
+
+},{"150":150}],5:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15284,7 +15298,7 @@ var CSSProperty = {
 
 module.exports = CSSProperty;
 
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15299,14 +15313,14 @@ module.exports = CSSProperty;
 
 'use strict';
 
-var CSSProperty = _dereq_(4);
-var ExecutionEnvironment = _dereq_(21);
+var CSSProperty = _dereq_(5);
+var ExecutionEnvironment = _dereq_(22);
 
-var camelizeStyleName = _dereq_(108);
-var dangerousStyleValue = _dereq_(113);
-var hyphenateStyleName = _dereq_(133);
-var memoizeStringOnly = _dereq_(143);
-var warning = _dereq_(154);
+var camelizeStyleName = _dereq_(121);
+var dangerousStyleValue = _dereq_(128);
+var hyphenateStyleName = _dereq_(148);
+var memoizeStringOnly = _dereq_(159);
+var warning = _dereq_(171);
 
 var processStyleName = memoizeStringOnly(function(styleName) {
   return hyphenateStyleName(styleName);
@@ -15464,7 +15478,7 @@ var CSSPropertyOperations = {
 
 module.exports = CSSPropertyOperations;
 
-},{"108":108,"113":113,"133":133,"143":143,"154":154,"21":21,"4":4}],6:[function(_dereq_,module,exports){
+},{"121":121,"128":128,"148":148,"159":159,"171":171,"22":22,"5":5}],7:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15478,10 +15492,10 @@ module.exports = CSSPropertyOperations;
 
 'use strict';
 
-var PooledClass = _dereq_(28);
+var PooledClass = _dereq_(30);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
 
 /**
  * A specialized pseudo-event module to help keep track of components waiting to
@@ -15562,7 +15576,7 @@ PooledClass.addPoolingTo(CallbackQueue);
 
 module.exports = CallbackQueue;
 
-},{"135":135,"27":27,"28":28}],7:[function(_dereq_,module,exports){
+},{"150":150,"29":29,"30":30}],8:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15576,16 +15590,16 @@ module.exports = CallbackQueue;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPluginHub = _dereq_(17);
-var EventPropagators = _dereq_(20);
-var ExecutionEnvironment = _dereq_(21);
-var ReactUpdates = _dereq_(87);
-var SyntheticEvent = _dereq_(95);
+var EventConstants = _dereq_(16);
+var EventPluginHub = _dereq_(18);
+var EventPropagators = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
+var ReactUpdates = _dereq_(100);
+var SyntheticEvent = _dereq_(108);
 
-var isEventSupported = _dereq_(136);
-var isTextInputElement = _dereq_(138);
-var keyOf = _dereq_(141);
+var isEventSupported = _dereq_(151);
+var isTextInputElement = _dereq_(153);
+var keyOf = _dereq_(157);
 
 var topLevelTypes = EventConstants.topLevelTypes;
 
@@ -15944,7 +15958,7 @@ var ChangeEventPlugin = {
 
 module.exports = ChangeEventPlugin;
 
-},{"136":136,"138":138,"141":141,"15":15,"17":17,"20":20,"21":21,"87":87,"95":95}],8:[function(_dereq_,module,exports){
+},{"100":100,"108":108,"151":151,"153":153,"157":157,"16":16,"18":18,"21":21,"22":22}],9:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15969,7 +15983,7 @@ var ClientReactRootIndex = {
 
 module.exports = ClientReactRootIndex;
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],10:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15984,11 +15998,11 @@ module.exports = ClientReactRootIndex;
 
 'use strict';
 
-var Danger = _dereq_(12);
-var ReactMultiChildUpdateTypes = _dereq_(72);
+var Danger = _dereq_(13);
+var ReactMultiChildUpdateTypes = _dereq_(79);
 
-var setTextContent = _dereq_(149);
-var invariant = _dereq_(135);
+var setTextContent = _dereq_(165);
+var invariant = _dereq_(150);
 
 /**
  * Inserts `childNode` as a child of `parentNode` at the `index`.
@@ -16105,7 +16119,7 @@ var DOMChildrenOperations = {
 
 module.exports = DOMChildrenOperations;
 
-},{"12":12,"135":135,"149":149,"72":72}],10:[function(_dereq_,module,exports){
+},{"13":13,"150":150,"165":165,"79":79}],11:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16122,7 +16136,7 @@ module.exports = DOMChildrenOperations;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 function checkMask(value, bitmask) {
   return (value & bitmask) === bitmask;
@@ -16402,7 +16416,7 @@ var DOMProperty = {
 
 module.exports = DOMProperty;
 
-},{"135":135}],11:[function(_dereq_,module,exports){
+},{"150":150}],12:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16417,10 +16431,10 @@ module.exports = DOMProperty;
 
 'use strict';
 
-var DOMProperty = _dereq_(10);
+var DOMProperty = _dereq_(11);
 
-var quoteAttributeValueForBrowser = _dereq_(147);
-var warning = _dereq_(154);
+var quoteAttributeValueForBrowser = _dereq_(163);
+var warning = _dereq_(171);
 
 function shouldIgnoreValue(name, value) {
   return value == null ||
@@ -16592,7 +16606,7 @@ var DOMPropertyOperations = {
 
 module.exports = DOMPropertyOperations;
 
-},{"10":10,"147":147,"154":154}],12:[function(_dereq_,module,exports){
+},{"11":11,"163":163,"171":171}],13:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16609,12 +16623,12 @@ module.exports = DOMPropertyOperations;
 
 'use strict';
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
-var createNodesFromMarkup = _dereq_(112);
-var emptyFunction = _dereq_(114);
-var getMarkupWrap = _dereq_(127);
-var invariant = _dereq_(135);
+var createNodesFromMarkup = _dereq_(126);
+var emptyFunction = _dereq_(129);
+var getMarkupWrap = _dereq_(142);
+var invariant = _dereq_(150);
 
 var OPEN_TAG_NAME_EXP = /^(<[^ \/>]+)/;
 var RESULT_INDEX_ATTR = 'data-danger-index';
@@ -16777,7 +16791,7 @@ var Danger = {
 
 module.exports = Danger;
 
-},{"112":112,"114":114,"127":127,"135":135,"21":21}],13:[function(_dereq_,module,exports){
+},{"126":126,"129":129,"142":142,"150":150,"22":22}],14:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16791,7 +16805,7 @@ module.exports = Danger;
 
 'use strict';
 
-var keyOf = _dereq_(141);
+var keyOf = _dereq_(157);
 
 /**
  * Module that is injectable into `EventPluginHub`, that specifies a
@@ -16816,7 +16830,7 @@ var DefaultEventPluginOrder = [
 
 module.exports = DefaultEventPluginOrder;
 
-},{"141":141}],14:[function(_dereq_,module,exports){
+},{"157":157}],15:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16831,12 +16845,12 @@ module.exports = DefaultEventPluginOrder;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPropagators = _dereq_(20);
-var SyntheticMouseEvent = _dereq_(99);
+var EventConstants = _dereq_(16);
+var EventPropagators = _dereq_(21);
+var SyntheticMouseEvent = _dereq_(112);
 
-var ReactMount = _dereq_(70);
-var keyOf = _dereq_(141);
+var ReactMount = _dereq_(77);
+var keyOf = _dereq_(157);
 
 var topLevelTypes = EventConstants.topLevelTypes;
 var getFirstReactDOM = ReactMount.getFirstReactDOM;
@@ -16956,7 +16970,7 @@ var EnterLeaveEventPlugin = {
 
 module.exports = EnterLeaveEventPlugin;
 
-},{"141":141,"15":15,"20":20,"70":70,"99":99}],15:[function(_dereq_,module,exports){
+},{"112":112,"157":157,"16":16,"21":21,"77":77}],16:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16970,7 +16984,7 @@ module.exports = EnterLeaveEventPlugin;
 
 'use strict';
 
-var keyMirror = _dereq_(140);
+var keyMirror = _dereq_(156);
 
 var PropagationPhases = keyMirror({bubbled: null, captured: null});
 
@@ -17028,7 +17042,7 @@ var EventConstants = {
 
 module.exports = EventConstants;
 
-},{"140":140}],16:[function(_dereq_,module,exports){
+},{"156":156}],17:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  *
@@ -17048,7 +17062,7 @@ module.exports = EventConstants;
  * @typechecks
  */
 
-var emptyFunction = _dereq_(114);
+var emptyFunction = _dereq_(129);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -17116,7 +17130,7 @@ var EventListener = {
 
 module.exports = EventListener;
 
-},{"114":114}],17:[function(_dereq_,module,exports){
+},{"129":129}],18:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -17130,12 +17144,12 @@ module.exports = EventListener;
 
 'use strict';
 
-var EventPluginRegistry = _dereq_(18);
-var EventPluginUtils = _dereq_(19);
+var EventPluginRegistry = _dereq_(19);
+var EventPluginUtils = _dereq_(20);
 
-var accumulateInto = _dereq_(105);
-var forEachAccumulated = _dereq_(120);
-var invariant = _dereq_(135);
+var accumulateInto = _dereq_(118);
+var forEachAccumulated = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Internal store for event listeners
@@ -17392,7 +17406,7 @@ var EventPluginHub = {
 
 module.exports = EventPluginHub;
 
-},{"105":105,"120":120,"135":135,"18":18,"19":19}],18:[function(_dereq_,module,exports){
+},{"118":118,"135":135,"150":150,"19":19,"20":20}],19:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -17407,7 +17421,7 @@ module.exports = EventPluginHub;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Injectable ordering of event plugins.
@@ -17670,7 +17684,7 @@ var EventPluginRegistry = {
 
 module.exports = EventPluginRegistry;
 
-},{"135":135}],19:[function(_dereq_,module,exports){
+},{"150":150}],20:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -17684,9 +17698,9 @@ module.exports = EventPluginRegistry;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
+var EventConstants = _dereq_(16);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Injected dependencies:
@@ -17889,7 +17903,7 @@ var EventPluginUtils = {
 
 module.exports = EventPluginUtils;
 
-},{"135":135,"15":15}],20:[function(_dereq_,module,exports){
+},{"150":150,"16":16}],21:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -17903,11 +17917,11 @@ module.exports = EventPluginUtils;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPluginHub = _dereq_(17);
+var EventConstants = _dereq_(16);
+var EventPluginHub = _dereq_(18);
 
-var accumulateInto = _dereq_(105);
-var forEachAccumulated = _dereq_(120);
+var accumulateInto = _dereq_(118);
+var forEachAccumulated = _dereq_(135);
 
 var PropagationPhases = EventConstants.PropagationPhases;
 var getListener = EventPluginHub.getListener;
@@ -18029,7 +18043,7 @@ var EventPropagators = {
 
 module.exports = EventPropagators;
 
-},{"105":105,"120":120,"15":15,"17":17}],21:[function(_dereq_,module,exports){
+},{"118":118,"135":135,"16":16,"18":18}],22:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18073,7 +18087,7 @@ var ExecutionEnvironment = {
 
 module.exports = ExecutionEnvironment;
 
-},{}],22:[function(_dereq_,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18088,10 +18102,10 @@ module.exports = ExecutionEnvironment;
 
 'use strict';
 
-var PooledClass = _dereq_(28);
+var PooledClass = _dereq_(30);
 
-var assign = _dereq_(27);
-var getTextContentAccessor = _dereq_(130);
+var assign = _dereq_(29);
+var getTextContentAccessor = _dereq_(145);
 
 /**
  * This helper class stores information about text content of a target node,
@@ -18164,7 +18178,7 @@ PooledClass.addPoolingTo(FallbackCompositionState);
 
 module.exports = FallbackCompositionState;
 
-},{"130":130,"27":27,"28":28}],23:[function(_dereq_,module,exports){
+},{"145":145,"29":29,"30":30}],24:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18180,8 +18194,8 @@ module.exports = FallbackCompositionState;
 
 'use strict';
 
-var DOMProperty = _dereq_(10);
-var ExecutionEnvironment = _dereq_(21);
+var DOMProperty = _dereq_(11);
+var ExecutionEnvironment = _dereq_(22);
 
 var MUST_USE_ATTRIBUTE = DOMProperty.injection.MUST_USE_ATTRIBUTE;
 var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
@@ -18369,7 +18383,48 @@ var HTMLDOMPropertyConfig = {
 
 module.exports = HTMLDOMPropertyConfig;
 
-},{"10":10,"21":21}],24:[function(_dereq_,module,exports){
+},{"11":11,"22":22}],25:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule LinkedStateMixin
+ * @typechecks static-only
+ */
+
+'use strict';
+
+var ReactLink = _dereq_(75);
+var ReactStateSetters = _dereq_(94);
+
+/**
+ * A simple mixin around ReactLink.forState().
+ */
+var LinkedStateMixin = {
+  /**
+   * Create a ReactLink that's linked to part of this component's state. The
+   * ReactLink will have the current value of this.state[key] and will call
+   * setState() when a change is requested.
+   *
+   * @param {string} key state key to update. Note: you may want to use keyOf()
+   * if you're using Google Closure Compiler advanced mode.
+   * @return {ReactLink} ReactLink instance linking to the state.
+   */
+  linkState: function(key) {
+    return new ReactLink(
+      this.state[key],
+      ReactStateSetters.createStateKeySetter(this, key)
+    );
+  }
+};
+
+module.exports = LinkedStateMixin;
+
+},{"75":75,"94":94}],26:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18384,9 +18439,9 @@ module.exports = HTMLDOMPropertyConfig;
 
 'use strict';
 
-var ReactPropTypes = _dereq_(78);
+var ReactPropTypes = _dereq_(86);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 var hasReadOnlyValue = {
   'button': true,
@@ -18523,7 +18578,7 @@ var LinkedValueUtils = {
 
 module.exports = LinkedValueUtils;
 
-},{"135":135,"78":78}],25:[function(_dereq_,module,exports){
+},{"150":150,"86":86}],27:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -18537,11 +18592,11 @@ module.exports = LinkedValueUtils;
 
 'use strict';
 
-var ReactBrowserEventEmitter = _dereq_(30);
+var ReactBrowserEventEmitter = _dereq_(33);
 
-var accumulateInto = _dereq_(105);
-var forEachAccumulated = _dereq_(120);
-var invariant = _dereq_(135);
+var accumulateInto = _dereq_(118);
+var forEachAccumulated = _dereq_(135);
+var invariant = _dereq_(150);
 
 function remove(event) {
   event.remove();
@@ -18578,7 +18633,7 @@ var LocalEventTrapMixin = {
 
 module.exports = LocalEventTrapMixin;
 
-},{"105":105,"120":120,"135":135,"30":30}],26:[function(_dereq_,module,exports){
+},{"118":118,"135":135,"150":150,"33":33}],28:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18593,9 +18648,9 @@ module.exports = LocalEventTrapMixin;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
+var EventConstants = _dereq_(16);
 
-var emptyFunction = _dereq_(114);
+var emptyFunction = _dereq_(129);
 
 var topLevelTypes = EventConstants.topLevelTypes;
 
@@ -18636,7 +18691,7 @@ var MobileSafariClickEventPlugin = {
 
 module.exports = MobileSafariClickEventPlugin;
 
-},{"114":114,"15":15}],27:[function(_dereq_,module,exports){
+},{"129":129,"16":16}],29:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -18685,7 +18740,7 @@ function assign(target, sources) {
 
 module.exports = assign;
 
-},{}],28:[function(_dereq_,module,exports){
+},{}],30:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18699,7 +18754,7 @@ module.exports = assign;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Static poolers. Several custom versions for each potential number of
@@ -18799,7 +18854,157 @@ var PooledClass = {
 
 module.exports = PooledClass;
 
-},{"135":135}],29:[function(_dereq_,module,exports){
+},{"150":150}],31:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule React
+ */
+
+/* globals __REACT_DEVTOOLS_GLOBAL_HOOK__*/
+
+'use strict';
+
+var EventPluginUtils = _dereq_(20);
+var ReactChildren = _dereq_(37);
+var ReactComponent = _dereq_(39);
+var ReactClass = _dereq_(38);
+var ReactContext = _dereq_(44);
+var ReactCurrentOwner = _dereq_(45);
+var ReactElement = _dereq_(63);
+var ReactElementValidator = _dereq_(64);
+var ReactDOM = _dereq_(46);
+var ReactDOMTextComponent = _dereq_(57);
+var ReactDefaultInjection = _dereq_(60);
+var ReactInstanceHandles = _dereq_(72);
+var ReactMount = _dereq_(77);
+var ReactPerf = _dereq_(82);
+var ReactPropTypes = _dereq_(86);
+var ReactReconciler = _dereq_(89);
+var ReactServerRendering = _dereq_(92);
+
+var assign = _dereq_(29);
+var findDOMNode = _dereq_(132);
+var onlyChild = _dereq_(160);
+
+ReactDefaultInjection.inject();
+
+var createElement = ReactElement.createElement;
+var createFactory = ReactElement.createFactory;
+var cloneElement = ReactElement.cloneElement;
+
+if ("production" !== "development") {
+  createElement = ReactElementValidator.createElement;
+  createFactory = ReactElementValidator.createFactory;
+  cloneElement = ReactElementValidator.cloneElement;
+}
+
+var render = ReactPerf.measure('React', 'render', ReactMount.render);
+
+var React = {
+  Children: {
+    map: ReactChildren.map,
+    forEach: ReactChildren.forEach,
+    count: ReactChildren.count,
+    only: onlyChild
+  },
+  Component: ReactComponent,
+  DOM: ReactDOM,
+  PropTypes: ReactPropTypes,
+  initializeTouchEvents: function(shouldUseTouch) {
+    EventPluginUtils.useTouchEvents = shouldUseTouch;
+  },
+  createClass: ReactClass.createClass,
+  createElement: createElement,
+  cloneElement: cloneElement,
+  createFactory: createFactory,
+  createMixin: function(mixin) {
+    // Currently a noop. Will be used to validate and trace mixins.
+    return mixin;
+  },
+  constructAndRenderComponent: ReactMount.constructAndRenderComponent,
+  constructAndRenderComponentByID: ReactMount.constructAndRenderComponentByID,
+  findDOMNode: findDOMNode,
+  render: render,
+  renderToString: ReactServerRendering.renderToString,
+  renderToStaticMarkup: ReactServerRendering.renderToStaticMarkup,
+  unmountComponentAtNode: ReactMount.unmountComponentAtNode,
+  isValidElement: ReactElement.isValidElement,
+  withContext: ReactContext.withContext,
+
+  // Hook for JSX spread, don't use this for anything else.
+  __spread: assign
+};
+
+// Inject the runtime into a devtools global hook regardless of browser.
+// Allows for debugging when the hook is injected on the page.
+if (
+  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
+  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.inject === 'function') {
+  __REACT_DEVTOOLS_GLOBAL_HOOK__.inject({
+    CurrentOwner: ReactCurrentOwner,
+    InstanceHandles: ReactInstanceHandles,
+    Mount: ReactMount,
+    Reconciler: ReactReconciler,
+    TextComponent: ReactDOMTextComponent
+  });
+}
+
+if ("production" !== "development") {
+  var ExecutionEnvironment = _dereq_(22);
+  if (ExecutionEnvironment.canUseDOM && window.top === window.self) {
+
+    // If we're in Chrome, look for the devtools marker and provide a download
+    // link if not installed.
+    if (navigator.userAgent.indexOf('Chrome') > -1) {
+      if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined') {
+        console.debug(
+          'Download the React DevTools for a better development experience: ' +
+          'http://fb.me/react-devtools'
+        );
+      }
+    }
+
+    var expectedFeatures = [
+      // shims
+      Array.isArray,
+      Array.prototype.every,
+      Array.prototype.forEach,
+      Array.prototype.indexOf,
+      Array.prototype.map,
+      Date.now,
+      Function.prototype.bind,
+      Object.keys,
+      String.prototype.split,
+      String.prototype.trim,
+
+      // shams
+      Object.create,
+      Object.freeze
+    ];
+
+    for (var i = 0; i < expectedFeatures.length; i++) {
+      if (!expectedFeatures[i]) {
+        console.error(
+          'One or more ES5 shim/shams expected by React are not available: ' +
+          'http://fb.me/react-warning-polyfills'
+        );
+        break;
+      }
+    }
+  }
+}
+
+React.version = '0.13.1';
+
+module.exports = React;
+
+},{"132":132,"160":160,"20":20,"22":22,"29":29,"37":37,"38":38,"39":39,"44":44,"45":45,"46":46,"57":57,"60":60,"63":63,"64":64,"72":72,"77":77,"82":82,"86":86,"89":89,"92":92}],32:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18813,7 +19018,7 @@ module.exports = PooledClass;
 
 'use strict';
 
-var findDOMNode = _dereq_(117);
+var findDOMNode = _dereq_(132);
 
 var ReactBrowserComponentMixin = {
   /**
@@ -18830,7 +19035,7 @@ var ReactBrowserComponentMixin = {
 
 module.exports = ReactBrowserComponentMixin;
 
-},{"117":117}],30:[function(_dereq_,module,exports){
+},{"132":132}],33:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18845,14 +19050,14 @@ module.exports = ReactBrowserComponentMixin;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPluginHub = _dereq_(17);
-var EventPluginRegistry = _dereq_(18);
-var ReactEventEmitterMixin = _dereq_(61);
-var ViewportMetrics = _dereq_(104);
+var EventConstants = _dereq_(16);
+var EventPluginHub = _dereq_(18);
+var EventPluginRegistry = _dereq_(19);
+var ReactEventEmitterMixin = _dereq_(67);
+var ViewportMetrics = _dereq_(117);
 
-var assign = _dereq_(27);
-var isEventSupported = _dereq_(136);
+var assign = _dereq_(29);
+var isEventSupported = _dereq_(151);
 
 /**
  * Summary of `ReactBrowserEventEmitter` event handling:
@@ -19183,7 +19388,223 @@ var ReactBrowserEventEmitter = assign({}, ReactEventEmitterMixin, {
 
 module.exports = ReactBrowserEventEmitter;
 
-},{"104":104,"136":136,"15":15,"17":17,"18":18,"27":27,"61":61}],31:[function(_dereq_,module,exports){
+},{"117":117,"151":151,"16":16,"18":18,"19":19,"29":29,"67":67}],34:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @typechecks
+ * @providesModule ReactCSSTransitionGroup
+ */
+
+'use strict';
+
+var React = _dereq_(31);
+
+var assign = _dereq_(29);
+
+var ReactTransitionGroup = React.createFactory(
+  _dereq_(98)
+);
+var ReactCSSTransitionGroupChild = React.createFactory(
+  _dereq_(35)
+);
+
+var ReactCSSTransitionGroup = React.createClass({
+  displayName: 'ReactCSSTransitionGroup',
+
+  propTypes: {
+    transitionName: React.PropTypes.string.isRequired,
+    transitionAppear: React.PropTypes.bool,
+    transitionEnter: React.PropTypes.bool,
+    transitionLeave: React.PropTypes.bool
+  },
+
+  getDefaultProps: function() {
+    return {
+      transitionAppear: false,
+      transitionEnter: true,
+      transitionLeave: true
+    };
+  },
+
+  _wrapChild: function(child) {
+    // We need to provide this childFactory so that
+    // ReactCSSTransitionGroupChild can receive updates to name, enter, and
+    // leave while it is leaving.
+    return ReactCSSTransitionGroupChild(
+      {
+        name: this.props.transitionName,
+        appear: this.props.transitionAppear,
+        enter: this.props.transitionEnter,
+        leave: this.props.transitionLeave
+      },
+      child
+    );
+  },
+
+  render: function() {
+    return (
+      ReactTransitionGroup(
+        assign({}, this.props, {childFactory: this._wrapChild})
+      )
+    );
+  }
+});
+
+module.exports = ReactCSSTransitionGroup;
+
+},{"29":29,"31":31,"35":35,"98":98}],35:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @typechecks
+ * @providesModule ReactCSSTransitionGroupChild
+ */
+
+'use strict';
+
+var React = _dereq_(31);
+
+var CSSCore = _dereq_(4);
+var ReactTransitionEvents = _dereq_(97);
+
+var onlyChild = _dereq_(160);
+var warning = _dereq_(171);
+
+// We don't remove the element from the DOM until we receive an animationend or
+// transitionend event. If the user screws up and forgets to add an animation
+// their node will be stuck in the DOM forever, so we detect if an animation
+// does not start and if it doesn't, we just call the end listener immediately.
+var TICK = 17;
+var NO_EVENT_TIMEOUT = 5000;
+
+var noEventListener = null;
+
+
+if ("production" !== "development") {
+  noEventListener = function() {
+    ("production" !== "development" ? warning(
+      false,
+      'transition(): tried to perform an animation without ' +
+      'an animationend or transitionend event after timeout (' +
+      '%sms). You should either disable this ' +
+      'transition in JS or add a CSS animation/transition.',
+      NO_EVENT_TIMEOUT
+    ) : null);
+  };
+}
+
+var ReactCSSTransitionGroupChild = React.createClass({
+  displayName: 'ReactCSSTransitionGroupChild',
+
+  transition: function(animationType, finishCallback) {
+    var node = this.getDOMNode();
+    var className = this.props.name + '-' + animationType;
+    var activeClassName = className + '-active';
+    var noEventTimeout = null;
+
+    var endListener = function(e) {
+      if (e && e.target !== node) {
+        return;
+      }
+      if ("production" !== "development") {
+        clearTimeout(noEventTimeout);
+      }
+
+      CSSCore.removeClass(node, className);
+      CSSCore.removeClass(node, activeClassName);
+
+      ReactTransitionEvents.removeEndEventListener(node, endListener);
+
+      // Usually this optional callback is used for informing an owner of
+      // a leave animation and telling it to remove the child.
+      if (finishCallback) {
+        finishCallback();
+      }
+    };
+
+    ReactTransitionEvents.addEndEventListener(node, endListener);
+
+    CSSCore.addClass(node, className);
+
+    // Need to do this to actually trigger a transition.
+    this.queueClass(activeClassName);
+
+    if ("production" !== "development") {
+      noEventTimeout = setTimeout(noEventListener, NO_EVENT_TIMEOUT);
+    }
+  },
+
+  queueClass: function(className) {
+    this.classNameQueue.push(className);
+
+    if (!this.timeout) {
+      this.timeout = setTimeout(this.flushClassNameQueue, TICK);
+    }
+  },
+
+  flushClassNameQueue: function() {
+    if (this.isMounted()) {
+      this.classNameQueue.forEach(
+        CSSCore.addClass.bind(CSSCore, this.getDOMNode())
+      );
+    }
+    this.classNameQueue.length = 0;
+    this.timeout = null;
+  },
+
+  componentWillMount: function() {
+    this.classNameQueue = [];
+  },
+
+  componentWillUnmount: function() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+  },
+
+  componentWillAppear: function(done) {
+    if (this.props.appear) {
+      this.transition('appear', done);
+    } else {
+      done();
+    }
+  },
+
+  componentWillEnter: function(done) {
+    if (this.props.enter) {
+      this.transition('enter', done);
+    } else {
+      done();
+    }
+  },
+
+  componentWillLeave: function(done) {
+    if (this.props.leave) {
+      this.transition('leave', done);
+    } else {
+      done();
+    }
+  },
+
+  render: function() {
+    return onlyChild(this.props.children);
+  }
+});
+
+module.exports = ReactCSSTransitionGroupChild;
+
+},{"160":160,"171":171,"31":31,"4":4,"97":97}],36:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -19198,11 +19619,11 @@ module.exports = ReactBrowserEventEmitter;
 
 'use strict';
 
-var ReactReconciler = _dereq_(81);
+var ReactReconciler = _dereq_(89);
 
-var flattenChildren = _dereq_(118);
-var instantiateReactComponent = _dereq_(134);
-var shouldUpdateReactComponent = _dereq_(151);
+var flattenChildren = _dereq_(133);
+var instantiateReactComponent = _dereq_(149);
+var shouldUpdateReactComponent = _dereq_(167);
 
 /**
  * ReactChildReconciler provides helpers for initializing or updating a set of
@@ -19310,7 +19731,7 @@ var ReactChildReconciler = {
 
 module.exports = ReactChildReconciler;
 
-},{"118":118,"134":134,"151":151,"81":81}],32:[function(_dereq_,module,exports){
+},{"133":133,"149":149,"167":167,"89":89}],37:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -19324,11 +19745,11 @@ module.exports = ReactChildReconciler;
 
 'use strict';
 
-var PooledClass = _dereq_(28);
-var ReactFragment = _dereq_(63);
+var PooledClass = _dereq_(30);
+var ReactFragment = _dereq_(69);
 
-var traverseAllChildren = _dereq_(153);
-var warning = _dereq_(154);
+var traverseAllChildren = _dereq_(169);
+var warning = _dereq_(171);
 
 var twoArgumentPooler = PooledClass.twoArgumentPooler;
 var threeArgumentPooler = PooledClass.threeArgumentPooler;
@@ -19461,7 +19882,7 @@ var ReactChildren = {
 
 module.exports = ReactChildren;
 
-},{"153":153,"154":154,"28":28,"63":63}],33:[function(_dereq_,module,exports){
+},{"169":169,"171":171,"30":30,"69":69}],38:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -19475,21 +19896,21 @@ module.exports = ReactChildren;
 
 'use strict';
 
-var ReactComponent = _dereq_(34);
-var ReactCurrentOwner = _dereq_(39);
-var ReactElement = _dereq_(57);
-var ReactErrorUtils = _dereq_(60);
-var ReactInstanceMap = _dereq_(67);
-var ReactLifeCycle = _dereq_(68);
-var ReactPropTypeLocations = _dereq_(77);
-var ReactPropTypeLocationNames = _dereq_(76);
-var ReactUpdateQueue = _dereq_(86);
+var ReactComponent = _dereq_(39);
+var ReactCurrentOwner = _dereq_(45);
+var ReactElement = _dereq_(63);
+var ReactErrorUtils = _dereq_(66);
+var ReactInstanceMap = _dereq_(73);
+var ReactLifeCycle = _dereq_(74);
+var ReactPropTypeLocations = _dereq_(85);
+var ReactPropTypeLocationNames = _dereq_(84);
+var ReactUpdateQueue = _dereq_(99);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
-var keyMirror = _dereq_(140);
-var keyOf = _dereq_(141);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
+var keyMirror = _dereq_(156);
+var keyOf = _dereq_(157);
+var warning = _dereq_(171);
 
 var MIXINS_KEY = keyOf({mixins: null});
 
@@ -20405,7 +20826,7 @@ var ReactClass = {
 
 module.exports = ReactClass;
 
-},{"135":135,"140":140,"141":141,"154":154,"27":27,"34":34,"39":39,"57":57,"60":60,"67":67,"68":68,"76":76,"77":77,"86":86}],34:[function(_dereq_,module,exports){
+},{"150":150,"156":156,"157":157,"171":171,"29":29,"39":39,"45":45,"63":63,"66":66,"73":73,"74":74,"84":84,"85":85,"99":99}],39:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20419,10 +20840,10 @@ module.exports = ReactClass;
 
 'use strict';
 
-var ReactUpdateQueue = _dereq_(86);
+var ReactUpdateQueue = _dereq_(99);
 
-var invariant = _dereq_(135);
-var warning = _dereq_(154);
+var invariant = _dereq_(150);
+var warning = _dereq_(171);
 
 /**
  * Base class helpers for the updating state of a component.
@@ -20539,7 +20960,7 @@ if ("production" !== "development") {
 
 module.exports = ReactComponent;
 
-},{"135":135,"154":154,"86":86}],35:[function(_dereq_,module,exports){
+},{"150":150,"171":171,"99":99}],40:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20555,8 +20976,8 @@ module.exports = ReactComponent;
 
 'use strict';
 
-var ReactDOMIDOperations = _dereq_(44);
-var ReactMount = _dereq_(70);
+var ReactDOMIDOperations = _dereq_(50);
+var ReactMount = _dereq_(77);
 
 /**
  * Abstracts away all functionality of the reconciler that requires knowledge of
@@ -20586,7 +21007,7 @@ var ReactComponentBrowserEnvironment = {
 
 module.exports = ReactComponentBrowserEnvironment;
 
-},{"44":44,"70":70}],36:[function(_dereq_,module,exports){
+},{"50":50,"77":77}],41:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -20600,7 +21021,7 @@ module.exports = ReactComponentBrowserEnvironment;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 var injected = false;
 
@@ -20645,7 +21066,56 @@ var ReactComponentEnvironment = {
 
 module.exports = ReactComponentEnvironment;
 
-},{"135":135}],37:[function(_dereq_,module,exports){
+},{"150":150}],42:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+* @providesModule ReactComponentWithPureRenderMixin
+*/
+
+'use strict';
+
+var shallowEqual = _dereq_(166);
+
+/**
+ * If your React component's render function is "pure", e.g. it will render the
+ * same result given the same props and state, provide this Mixin for a
+ * considerable performance boost.
+ *
+ * Most React components have pure render functions.
+ *
+ * Example:
+ *
+ *   var ReactComponentWithPureRenderMixin =
+ *     require('ReactComponentWithPureRenderMixin');
+ *   React.createClass({
+ *     mixins: [ReactComponentWithPureRenderMixin],
+ *
+ *     render: function() {
+ *       return <div className={this.props.className}>foo</div>;
+ *     }
+ *   });
+ *
+ * Note: This only checks shallow equality for props and state. If these contain
+ * complex data structures this mixin may have false-negatives for deeper
+ * differences. Only mixin to components which have simple props and state, or
+ * use `forceUpdate()` when you know deep data structures have changed.
+ */
+var ReactComponentWithPureRenderMixin = {
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return !shallowEqual(this.props, nextProps) ||
+           !shallowEqual(this.state, nextState);
+  }
+};
+
+module.exports = ReactComponentWithPureRenderMixin;
+
+},{"166":166}],43:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20659,25 +21129,25 @@ module.exports = ReactComponentEnvironment;
 
 'use strict';
 
-var ReactComponentEnvironment = _dereq_(36);
-var ReactContext = _dereq_(38);
-var ReactCurrentOwner = _dereq_(39);
-var ReactElement = _dereq_(57);
-var ReactElementValidator = _dereq_(58);
-var ReactInstanceMap = _dereq_(67);
-var ReactLifeCycle = _dereq_(68);
-var ReactNativeComponent = _dereq_(73);
-var ReactPerf = _dereq_(75);
-var ReactPropTypeLocations = _dereq_(77);
-var ReactPropTypeLocationNames = _dereq_(76);
-var ReactReconciler = _dereq_(81);
-var ReactUpdates = _dereq_(87);
+var ReactComponentEnvironment = _dereq_(41);
+var ReactContext = _dereq_(44);
+var ReactCurrentOwner = _dereq_(45);
+var ReactElement = _dereq_(63);
+var ReactElementValidator = _dereq_(64);
+var ReactInstanceMap = _dereq_(73);
+var ReactLifeCycle = _dereq_(74);
+var ReactNativeComponent = _dereq_(80);
+var ReactPerf = _dereq_(82);
+var ReactPropTypeLocations = _dereq_(85);
+var ReactPropTypeLocationNames = _dereq_(84);
+var ReactReconciler = _dereq_(89);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
-var emptyObject = _dereq_(115);
-var invariant = _dereq_(135);
-var shouldUpdateReactComponent = _dereq_(151);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var emptyObject = _dereq_(130);
+var invariant = _dereq_(150);
+var shouldUpdateReactComponent = _dereq_(167);
+var warning = _dereq_(171);
 
 function getDeclarationErrorAddendum(component) {
   var owner = component._currentElement._owner || null;
@@ -21533,7 +22003,7 @@ var ReactCompositeComponent = {
 
 module.exports = ReactCompositeComponent;
 
-},{"115":115,"135":135,"151":151,"154":154,"27":27,"36":36,"38":38,"39":39,"57":57,"58":58,"67":67,"68":68,"73":73,"75":75,"76":76,"77":77,"81":81,"87":87}],38:[function(_dereq_,module,exports){
+},{"100":100,"130":130,"150":150,"167":167,"171":171,"29":29,"41":41,"44":44,"45":45,"63":63,"64":64,"73":73,"74":74,"80":80,"82":82,"84":84,"85":85,"89":89}],44:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21547,9 +22017,9 @@ module.exports = ReactCompositeComponent;
 
 'use strict';
 
-var assign = _dereq_(27);
-var emptyObject = _dereq_(115);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var emptyObject = _dereq_(130);
+var warning = _dereq_(171);
 
 var didWarn = false;
 
@@ -21609,7 +22079,7 @@ var ReactContext = {
 
 module.exports = ReactContext;
 
-},{"115":115,"154":154,"27":27}],39:[function(_dereq_,module,exports){
+},{"130":130,"171":171,"29":29}],45:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21643,7 +22113,7 @@ var ReactCurrentOwner = {
 
 module.exports = ReactCurrentOwner;
 
-},{}],40:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21658,10 +22128,10 @@ module.exports = ReactCurrentOwner;
 
 'use strict';
 
-var ReactElement = _dereq_(57);
-var ReactElementValidator = _dereq_(58);
+var ReactElement = _dereq_(63);
+var ReactElementValidator = _dereq_(64);
 
-var mapObject = _dereq_(142);
+var mapObject = _dereq_(158);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -21819,7 +22289,7 @@ var ReactDOM = mapObject({
 
 module.exports = ReactDOM;
 
-},{"142":142,"57":57,"58":58}],41:[function(_dereq_,module,exports){
+},{"158":158,"63":63,"64":64}],47:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21834,11 +22304,11 @@ module.exports = ReactDOM;
 'use strict';
 
 var AutoFocusMixin = _dereq_(2);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
 
-var keyMirror = _dereq_(140);
+var keyMirror = _dereq_(156);
 
 var button = ReactElement.createFactory('button');
 
@@ -21883,7 +22353,7 @@ var ReactDOMButton = ReactClass.createClass({
 
 module.exports = ReactDOMButton;
 
-},{"140":140,"2":2,"29":29,"33":33,"57":57}],42:[function(_dereq_,module,exports){
+},{"156":156,"2":2,"32":32,"38":38,"63":63}],48:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21900,22 +22370,22 @@ module.exports = ReactDOMButton;
 
 'use strict';
 
-var CSSPropertyOperations = _dereq_(5);
-var DOMProperty = _dereq_(10);
-var DOMPropertyOperations = _dereq_(11);
-var ReactBrowserEventEmitter = _dereq_(30);
+var CSSPropertyOperations = _dereq_(6);
+var DOMProperty = _dereq_(11);
+var DOMPropertyOperations = _dereq_(12);
+var ReactBrowserEventEmitter = _dereq_(33);
 var ReactComponentBrowserEnvironment =
-  _dereq_(35);
-var ReactMount = _dereq_(70);
-var ReactMultiChild = _dereq_(71);
-var ReactPerf = _dereq_(75);
+  _dereq_(40);
+var ReactMount = _dereq_(77);
+var ReactMultiChild = _dereq_(78);
+var ReactPerf = _dereq_(82);
 
-var assign = _dereq_(27);
-var escapeTextContentForBrowser = _dereq_(116);
-var invariant = _dereq_(135);
-var isEventSupported = _dereq_(136);
-var keyOf = _dereq_(141);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var escapeTextContentForBrowser = _dereq_(131);
+var invariant = _dereq_(150);
+var isEventSupported = _dereq_(151);
+var keyOf = _dereq_(157);
+var warning = _dereq_(171);
 
 var deleteListener = ReactBrowserEventEmitter.deleteListener;
 var listenTo = ReactBrowserEventEmitter.listenTo;
@@ -22387,7 +22857,7 @@ ReactDOMComponent.injection = {
 
 module.exports = ReactDOMComponent;
 
-},{"10":10,"11":11,"116":116,"135":135,"136":136,"141":141,"154":154,"27":27,"30":30,"35":35,"5":5,"70":70,"71":71,"75":75}],43:[function(_dereq_,module,exports){
+},{"11":11,"12":12,"131":131,"150":150,"151":151,"157":157,"171":171,"29":29,"33":33,"40":40,"6":6,"77":77,"78":78,"82":82}],49:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22401,11 +22871,11 @@ module.exports = ReactDOMComponent;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var LocalEventTrapMixin = _dereq_(25);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
+var EventConstants = _dereq_(16);
+var LocalEventTrapMixin = _dereq_(27);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
 
 var form = ReactElement.createFactory('form');
 
@@ -22436,7 +22906,7 @@ var ReactDOMForm = ReactClass.createClass({
 
 module.exports = ReactDOMForm;
 
-},{"15":15,"25":25,"29":29,"33":33,"57":57}],44:[function(_dereq_,module,exports){
+},{"16":16,"27":27,"32":32,"38":38,"63":63}],50:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22453,14 +22923,14 @@ module.exports = ReactDOMForm;
 
 'use strict';
 
-var CSSPropertyOperations = _dereq_(5);
-var DOMChildrenOperations = _dereq_(9);
-var DOMPropertyOperations = _dereq_(11);
-var ReactMount = _dereq_(70);
-var ReactPerf = _dereq_(75);
+var CSSPropertyOperations = _dereq_(6);
+var DOMChildrenOperations = _dereq_(10);
+var DOMPropertyOperations = _dereq_(12);
+var ReactMount = _dereq_(77);
+var ReactPerf = _dereq_(82);
 
-var invariant = _dereq_(135);
-var setInnerHTML = _dereq_(148);
+var invariant = _dereq_(150);
+var setInnerHTML = _dereq_(164);
 
 /**
  * Errors for properties that should not be updated with `updatePropertyById()`.
@@ -22602,7 +23072,7 @@ ReactPerf.measureMethods(ReactDOMIDOperations, 'ReactDOMIDOperations', {
 
 module.exports = ReactDOMIDOperations;
 
-},{"11":11,"135":135,"148":148,"5":5,"70":70,"75":75,"9":9}],45:[function(_dereq_,module,exports){
+},{"10":10,"12":12,"150":150,"164":164,"6":6,"77":77,"82":82}],51:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22616,11 +23086,11 @@ module.exports = ReactDOMIDOperations;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var LocalEventTrapMixin = _dereq_(25);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
+var EventConstants = _dereq_(16);
+var LocalEventTrapMixin = _dereq_(27);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
 
 var iframe = ReactElement.createFactory('iframe');
 
@@ -22647,7 +23117,7 @@ var ReactDOMIframe = ReactClass.createClass({
 
 module.exports = ReactDOMIframe;
 
-},{"15":15,"25":25,"29":29,"33":33,"57":57}],46:[function(_dereq_,module,exports){
+},{"16":16,"27":27,"32":32,"38":38,"63":63}],52:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22661,11 +23131,11 @@ module.exports = ReactDOMIframe;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var LocalEventTrapMixin = _dereq_(25);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
+var EventConstants = _dereq_(16);
+var LocalEventTrapMixin = _dereq_(27);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
 
 var img = ReactElement.createFactory('img');
 
@@ -22693,7 +23163,7 @@ var ReactDOMImg = ReactClass.createClass({
 
 module.exports = ReactDOMImg;
 
-},{"15":15,"25":25,"29":29,"33":33,"57":57}],47:[function(_dereq_,module,exports){
+},{"16":16,"27":27,"32":32,"38":38,"63":63}],53:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22708,16 +23178,16 @@ module.exports = ReactDOMImg;
 'use strict';
 
 var AutoFocusMixin = _dereq_(2);
-var DOMPropertyOperations = _dereq_(11);
-var LinkedValueUtils = _dereq_(24);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
-var ReactMount = _dereq_(70);
-var ReactUpdates = _dereq_(87);
+var DOMPropertyOperations = _dereq_(12);
+var LinkedValueUtils = _dereq_(26);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
+var ReactMount = _dereq_(77);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
 
 var input = ReactElement.createFactory('input');
 
@@ -22868,7 +23338,7 @@ var ReactDOMInput = ReactClass.createClass({
 
 module.exports = ReactDOMInput;
 
-},{"11":11,"135":135,"2":2,"24":24,"27":27,"29":29,"33":33,"57":57,"70":70,"87":87}],48:[function(_dereq_,module,exports){
+},{"100":100,"12":12,"150":150,"2":2,"26":26,"29":29,"32":32,"38":38,"63":63,"77":77}],54:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22882,11 +23352,11 @@ module.exports = ReactDOMInput;
 
 'use strict';
 
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
 
-var warning = _dereq_(154);
+var warning = _dereq_(171);
 
 var option = ReactElement.createFactory('option');
 
@@ -22918,7 +23388,7 @@ var ReactDOMOption = ReactClass.createClass({
 
 module.exports = ReactDOMOption;
 
-},{"154":154,"29":29,"33":33,"57":57}],49:[function(_dereq_,module,exports){
+},{"171":171,"32":32,"38":38,"63":63}],55:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22933,13 +23403,13 @@ module.exports = ReactDOMOption;
 'use strict';
 
 var AutoFocusMixin = _dereq_(2);
-var LinkedValueUtils = _dereq_(24);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
-var ReactUpdates = _dereq_(87);
+var LinkedValueUtils = _dereq_(26);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
+var assign = _dereq_(29);
 
 var select = ReactElement.createFactory('select');
 
@@ -23096,7 +23566,7 @@ var ReactDOMSelect = ReactClass.createClass({
 
 module.exports = ReactDOMSelect;
 
-},{"2":2,"24":24,"27":27,"29":29,"33":33,"57":57,"87":87}],50:[function(_dereq_,module,exports){
+},{"100":100,"2":2,"26":26,"29":29,"32":32,"38":38,"63":63}],56:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23110,10 +23580,10 @@ module.exports = ReactDOMSelect;
 
 'use strict';
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
-var getNodeForCharacterOffset = _dereq_(128);
-var getTextContentAccessor = _dereq_(130);
+var getNodeForCharacterOffset = _dereq_(143);
+var getTextContentAccessor = _dereq_(145);
 
 /**
  * While `isCollapsed` is available on the Selection object and `collapsed`
@@ -23309,7 +23779,7 @@ var ReactDOMSelection = {
 
 module.exports = ReactDOMSelection;
 
-},{"128":128,"130":130,"21":21}],51:[function(_dereq_,module,exports){
+},{"143":143,"145":145,"22":22}],57:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23324,13 +23794,13 @@ module.exports = ReactDOMSelection;
 
 'use strict';
 
-var DOMPropertyOperations = _dereq_(11);
+var DOMPropertyOperations = _dereq_(12);
 var ReactComponentBrowserEnvironment =
-  _dereq_(35);
-var ReactDOMComponent = _dereq_(42);
+  _dereq_(40);
+var ReactDOMComponent = _dereq_(48);
 
-var assign = _dereq_(27);
-var escapeTextContentForBrowser = _dereq_(116);
+var assign = _dereq_(29);
+var escapeTextContentForBrowser = _dereq_(131);
 
 /**
  * Text nodes violate a couple assumptions that React makes about components:
@@ -23426,7 +23896,7 @@ assign(ReactDOMTextComponent.prototype, {
 
 module.exports = ReactDOMTextComponent;
 
-},{"11":11,"116":116,"27":27,"35":35,"42":42}],52:[function(_dereq_,module,exports){
+},{"12":12,"131":131,"29":29,"40":40,"48":48}],58:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23441,17 +23911,17 @@ module.exports = ReactDOMTextComponent;
 'use strict';
 
 var AutoFocusMixin = _dereq_(2);
-var DOMPropertyOperations = _dereq_(11);
-var LinkedValueUtils = _dereq_(24);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
-var ReactUpdates = _dereq_(87);
+var DOMPropertyOperations = _dereq_(12);
+var LinkedValueUtils = _dereq_(26);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
 
-var warning = _dereq_(154);
+var warning = _dereq_(171);
 
 var textarea = ReactElement.createFactory('textarea');
 
@@ -23564,7 +24034,7 @@ var ReactDOMTextarea = ReactClass.createClass({
 
 module.exports = ReactDOMTextarea;
 
-},{"11":11,"135":135,"154":154,"2":2,"24":24,"27":27,"29":29,"33":33,"57":57,"87":87}],53:[function(_dereq_,module,exports){
+},{"100":100,"12":12,"150":150,"171":171,"2":2,"26":26,"29":29,"32":32,"38":38,"63":63}],59:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23578,11 +24048,11 @@ module.exports = ReactDOMTextarea;
 
 'use strict';
 
-var ReactUpdates = _dereq_(87);
-var Transaction = _dereq_(103);
+var ReactUpdates = _dereq_(100);
+var Transaction = _dereq_(116);
 
-var assign = _dereq_(27);
-var emptyFunction = _dereq_(114);
+var assign = _dereq_(29);
+var emptyFunction = _dereq_(129);
 
 var RESET_BATCHED_UPDATES = {
   initialize: emptyFunction,
@@ -23637,7 +24107,7 @@ var ReactDefaultBatchingStrategy = {
 
 module.exports = ReactDefaultBatchingStrategy;
 
-},{"103":103,"114":114,"27":27,"87":87}],54:[function(_dereq_,module,exports){
+},{"100":100,"116":116,"129":129,"29":29}],60:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23652,41 +24122,41 @@ module.exports = ReactDefaultBatchingStrategy;
 'use strict';
 
 var BeforeInputEventPlugin = _dereq_(3);
-var ChangeEventPlugin = _dereq_(7);
-var ClientReactRootIndex = _dereq_(8);
-var DefaultEventPluginOrder = _dereq_(13);
-var EnterLeaveEventPlugin = _dereq_(14);
-var ExecutionEnvironment = _dereq_(21);
-var HTMLDOMPropertyConfig = _dereq_(23);
-var MobileSafariClickEventPlugin = _dereq_(26);
-var ReactBrowserComponentMixin = _dereq_(29);
-var ReactClass = _dereq_(33);
+var ChangeEventPlugin = _dereq_(8);
+var ClientReactRootIndex = _dereq_(9);
+var DefaultEventPluginOrder = _dereq_(14);
+var EnterLeaveEventPlugin = _dereq_(15);
+var ExecutionEnvironment = _dereq_(22);
+var HTMLDOMPropertyConfig = _dereq_(24);
+var MobileSafariClickEventPlugin = _dereq_(28);
+var ReactBrowserComponentMixin = _dereq_(32);
+var ReactClass = _dereq_(38);
 var ReactComponentBrowserEnvironment =
-  _dereq_(35);
-var ReactDefaultBatchingStrategy = _dereq_(53);
-var ReactDOMComponent = _dereq_(42);
-var ReactDOMButton = _dereq_(41);
-var ReactDOMForm = _dereq_(43);
-var ReactDOMImg = _dereq_(46);
-var ReactDOMIDOperations = _dereq_(44);
-var ReactDOMIframe = _dereq_(45);
-var ReactDOMInput = _dereq_(47);
-var ReactDOMOption = _dereq_(48);
-var ReactDOMSelect = _dereq_(49);
-var ReactDOMTextarea = _dereq_(52);
-var ReactDOMTextComponent = _dereq_(51);
-var ReactElement = _dereq_(57);
-var ReactEventListener = _dereq_(62);
-var ReactInjection = _dereq_(64);
-var ReactInstanceHandles = _dereq_(66);
-var ReactMount = _dereq_(70);
-var ReactReconcileTransaction = _dereq_(80);
-var SelectEventPlugin = _dereq_(89);
-var ServerReactRootIndex = _dereq_(90);
-var SimpleEventPlugin = _dereq_(91);
-var SVGDOMPropertyConfig = _dereq_(88);
+  _dereq_(40);
+var ReactDefaultBatchingStrategy = _dereq_(59);
+var ReactDOMComponent = _dereq_(48);
+var ReactDOMButton = _dereq_(47);
+var ReactDOMForm = _dereq_(49);
+var ReactDOMImg = _dereq_(52);
+var ReactDOMIDOperations = _dereq_(50);
+var ReactDOMIframe = _dereq_(51);
+var ReactDOMInput = _dereq_(53);
+var ReactDOMOption = _dereq_(54);
+var ReactDOMSelect = _dereq_(55);
+var ReactDOMTextarea = _dereq_(58);
+var ReactDOMTextComponent = _dereq_(57);
+var ReactElement = _dereq_(63);
+var ReactEventListener = _dereq_(68);
+var ReactInjection = _dereq_(70);
+var ReactInstanceHandles = _dereq_(72);
+var ReactMount = _dereq_(77);
+var ReactReconcileTransaction = _dereq_(88);
+var SelectEventPlugin = _dereq_(102);
+var ServerReactRootIndex = _dereq_(103);
+var SimpleEventPlugin = _dereq_(104);
+var SVGDOMPropertyConfig = _dereq_(101);
 
-var createFullPageComponent = _dereq_(111);
+var createFullPageComponent = _dereq_(125);
 
 function autoGenerateWrapperClass(type) {
   return ReactClass.createClass({
@@ -23784,7 +24254,7 @@ function inject() {
   if ("production" !== "development") {
     var url = (ExecutionEnvironment.canUseDOM && window.location.href) || '';
     if ((/[?&]react_perf\b/).test(url)) {
-      var ReactDefaultPerf = _dereq_(55);
+      var ReactDefaultPerf = _dereq_(61);
       ReactDefaultPerf.start();
     }
   }
@@ -23794,7 +24264,7 @@ module.exports = {
   inject: inject
 };
 
-},{"111":111,"13":13,"14":14,"21":21,"23":23,"26":26,"29":29,"3":3,"33":33,"35":35,"41":41,"42":42,"43":43,"44":44,"45":45,"46":46,"47":47,"48":48,"49":49,"51":51,"52":52,"53":53,"55":55,"57":57,"62":62,"64":64,"66":66,"7":7,"70":70,"8":8,"80":80,"88":88,"89":89,"90":90,"91":91}],55:[function(_dereq_,module,exports){
+},{"101":101,"102":102,"103":103,"104":104,"125":125,"14":14,"15":15,"22":22,"24":24,"28":28,"3":3,"32":32,"38":38,"40":40,"47":47,"48":48,"49":49,"50":50,"51":51,"52":52,"53":53,"54":54,"55":55,"57":57,"58":58,"59":59,"61":61,"63":63,"68":68,"70":70,"72":72,"77":77,"8":8,"88":88,"9":9}],61:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23809,12 +24279,12 @@ module.exports = {
 
 'use strict';
 
-var DOMProperty = _dereq_(10);
-var ReactDefaultPerfAnalysis = _dereq_(56);
-var ReactMount = _dereq_(70);
-var ReactPerf = _dereq_(75);
+var DOMProperty = _dereq_(11);
+var ReactDefaultPerfAnalysis = _dereq_(62);
+var ReactMount = _dereq_(77);
+var ReactPerf = _dereq_(82);
 
-var performanceNow = _dereq_(146);
+var performanceNow = _dereq_(162);
 
 function roundFloat(val) {
   return Math.floor(val * 100) / 100;
@@ -24060,7 +24530,7 @@ var ReactDefaultPerf = {
 
 module.exports = ReactDefaultPerf;
 
-},{"10":10,"146":146,"56":56,"70":70,"75":75}],56:[function(_dereq_,module,exports){
+},{"11":11,"162":162,"62":62,"77":77,"82":82}],62:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24072,7 +24542,7 @@ module.exports = ReactDefaultPerf;
  * @providesModule ReactDefaultPerfAnalysis
  */
 
-var assign = _dereq_(27);
+var assign = _dereq_(29);
 
 // Don't try to save users less than 1.2ms (a number I made up)
 var DONT_CARE_THRESHOLD = 1.2;
@@ -24266,7 +24736,7 @@ var ReactDefaultPerfAnalysis = {
 
 module.exports = ReactDefaultPerfAnalysis;
 
-},{"27":27}],57:[function(_dereq_,module,exports){
+},{"29":29}],63:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -24280,11 +24750,11 @@ module.exports = ReactDefaultPerfAnalysis;
 
 'use strict';
 
-var ReactContext = _dereq_(38);
-var ReactCurrentOwner = _dereq_(39);
+var ReactContext = _dereq_(44);
+var ReactCurrentOwner = _dereq_(45);
 
-var assign = _dereq_(27);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var warning = _dereq_(171);
 
 var RESERVED_PROPS = {
   key: true,
@@ -24572,7 +25042,7 @@ ReactElement.isValidElement = function(object) {
 
 module.exports = ReactElement;
 
-},{"154":154,"27":27,"38":38,"39":39}],58:[function(_dereq_,module,exports){
+},{"171":171,"29":29,"44":44,"45":45}],64:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -24593,16 +25063,16 @@ module.exports = ReactElement;
 
 'use strict';
 
-var ReactElement = _dereq_(57);
-var ReactFragment = _dereq_(63);
-var ReactPropTypeLocations = _dereq_(77);
-var ReactPropTypeLocationNames = _dereq_(76);
-var ReactCurrentOwner = _dereq_(39);
-var ReactNativeComponent = _dereq_(73);
+var ReactElement = _dereq_(63);
+var ReactFragment = _dereq_(69);
+var ReactPropTypeLocations = _dereq_(85);
+var ReactPropTypeLocationNames = _dereq_(84);
+var ReactCurrentOwner = _dereq_(45);
+var ReactNativeComponent = _dereq_(80);
 
-var getIteratorFn = _dereq_(126);
-var invariant = _dereq_(135);
-var warning = _dereq_(154);
+var getIteratorFn = _dereq_(141);
+var invariant = _dereq_(150);
+var warning = _dereq_(171);
 
 function getDeclarationErrorAddendum() {
   if (ReactCurrentOwner.current) {
@@ -25035,7 +25505,7 @@ var ReactElementValidator = {
 
 module.exports = ReactElementValidator;
 
-},{"126":126,"135":135,"154":154,"39":39,"57":57,"63":63,"73":73,"76":76,"77":77}],59:[function(_dereq_,module,exports){
+},{"141":141,"150":150,"171":171,"45":45,"63":63,"69":69,"80":80,"84":84,"85":85}],65:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -25049,10 +25519,10 @@ module.exports = ReactElementValidator;
 
 'use strict';
 
-var ReactElement = _dereq_(57);
-var ReactInstanceMap = _dereq_(67);
+var ReactElement = _dereq_(63);
+var ReactInstanceMap = _dereq_(73);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 var component;
 // This registry keeps track of the React IDs of the components that rendered to
@@ -25128,7 +25598,7 @@ var ReactEmptyComponent = {
 
 module.exports = ReactEmptyComponent;
 
-},{"135":135,"57":57,"67":67}],60:[function(_dereq_,module,exports){
+},{"150":150,"63":63,"73":73}],66:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25160,7 +25630,7 @@ var ReactErrorUtils = {
 
 module.exports = ReactErrorUtils;
 
-},{}],61:[function(_dereq_,module,exports){
+},{}],67:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25174,7 +25644,7 @@ module.exports = ReactErrorUtils;
 
 'use strict';
 
-var EventPluginHub = _dereq_(17);
+var EventPluginHub = _dereq_(18);
 
 function runEventQueueInBatch(events) {
   EventPluginHub.enqueueEvents(events);
@@ -25210,7 +25680,7 @@ var ReactEventEmitterMixin = {
 
 module.exports = ReactEventEmitterMixin;
 
-},{"17":17}],62:[function(_dereq_,module,exports){
+},{"18":18}],68:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25225,16 +25695,16 @@ module.exports = ReactEventEmitterMixin;
 
 'use strict';
 
-var EventListener = _dereq_(16);
-var ExecutionEnvironment = _dereq_(21);
-var PooledClass = _dereq_(28);
-var ReactInstanceHandles = _dereq_(66);
-var ReactMount = _dereq_(70);
-var ReactUpdates = _dereq_(87);
+var EventListener = _dereq_(17);
+var ExecutionEnvironment = _dereq_(22);
+var PooledClass = _dereq_(30);
+var ReactInstanceHandles = _dereq_(72);
+var ReactMount = _dereq_(77);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
-var getEventTarget = _dereq_(125);
-var getUnboundedScrollPosition = _dereq_(131);
+var assign = _dereq_(29);
+var getEventTarget = _dereq_(140);
+var getUnboundedScrollPosition = _dereq_(146);
 
 /**
  * Finds the parent React component of `node`.
@@ -25393,7 +25863,7 @@ var ReactEventListener = {
 
 module.exports = ReactEventListener;
 
-},{"125":125,"131":131,"16":16,"21":21,"27":27,"28":28,"66":66,"70":70,"87":87}],63:[function(_dereq_,module,exports){
+},{"100":100,"140":140,"146":146,"17":17,"22":22,"29":29,"30":30,"72":72,"77":77}],69:[function(_dereq_,module,exports){
 /**
  * Copyright 2015, Facebook, Inc.
  * All rights reserved.
@@ -25407,9 +25877,9 @@ module.exports = ReactEventListener;
 
 'use strict';
 
-var ReactElement = _dereq_(57);
+var ReactElement = _dereq_(63);
 
-var warning = _dereq_(154);
+var warning = _dereq_(171);
 
 /**
  * We used to allow keyed objects to serve as a collection of ReactElements,
@@ -25576,7 +26046,7 @@ var ReactFragment = {
 
 module.exports = ReactFragment;
 
-},{"154":154,"57":57}],64:[function(_dereq_,module,exports){
+},{"171":171,"63":63}],70:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25590,17 +26060,17 @@ module.exports = ReactFragment;
 
 'use strict';
 
-var DOMProperty = _dereq_(10);
-var EventPluginHub = _dereq_(17);
-var ReactComponentEnvironment = _dereq_(36);
-var ReactClass = _dereq_(33);
-var ReactEmptyComponent = _dereq_(59);
-var ReactBrowserEventEmitter = _dereq_(30);
-var ReactNativeComponent = _dereq_(73);
-var ReactDOMComponent = _dereq_(42);
-var ReactPerf = _dereq_(75);
-var ReactRootIndex = _dereq_(83);
-var ReactUpdates = _dereq_(87);
+var DOMProperty = _dereq_(11);
+var EventPluginHub = _dereq_(18);
+var ReactComponentEnvironment = _dereq_(41);
+var ReactClass = _dereq_(38);
+var ReactEmptyComponent = _dereq_(65);
+var ReactBrowserEventEmitter = _dereq_(33);
+var ReactNativeComponent = _dereq_(80);
+var ReactDOMComponent = _dereq_(48);
+var ReactPerf = _dereq_(82);
+var ReactRootIndex = _dereq_(91);
+var ReactUpdates = _dereq_(100);
 
 var ReactInjection = {
   Component: ReactComponentEnvironment.injection,
@@ -25618,7 +26088,7 @@ var ReactInjection = {
 
 module.exports = ReactInjection;
 
-},{"10":10,"17":17,"30":30,"33":33,"36":36,"42":42,"59":59,"73":73,"75":75,"83":83,"87":87}],65:[function(_dereq_,module,exports){
+},{"100":100,"11":11,"18":18,"33":33,"38":38,"41":41,"48":48,"65":65,"80":80,"82":82,"91":91}],71:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25632,11 +26102,11 @@ module.exports = ReactInjection;
 
 'use strict';
 
-var ReactDOMSelection = _dereq_(50);
+var ReactDOMSelection = _dereq_(56);
 
-var containsNode = _dereq_(109);
-var focusNode = _dereq_(119);
-var getActiveElement = _dereq_(121);
+var containsNode = _dereq_(123);
+var focusNode = _dereq_(134);
+var getActiveElement = _dereq_(136);
 
 function isInDocument(node) {
   return containsNode(document.documentElement, node);
@@ -25753,7 +26223,7 @@ var ReactInputSelection = {
 
 module.exports = ReactInputSelection;
 
-},{"109":109,"119":119,"121":121,"50":50}],66:[function(_dereq_,module,exports){
+},{"123":123,"134":134,"136":136,"56":56}],72:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25768,9 +26238,9 @@ module.exports = ReactInputSelection;
 
 'use strict';
 
-var ReactRootIndex = _dereq_(83);
+var ReactRootIndex = _dereq_(91);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 var SEPARATOR = '.';
 var SEPARATOR_LENGTH = SEPARATOR.length;
@@ -26087,7 +26557,7 @@ var ReactInstanceHandles = {
 
 module.exports = ReactInstanceHandles;
 
-},{"135":135,"83":83}],67:[function(_dereq_,module,exports){
+},{"150":150,"91":91}],73:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26136,7 +26606,7 @@ var ReactInstanceMap = {
 
 module.exports = ReactInstanceMap;
 
-},{}],68:[function(_dereq_,module,exports){
+},{}],74:[function(_dereq_,module,exports){
 /**
  * Copyright 2015, Facebook, Inc.
  * All rights reserved.
@@ -26173,7 +26643,80 @@ var ReactLifeCycle = {
 
 module.exports = ReactLifeCycle;
 
-},{}],69:[function(_dereq_,module,exports){
+},{}],75:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactLink
+ * @typechecks static-only
+ */
+
+'use strict';
+
+/**
+ * ReactLink encapsulates a common pattern in which a component wants to modify
+ * a prop received from its parent. ReactLink allows the parent to pass down a
+ * value coupled with a callback that, when invoked, expresses an intent to
+ * modify that value. For example:
+ *
+ * React.createClass({
+ *   getInitialState: function() {
+ *     return {value: ''};
+ *   },
+ *   render: function() {
+ *     var valueLink = new ReactLink(this.state.value, this._handleValueChange);
+ *     return <input valueLink={valueLink} />;
+ *   },
+ *   this._handleValueChange: function(newValue) {
+ *     this.setState({value: newValue});
+ *   }
+ * });
+ *
+ * We have provided some sugary mixins to make the creation and
+ * consumption of ReactLink easier; see LinkedValueUtils and LinkedStateMixin.
+ */
+
+var React = _dereq_(31);
+
+/**
+ * @param {*} value current value of the link
+ * @param {function} requestChange callback to request a change
+ */
+function ReactLink(value, requestChange) {
+  this.value = value;
+  this.requestChange = requestChange;
+}
+
+/**
+ * Creates a PropType that enforces the ReactLink API and optionally checks the
+ * type of the value being passed inside the link. Example:
+ *
+ * MyComponent.propTypes = {
+ *   tabIndexLink: ReactLink.PropTypes.link(React.PropTypes.number)
+ * }
+ */
+function createLinkTypeChecker(linkType) {
+  var shapes = {
+    value: typeof linkType === 'undefined' ?
+      React.PropTypes.any.isRequired :
+      linkType.isRequired,
+    requestChange: React.PropTypes.func.isRequired
+  };
+  return React.PropTypes.shape(shapes);
+}
+
+ReactLink.PropTypes = {
+  link: createLinkTypeChecker
+};
+
+module.exports = ReactLink;
+
+},{"31":31}],76:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26187,7 +26730,7 @@ module.exports = ReactLifeCycle;
 
 'use strict';
 
-var adler32 = _dereq_(106);
+var adler32 = _dereq_(119);
 
 var ReactMarkupChecksum = {
   CHECKSUM_ATTR_NAME: 'data-react-checksum',
@@ -26221,7 +26764,7 @@ var ReactMarkupChecksum = {
 
 module.exports = ReactMarkupChecksum;
 
-},{"106":106}],70:[function(_dereq_,module,exports){
+},{"119":119}],77:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26235,28 +26778,28 @@ module.exports = ReactMarkupChecksum;
 
 'use strict';
 
-var DOMProperty = _dereq_(10);
-var ReactBrowserEventEmitter = _dereq_(30);
-var ReactCurrentOwner = _dereq_(39);
-var ReactElement = _dereq_(57);
-var ReactElementValidator = _dereq_(58);
-var ReactEmptyComponent = _dereq_(59);
-var ReactInstanceHandles = _dereq_(66);
-var ReactInstanceMap = _dereq_(67);
-var ReactMarkupChecksum = _dereq_(69);
-var ReactPerf = _dereq_(75);
-var ReactReconciler = _dereq_(81);
-var ReactUpdateQueue = _dereq_(86);
-var ReactUpdates = _dereq_(87);
+var DOMProperty = _dereq_(11);
+var ReactBrowserEventEmitter = _dereq_(33);
+var ReactCurrentOwner = _dereq_(45);
+var ReactElement = _dereq_(63);
+var ReactElementValidator = _dereq_(64);
+var ReactEmptyComponent = _dereq_(65);
+var ReactInstanceHandles = _dereq_(72);
+var ReactInstanceMap = _dereq_(73);
+var ReactMarkupChecksum = _dereq_(76);
+var ReactPerf = _dereq_(82);
+var ReactReconciler = _dereq_(89);
+var ReactUpdateQueue = _dereq_(99);
+var ReactUpdates = _dereq_(100);
 
-var emptyObject = _dereq_(115);
-var containsNode = _dereq_(109);
-var getReactRootElementInContainer = _dereq_(129);
-var instantiateReactComponent = _dereq_(134);
-var invariant = _dereq_(135);
-var setInnerHTML = _dereq_(148);
-var shouldUpdateReactComponent = _dereq_(151);
-var warning = _dereq_(154);
+var emptyObject = _dereq_(130);
+var containsNode = _dereq_(123);
+var getReactRootElementInContainer = _dereq_(144);
+var instantiateReactComponent = _dereq_(149);
+var invariant = _dereq_(150);
+var setInnerHTML = _dereq_(164);
+var shouldUpdateReactComponent = _dereq_(167);
+var warning = _dereq_(171);
 
 var SEPARATOR = ReactInstanceHandles.SEPARATOR;
 
@@ -27110,7 +27653,7 @@ ReactPerf.measureMethods(ReactMount, 'ReactMount', {
 
 module.exports = ReactMount;
 
-},{"10":10,"109":109,"115":115,"129":129,"134":134,"135":135,"148":148,"151":151,"154":154,"30":30,"39":39,"57":57,"58":58,"59":59,"66":66,"67":67,"69":69,"75":75,"81":81,"86":86,"87":87}],71:[function(_dereq_,module,exports){
+},{"100":100,"11":11,"123":123,"130":130,"144":144,"149":149,"150":150,"164":164,"167":167,"171":171,"33":33,"45":45,"63":63,"64":64,"65":65,"72":72,"73":73,"76":76,"82":82,"89":89,"99":99}],78:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27125,11 +27668,11 @@ module.exports = ReactMount;
 
 'use strict';
 
-var ReactComponentEnvironment = _dereq_(36);
-var ReactMultiChildUpdateTypes = _dereq_(72);
+var ReactComponentEnvironment = _dereq_(41);
+var ReactMultiChildUpdateTypes = _dereq_(79);
 
-var ReactReconciler = _dereq_(81);
-var ReactChildReconciler = _dereq_(31);
+var ReactReconciler = _dereq_(89);
+var ReactChildReconciler = _dereq_(36);
 
 /**
  * Updating children of a component may trigger recursive updates. The depth is
@@ -27540,7 +28083,7 @@ var ReactMultiChild = {
 
 module.exports = ReactMultiChild;
 
-},{"31":31,"36":36,"72":72,"81":81}],72:[function(_dereq_,module,exports){
+},{"36":36,"41":41,"79":79,"89":89}],79:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27554,7 +28097,7 @@ module.exports = ReactMultiChild;
 
 'use strict';
 
-var keyMirror = _dereq_(140);
+var keyMirror = _dereq_(156);
 
 /**
  * When a component's children are updated, a series of update configuration
@@ -27573,7 +28116,7 @@ var ReactMultiChildUpdateTypes = keyMirror({
 
 module.exports = ReactMultiChildUpdateTypes;
 
-},{"140":140}],73:[function(_dereq_,module,exports){
+},{"156":156}],80:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -27587,8 +28130,8 @@ module.exports = ReactMultiChildUpdateTypes;
 
 'use strict';
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
 
 var autoGenerateWrapperClass = null;
 var genericComponentClass = null;
@@ -27678,7 +28221,7 @@ var ReactNativeComponent = {
 
 module.exports = ReactNativeComponent;
 
-},{"135":135,"27":27}],74:[function(_dereq_,module,exports){
+},{"150":150,"29":29}],81:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27692,7 +28235,7 @@ module.exports = ReactNativeComponent;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * ReactOwners are capable of storing references to owned components.
@@ -27788,7 +28331,7 @@ var ReactOwner = {
 
 module.exports = ReactOwner;
 
-},{"135":135}],75:[function(_dereq_,module,exports){
+},{"150":150}],82:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27890,7 +28433,117 @@ function _noMeasure(objName, fnName, func) {
 
 module.exports = ReactPerf;
 
-},{}],76:[function(_dereq_,module,exports){
+},{}],83:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactPropTransferer
+ */
+
+'use strict';
+
+var assign = _dereq_(29);
+var emptyFunction = _dereq_(129);
+var joinClasses = _dereq_(155);
+
+/**
+ * Creates a transfer strategy that will merge prop values using the supplied
+ * `mergeStrategy`. If a prop was previously unset, this just sets it.
+ *
+ * @param {function} mergeStrategy
+ * @return {function}
+ */
+function createTransferStrategy(mergeStrategy) {
+  return function(props, key, value) {
+    if (!props.hasOwnProperty(key)) {
+      props[key] = value;
+    } else {
+      props[key] = mergeStrategy(props[key], value);
+    }
+  };
+}
+
+var transferStrategyMerge = createTransferStrategy(function(a, b) {
+  // `merge` overrides the first object's (`props[key]` above) keys using the
+  // second object's (`value`) keys. An object's style's existing `propA` would
+  // get overridden. Flip the order here.
+  return assign({}, b, a);
+});
+
+/**
+ * Transfer strategies dictate how props are transferred by `transferPropsTo`.
+ * NOTE: if you add any more exceptions to this list you should be sure to
+ * update `cloneWithProps()` accordingly.
+ */
+var TransferStrategies = {
+  /**
+   * Never transfer `children`.
+   */
+  children: emptyFunction,
+  /**
+   * Transfer the `className` prop by merging them.
+   */
+  className: createTransferStrategy(joinClasses),
+  /**
+   * Transfer the `style` prop (which is an object) by merging them.
+   */
+  style: transferStrategyMerge
+};
+
+/**
+ * Mutates the first argument by transferring the properties from the second
+ * argument.
+ *
+ * @param {object} props
+ * @param {object} newProps
+ * @return {object}
+ */
+function transferInto(props, newProps) {
+  for (var thisKey in newProps) {
+    if (!newProps.hasOwnProperty(thisKey)) {
+      continue;
+    }
+
+    var transferStrategy = TransferStrategies[thisKey];
+
+    if (transferStrategy && TransferStrategies.hasOwnProperty(thisKey)) {
+      transferStrategy(props, thisKey, newProps[thisKey]);
+    } else if (!props.hasOwnProperty(thisKey)) {
+      props[thisKey] = newProps[thisKey];
+    }
+  }
+  return props;
+}
+
+/**
+ * ReactPropTransferer are capable of transferring props to another component
+ * using a `transferPropsTo` method.
+ *
+ * @class ReactPropTransferer
+ */
+var ReactPropTransferer = {
+
+  /**
+   * Merge two props objects using TransferStrategies.
+   *
+   * @param {object} oldProps original props (they take precedence)
+   * @param {object} newProps new props to merge in
+   * @return {object} a new object containing both sets of props merged.
+   */
+  mergeProps: function(oldProps, newProps) {
+    return transferInto(assign({}, oldProps), newProps);
+  }
+
+};
+
+module.exports = ReactPropTransferer;
+
+},{"129":129,"155":155,"29":29}],84:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27916,7 +28569,7 @@ if ("production" !== "development") {
 
 module.exports = ReactPropTypeLocationNames;
 
-},{}],77:[function(_dereq_,module,exports){
+},{}],85:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27930,7 +28583,7 @@ module.exports = ReactPropTypeLocationNames;
 
 'use strict';
 
-var keyMirror = _dereq_(140);
+var keyMirror = _dereq_(156);
 
 var ReactPropTypeLocations = keyMirror({
   prop: null,
@@ -27940,7 +28593,7 @@ var ReactPropTypeLocations = keyMirror({
 
 module.exports = ReactPropTypeLocations;
 
-},{"140":140}],78:[function(_dereq_,module,exports){
+},{"156":156}],86:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27954,11 +28607,11 @@ module.exports = ReactPropTypeLocations;
 
 'use strict';
 
-var ReactElement = _dereq_(57);
-var ReactFragment = _dereq_(63);
-var ReactPropTypeLocationNames = _dereq_(76);
+var ReactElement = _dereq_(63);
+var ReactFragment = _dereq_(69);
+var ReactPropTypeLocationNames = _dereq_(84);
 
-var emptyFunction = _dereq_(114);
+var emptyFunction = _dereq_(129);
 
 /**
  * Collection of methods that allow declaration and validation of props that are
@@ -28289,7 +28942,7 @@ function getPreciseType(propValue) {
 
 module.exports = ReactPropTypes;
 
-},{"114":114,"57":57,"63":63,"76":76}],79:[function(_dereq_,module,exports){
+},{"129":129,"63":63,"69":69,"84":84}],87:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28303,10 +28956,10 @@ module.exports = ReactPropTypes;
 
 'use strict';
 
-var PooledClass = _dereq_(28);
-var ReactBrowserEventEmitter = _dereq_(30);
+var PooledClass = _dereq_(30);
+var ReactBrowserEventEmitter = _dereq_(33);
 
-var assign = _dereq_(27);
+var assign = _dereq_(29);
 
 function ReactPutListenerQueue() {
   this.listenersToPut = [];
@@ -28345,7 +28998,7 @@ PooledClass.addPoolingTo(ReactPutListenerQueue);
 
 module.exports = ReactPutListenerQueue;
 
-},{"27":27,"28":28,"30":30}],80:[function(_dereq_,module,exports){
+},{"29":29,"30":30,"33":33}],88:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28360,14 +29013,14 @@ module.exports = ReactPutListenerQueue;
 
 'use strict';
 
-var CallbackQueue = _dereq_(6);
-var PooledClass = _dereq_(28);
-var ReactBrowserEventEmitter = _dereq_(30);
-var ReactInputSelection = _dereq_(65);
-var ReactPutListenerQueue = _dereq_(79);
-var Transaction = _dereq_(103);
+var CallbackQueue = _dereq_(7);
+var PooledClass = _dereq_(30);
+var ReactBrowserEventEmitter = _dereq_(33);
+var ReactInputSelection = _dereq_(71);
+var ReactPutListenerQueue = _dereq_(87);
+var Transaction = _dereq_(116);
 
-var assign = _dereq_(27);
+var assign = _dereq_(29);
 
 /**
  * Ensures that, when possible, the selection range (currently selected text
@@ -28521,7 +29174,7 @@ PooledClass.addPoolingTo(ReactReconcileTransaction);
 
 module.exports = ReactReconcileTransaction;
 
-},{"103":103,"27":27,"28":28,"30":30,"6":6,"65":65,"79":79}],81:[function(_dereq_,module,exports){
+},{"116":116,"29":29,"30":30,"33":33,"7":7,"71":71,"87":87}],89:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28535,8 +29188,8 @@ module.exports = ReactReconcileTransaction;
 
 'use strict';
 
-var ReactRef = _dereq_(82);
-var ReactElementValidator = _dereq_(58);
+var ReactRef = _dereq_(90);
+var ReactElementValidator = _dereq_(64);
 
 /**
  * Helper to call ReactRef.attachRefs with this composite component, split out
@@ -28643,7 +29296,7 @@ var ReactReconciler = {
 
 module.exports = ReactReconciler;
 
-},{"58":58,"82":82}],82:[function(_dereq_,module,exports){
+},{"64":64,"90":90}],90:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28657,7 +29310,7 @@ module.exports = ReactReconciler;
 
 'use strict';
 
-var ReactOwner = _dereq_(74);
+var ReactOwner = _dereq_(81);
 
 var ReactRef = {};
 
@@ -28714,7 +29367,7 @@ ReactRef.detachRefs = function(instance, element) {
 
 module.exports = ReactRef;
 
-},{"74":74}],83:[function(_dereq_,module,exports){
+},{"81":81}],91:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28745,7 +29398,7 @@ var ReactRootIndex = {
 
 module.exports = ReactRootIndex;
 
-},{}],84:[function(_dereq_,module,exports){
+},{}],92:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28759,15 +29412,15 @@ module.exports = ReactRootIndex;
  */
 'use strict';
 
-var ReactElement = _dereq_(57);
-var ReactInstanceHandles = _dereq_(66);
-var ReactMarkupChecksum = _dereq_(69);
+var ReactElement = _dereq_(63);
+var ReactInstanceHandles = _dereq_(72);
+var ReactMarkupChecksum = _dereq_(76);
 var ReactServerRenderingTransaction =
-  _dereq_(85);
+  _dereq_(93);
 
-var emptyObject = _dereq_(115);
-var instantiateReactComponent = _dereq_(134);
-var invariant = _dereq_(135);
+var emptyObject = _dereq_(130);
+var instantiateReactComponent = _dereq_(149);
+var invariant = _dereq_(150);
 
 /**
  * @param {ReactElement} element
@@ -28825,7 +29478,7 @@ module.exports = {
   renderToStaticMarkup: renderToStaticMarkup
 };
 
-},{"115":115,"134":134,"135":135,"57":57,"66":66,"69":69,"85":85}],85:[function(_dereq_,module,exports){
+},{"130":130,"149":149,"150":150,"63":63,"72":72,"76":76,"93":93}],93:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -28840,13 +29493,13 @@ module.exports = {
 
 'use strict';
 
-var PooledClass = _dereq_(28);
-var CallbackQueue = _dereq_(6);
-var ReactPutListenerQueue = _dereq_(79);
-var Transaction = _dereq_(103);
+var PooledClass = _dereq_(30);
+var CallbackQueue = _dereq_(7);
+var ReactPutListenerQueue = _dereq_(87);
+var Transaction = _dereq_(116);
 
-var assign = _dereq_(27);
-var emptyFunction = _dereq_(114);
+var assign = _dereq_(29);
+var emptyFunction = _dereq_(129);
 
 /**
  * Provides a `CallbackQueue` queue for collecting `onDOMReady` callbacks
@@ -28938,7 +29591,1069 @@ PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 module.exports = ReactServerRenderingTransaction;
 
-},{"103":103,"114":114,"27":27,"28":28,"6":6,"79":79}],86:[function(_dereq_,module,exports){
+},{"116":116,"129":129,"29":29,"30":30,"7":7,"87":87}],94:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactStateSetters
+ */
+
+'use strict';
+
+var ReactStateSetters = {
+  /**
+   * Returns a function that calls the provided function, and uses the result
+   * of that to set the component's state.
+   *
+   * @param {ReactCompositeComponent} component
+   * @param {function} funcReturningState Returned callback uses this to
+   *                                      determine how to update state.
+   * @return {function} callback that when invoked uses funcReturningState to
+   *                    determined the object literal to setState.
+   */
+  createStateSetter: function(component, funcReturningState) {
+    return function(a, b, c, d, e, f) {
+      var partialState = funcReturningState.call(component, a, b, c, d, e, f);
+      if (partialState) {
+        component.setState(partialState);
+      }
+    };
+  },
+
+  /**
+   * Returns a single-argument callback that can be used to update a single
+   * key in the component's state.
+   *
+   * Note: this is memoized function, which makes it inexpensive to call.
+   *
+   * @param {ReactCompositeComponent} component
+   * @param {string} key The key in the state that you should update.
+   * @return {function} callback of 1 argument which calls setState() with
+   *                    the provided keyName and callback argument.
+   */
+  createStateKeySetter: function(component, key) {
+    // Memoize the setters.
+    var cache = component.__keySetters || (component.__keySetters = {});
+    return cache[key] || (cache[key] = createStateKeySetter(component, key));
+  }
+};
+
+function createStateKeySetter(component, key) {
+  // Partial state is allocated outside of the function closure so it can be
+  // reused with every call, avoiding memory allocation when this function
+  // is called.
+  var partialState = {};
+  return function stateKeySetter(value) {
+    partialState[key] = value;
+    component.setState(partialState);
+  };
+}
+
+ReactStateSetters.Mixin = {
+  /**
+   * Returns a function that calls the provided function, and uses the result
+   * of that to set the component's state.
+   *
+   * For example, these statements are equivalent:
+   *
+   *   this.setState({x: 1});
+   *   this.createStateSetter(function(xValue) {
+   *     return {x: xValue};
+   *   })(1);
+   *
+   * @param {function} funcReturningState Returned callback uses this to
+   *                                      determine how to update state.
+   * @return {function} callback that when invoked uses funcReturningState to
+   *                    determined the object literal to setState.
+   */
+  createStateSetter: function(funcReturningState) {
+    return ReactStateSetters.createStateSetter(this, funcReturningState);
+  },
+
+  /**
+   * Returns a single-argument callback that can be used to update a single
+   * key in the component's state.
+   *
+   * For example, these statements are equivalent:
+   *
+   *   this.setState({x: 1});
+   *   this.createStateKeySetter('x')(1);
+   *
+   * Note: this is memoized function, which makes it inexpensive to call.
+   *
+   * @param {string} key The key in the state that you should update.
+   * @return {function} callback of 1 argument which calls setState() with
+   *                    the provided keyName and callback argument.
+   */
+  createStateKeySetter: function(key) {
+    return ReactStateSetters.createStateKeySetter(this, key);
+  }
+};
+
+module.exports = ReactStateSetters;
+
+},{}],95:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactTestUtils
+ */
+
+'use strict';
+
+var EventConstants = _dereq_(16);
+var EventPluginHub = _dereq_(18);
+var EventPropagators = _dereq_(21);
+var React = _dereq_(31);
+var ReactElement = _dereq_(63);
+var ReactEmptyComponent = _dereq_(65);
+var ReactBrowserEventEmitter = _dereq_(33);
+var ReactCompositeComponent = _dereq_(43);
+var ReactInstanceHandles = _dereq_(72);
+var ReactInstanceMap = _dereq_(73);
+var ReactMount = _dereq_(77);
+var ReactUpdates = _dereq_(100);
+var SyntheticEvent = _dereq_(108);
+
+var assign = _dereq_(29);
+
+var topLevelTypes = EventConstants.topLevelTypes;
+
+function Event(suffix) {}
+
+/**
+ * @class ReactTestUtils
+ */
+
+/**
+ * Todo: Support the entire DOM.scry query syntax. For now, these simple
+ * utilities will suffice for testing purposes.
+ * @lends ReactTestUtils
+ */
+var ReactTestUtils = {
+  renderIntoDocument: function(instance) {
+    var div = document.createElement('div');
+    // None of our tests actually require attaching the container to the
+    // DOM, and doing so creates a mess that we rely on test isolation to
+    // clean up, so we're going to stop honoring the name of this method
+    // (and probably rename it eventually) if no problems arise.
+    // document.documentElement.appendChild(div);
+    return React.render(instance, div);
+  },
+
+  isElement: function(element) {
+    return ReactElement.isValidElement(element);
+  },
+
+  isElementOfType: function(inst, convenienceConstructor) {
+    return (
+      ReactElement.isValidElement(inst) &&
+      inst.type === convenienceConstructor
+    );
+  },
+
+  isDOMComponent: function(inst) {
+    // TODO: Fix this heuristic. It's just here because composites can currently
+    // pretend to be DOM components.
+    return !!(inst && inst.tagName && inst.getDOMNode);
+  },
+
+  isDOMComponentElement: function(inst) {
+    return !!(inst &&
+              ReactElement.isValidElement(inst) &&
+              !!inst.tagName);
+  },
+
+  isCompositeComponent: function(inst) {
+    return typeof inst.render === 'function' &&
+           typeof inst.setState === 'function';
+  },
+
+  isCompositeComponentWithType: function(inst, type) {
+    return !!(ReactTestUtils.isCompositeComponent(inst) &&
+             (inst.constructor === type));
+  },
+
+  isCompositeComponentElement: function(inst) {
+    if (!ReactElement.isValidElement(inst)) {
+      return false;
+    }
+    // We check the prototype of the type that will get mounted, not the
+    // instance itself. This is a future proof way of duck typing.
+    var prototype = inst.type.prototype;
+    return (
+      typeof prototype.render === 'function' &&
+      typeof prototype.setState === 'function'
+    );
+  },
+
+  isCompositeComponentElementWithType: function(inst, type) {
+    return !!(ReactTestUtils.isCompositeComponentElement(inst) &&
+             (inst.constructor === type));
+  },
+
+  getRenderedChildOfCompositeComponent: function(inst) {
+    if (!ReactTestUtils.isCompositeComponent(inst)) {
+      return null;
+    }
+    var internalInstance = ReactInstanceMap.get(inst);
+    return internalInstance._renderedComponent.getPublicInstance();
+  },
+
+  findAllInRenderedTree: function(inst, test) {
+    if (!inst) {
+      return [];
+    }
+    var ret = test(inst) ? [inst] : [];
+    if (ReactTestUtils.isDOMComponent(inst)) {
+      var internalInstance = ReactInstanceMap.get(inst);
+      var renderedChildren = internalInstance
+        ._renderedComponent
+        ._renderedChildren;
+      var key;
+      for (key in renderedChildren) {
+        if (!renderedChildren.hasOwnProperty(key)) {
+          continue;
+        }
+        if (!renderedChildren[key].getPublicInstance) {
+          continue;
+        }
+        ret = ret.concat(
+          ReactTestUtils.findAllInRenderedTree(
+            renderedChildren[key].getPublicInstance(),
+            test
+          )
+        );
+      }
+    } else if (ReactTestUtils.isCompositeComponent(inst)) {
+      ret = ret.concat(
+        ReactTestUtils.findAllInRenderedTree(
+          ReactTestUtils.getRenderedChildOfCompositeComponent(inst),
+          test
+        )
+      );
+    }
+    return ret;
+  },
+
+  /**
+   * Finds all instance of components in the rendered tree that are DOM
+   * components with the class name matching `className`.
+   * @return an array of all the matches.
+   */
+  scryRenderedDOMComponentsWithClass: function(root, className) {
+    return ReactTestUtils.findAllInRenderedTree(root, function(inst) {
+      var instClassName = inst.props.className;
+      return ReactTestUtils.isDOMComponent(inst) && (
+        (instClassName && (' ' + instClassName + ' ').indexOf(' ' + className + ' ') !== -1)
+      );
+    });
+  },
+
+  /**
+   * Like scryRenderedDOMComponentsWithClass but expects there to be one result,
+   * and returns that one result, or throws exception if there is any other
+   * number of matches besides one.
+   * @return {!ReactDOMComponent} The one match.
+   */
+  findRenderedDOMComponentWithClass: function(root, className) {
+    var all =
+      ReactTestUtils.scryRenderedDOMComponentsWithClass(root, className);
+    if (all.length !== 1) {
+      throw new Error('Did not find exactly one match ' +
+        '(found: ' + all.length + ') for class:' + className
+      );
+    }
+    return all[0];
+  },
+
+
+  /**
+   * Finds all instance of components in the rendered tree that are DOM
+   * components with the tag name matching `tagName`.
+   * @return an array of all the matches.
+   */
+  scryRenderedDOMComponentsWithTag: function(root, tagName) {
+    return ReactTestUtils.findAllInRenderedTree(root, function(inst) {
+      return ReactTestUtils.isDOMComponent(inst) &&
+            inst.tagName === tagName.toUpperCase();
+    });
+  },
+
+  /**
+   * Like scryRenderedDOMComponentsWithTag but expects there to be one result,
+   * and returns that one result, or throws exception if there is any other
+   * number of matches besides one.
+   * @return {!ReactDOMComponent} The one match.
+   */
+  findRenderedDOMComponentWithTag: function(root, tagName) {
+    var all = ReactTestUtils.scryRenderedDOMComponentsWithTag(root, tagName);
+    if (all.length !== 1) {
+      throw new Error('Did not find exactly one match for tag:' + tagName);
+    }
+    return all[0];
+  },
+
+
+  /**
+   * Finds all instances of components with type equal to `componentType`.
+   * @return an array of all the matches.
+   */
+  scryRenderedComponentsWithType: function(root, componentType) {
+    return ReactTestUtils.findAllInRenderedTree(root, function(inst) {
+      return ReactTestUtils.isCompositeComponentWithType(
+        inst,
+        componentType
+      );
+    });
+  },
+
+  /**
+   * Same as `scryRenderedComponentsWithType` but expects there to be one result
+   * and returns that one result, or throws exception if there is any other
+   * number of matches besides one.
+   * @return {!ReactComponent} The one match.
+   */
+  findRenderedComponentWithType: function(root, componentType) {
+    var all = ReactTestUtils.scryRenderedComponentsWithType(
+      root,
+      componentType
+    );
+    if (all.length !== 1) {
+      throw new Error(
+        'Did not find exactly one match for componentType:' + componentType
+      );
+    }
+    return all[0];
+  },
+
+  /**
+   * Pass a mocked component module to this method to augment it with
+   * useful methods that allow it to be used as a dummy React component.
+   * Instead of rendering as usual, the component will become a simple
+   * <div> containing any provided children.
+   *
+   * @param {object} module the mock function object exported from a
+   *                        module that defines the component to be mocked
+   * @param {?string} mockTagName optional dummy root tag name to return
+   *                              from render method (overrides
+   *                              module.mockTagName if provided)
+   * @return {object} the ReactTestUtils object (for chaining)
+   */
+  mockComponent: function(module, mockTagName) {
+    mockTagName = mockTagName || module.mockTagName || "div";
+
+    module.prototype.render.mockImplementation(function() {
+      return React.createElement(
+        mockTagName,
+        null,
+        this.props.children
+      );
+    });
+
+    return this;
+  },
+
+  /**
+   * Simulates a top level event being dispatched from a raw event that occured
+   * on an `Element` node.
+   * @param topLevelType {Object} A type from `EventConstants.topLevelTypes`
+   * @param {!Element} node The dom to simulate an event occurring on.
+   * @param {?Event} fakeNativeEvent Fake native event to use in SyntheticEvent.
+   */
+  simulateNativeEventOnNode: function(topLevelType, node, fakeNativeEvent) {
+    fakeNativeEvent.target = node;
+    ReactBrowserEventEmitter.ReactEventListener.dispatchEvent(
+      topLevelType,
+      fakeNativeEvent
+    );
+  },
+
+  /**
+   * Simulates a top level event being dispatched from a raw event that occured
+   * on the `ReactDOMComponent` `comp`.
+   * @param topLevelType {Object} A type from `EventConstants.topLevelTypes`.
+   * @param comp {!ReactDOMComponent}
+   * @param {?Event} fakeNativeEvent Fake native event to use in SyntheticEvent.
+   */
+  simulateNativeEventOnDOMComponent: function(
+      topLevelType,
+      comp,
+      fakeNativeEvent) {
+    ReactTestUtils.simulateNativeEventOnNode(
+      topLevelType,
+      comp.getDOMNode(),
+      fakeNativeEvent
+    );
+  },
+
+  nativeTouchData: function(x, y) {
+    return {
+      touches: [
+        {pageX: x, pageY: y}
+      ]
+    };
+  },
+
+  createRenderer: function() {
+    return new ReactShallowRenderer();
+  },
+
+  Simulate: null,
+  SimulateNative: {}
+};
+
+/**
+ * @class ReactShallowRenderer
+ */
+var ReactShallowRenderer = function() {
+  this._instance = null;
+};
+
+ReactShallowRenderer.prototype.getRenderOutput = function() {
+  return (
+    (this._instance && this._instance._renderedComponent &&
+     this._instance._renderedComponent._renderedOutput)
+    || null
+  );
+};
+
+var NoopInternalComponent = function(element) {
+  this._renderedOutput = element;
+  this._currentElement = element === null || element === false ?
+    ReactEmptyComponent.emptyElement :
+    element;
+};
+
+NoopInternalComponent.prototype = {
+
+  mountComponent: function() {
+  },
+
+  receiveComponent: function(element) {
+    this._renderedOutput = element;
+    this._currentElement = element === null || element === false ?
+      ReactEmptyComponent.emptyElement :
+      element;
+  },
+
+  unmountComponent: function() {
+  }
+
+};
+
+var ShallowComponentWrapper = function() { };
+assign(
+  ShallowComponentWrapper.prototype,
+  ReactCompositeComponent.Mixin, {
+    _instantiateReactComponent: function(element) {
+      return new NoopInternalComponent(element);
+    },
+    _replaceNodeWithMarkupByID: function() {},
+    _renderValidatedComponent:
+      ReactCompositeComponent.Mixin.
+        _renderValidatedComponentWithoutOwnerOrContext
+  }
+);
+
+ReactShallowRenderer.prototype.render = function(element, context) {
+  var transaction = ReactUpdates.ReactReconcileTransaction.getPooled();
+  this._render(element, transaction, context);
+  ReactUpdates.ReactReconcileTransaction.release(transaction);
+};
+
+ReactShallowRenderer.prototype.unmount = function() {
+  if (this._instance) {
+    this._instance.unmountComponent();
+  }
+};
+
+ReactShallowRenderer.prototype._render = function(element, transaction, context) {
+  if (!this._instance) {
+    var rootID = ReactInstanceHandles.createReactRootID();
+    var instance = new ShallowComponentWrapper(element.type);
+    instance.construct(element);
+
+    instance.mountComponent(rootID, transaction, context);
+
+    this._instance = instance;
+  } else {
+    this._instance.receiveComponent(element, transaction, context);
+  }
+};
+
+/**
+ * Exports:
+ *
+ * - `ReactTestUtils.Simulate.click(Element/ReactDOMComponent)`
+ * - `ReactTestUtils.Simulate.mouseMove(Element/ReactDOMComponent)`
+ * - `ReactTestUtils.Simulate.change(Element/ReactDOMComponent)`
+ * - ... (All keys from event plugin `eventTypes` objects)
+ */
+function makeSimulator(eventType) {
+  return function(domComponentOrNode, eventData) {
+    var node;
+    if (ReactTestUtils.isDOMComponent(domComponentOrNode)) {
+      node = domComponentOrNode.getDOMNode();
+    } else if (domComponentOrNode.tagName) {
+      node = domComponentOrNode;
+    }
+
+    var fakeNativeEvent = new Event();
+    fakeNativeEvent.target = node;
+    // We don't use SyntheticEvent.getPooled in order to not have to worry about
+    // properly destroying any properties assigned from `eventData` upon release
+    var event = new SyntheticEvent(
+      ReactBrowserEventEmitter.eventNameDispatchConfigs[eventType],
+      ReactMount.getID(node),
+      fakeNativeEvent
+    );
+    assign(event, eventData);
+    EventPropagators.accumulateTwoPhaseDispatches(event);
+
+    ReactUpdates.batchedUpdates(function() {
+      EventPluginHub.enqueueEvents(event);
+      EventPluginHub.processEventQueue();
+    });
+  };
+}
+
+function buildSimulators() {
+  ReactTestUtils.Simulate = {};
+
+  var eventType;
+  for (eventType in ReactBrowserEventEmitter.eventNameDispatchConfigs) {
+    /**
+     * @param {!Element || ReactDOMComponent} domComponentOrNode
+     * @param {?object} eventData Fake event data to use in SyntheticEvent.
+     */
+    ReactTestUtils.Simulate[eventType] = makeSimulator(eventType);
+  }
+}
+
+// Rebuild ReactTestUtils.Simulate whenever event plugins are injected
+var oldInjectEventPluginOrder = EventPluginHub.injection.injectEventPluginOrder;
+EventPluginHub.injection.injectEventPluginOrder = function() {
+  oldInjectEventPluginOrder.apply(this, arguments);
+  buildSimulators();
+};
+var oldInjectEventPlugins = EventPluginHub.injection.injectEventPluginsByName;
+EventPluginHub.injection.injectEventPluginsByName = function() {
+  oldInjectEventPlugins.apply(this, arguments);
+  buildSimulators();
+};
+
+buildSimulators();
+
+/**
+ * Exports:
+ *
+ * - `ReactTestUtils.SimulateNative.click(Element/ReactDOMComponent)`
+ * - `ReactTestUtils.SimulateNative.mouseMove(Element/ReactDOMComponent)`
+ * - `ReactTestUtils.SimulateNative.mouseIn/ReactDOMComponent)`
+ * - `ReactTestUtils.SimulateNative.mouseOut(Element/ReactDOMComponent)`
+ * - ... (All keys from `EventConstants.topLevelTypes`)
+ *
+ * Note: Top level event types are a subset of the entire set of handler types
+ * (which include a broader set of "synthetic" events). For example, onDragDone
+ * is a synthetic event. Except when testing an event plugin or React's event
+ * handling code specifically, you probably want to use ReactTestUtils.Simulate
+ * to dispatch synthetic events.
+ */
+
+function makeNativeSimulator(eventType) {
+  return function(domComponentOrNode, nativeEventData) {
+    var fakeNativeEvent = new Event(eventType);
+    assign(fakeNativeEvent, nativeEventData);
+    if (ReactTestUtils.isDOMComponent(domComponentOrNode)) {
+      ReactTestUtils.simulateNativeEventOnDOMComponent(
+        eventType,
+        domComponentOrNode,
+        fakeNativeEvent
+      );
+    } else if (!!domComponentOrNode.tagName) {
+      // Will allow on actual dom nodes.
+      ReactTestUtils.simulateNativeEventOnNode(
+        eventType,
+        domComponentOrNode,
+        fakeNativeEvent
+      );
+    }
+  };
+}
+
+var eventType;
+for (eventType in topLevelTypes) {
+  // Event type is stored as 'topClick' - we transform that to 'click'
+  var convenienceName = eventType.indexOf('top') === 0 ?
+    eventType.charAt(3).toLowerCase() + eventType.substr(4) : eventType;
+  /**
+   * @param {!Element || ReactDOMComponent} domComponentOrNode
+   * @param {?Event} nativeEventData Fake native event to use in SyntheticEvent.
+   */
+  ReactTestUtils.SimulateNative[convenienceName] =
+    makeNativeSimulator(eventType);
+}
+
+module.exports = ReactTestUtils;
+
+},{"100":100,"108":108,"16":16,"18":18,"21":21,"29":29,"31":31,"33":33,"43":43,"63":63,"65":65,"72":72,"73":73,"77":77}],96:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @typechecks static-only
+ * @providesModule ReactTransitionChildMapping
+ */
+
+'use strict';
+
+var ReactChildren = _dereq_(37);
+var ReactFragment = _dereq_(69);
+
+var ReactTransitionChildMapping = {
+  /**
+   * Given `this.props.children`, return an object mapping key to child. Just
+   * simple syntactic sugar around ReactChildren.map().
+   *
+   * @param {*} children `this.props.children`
+   * @return {object} Mapping of key to child
+   */
+  getChildMapping: function(children) {
+    if (!children) {
+      return children;
+    }
+    return ReactFragment.extract(ReactChildren.map(children, function(child) {
+      return child;
+    }));
+  },
+
+  /**
+   * When you're adding or removing children some may be added or removed in the
+   * same render pass. We want to show *both* since we want to simultaneously
+   * animate elements in and out. This function takes a previous set of keys
+   * and a new set of keys and merges them with its best guess of the correct
+   * ordering. In the future we may expose some of the utilities in
+   * ReactMultiChild to make this easy, but for now React itself does not
+   * directly have this concept of the union of prevChildren and nextChildren
+   * so we implement it here.
+   *
+   * @param {object} prev prev children as returned from
+   * `ReactTransitionChildMapping.getChildMapping()`.
+   * @param {object} next next children as returned from
+   * `ReactTransitionChildMapping.getChildMapping()`.
+   * @return {object} a key set that contains all keys in `prev` and all keys
+   * in `next` in a reasonable order.
+   */
+  mergeChildMappings: function(prev, next) {
+    prev = prev || {};
+    next = next || {};
+
+    function getValueForKey(key) {
+      if (next.hasOwnProperty(key)) {
+        return next[key];
+      } else {
+        return prev[key];
+      }
+    }
+
+    // For each key of `next`, the list of keys to insert before that key in
+    // the combined list
+    var nextKeysPending = {};
+
+    var pendingKeys = [];
+    for (var prevKey in prev) {
+      if (next.hasOwnProperty(prevKey)) {
+        if (pendingKeys.length) {
+          nextKeysPending[prevKey] = pendingKeys;
+          pendingKeys = [];
+        }
+      } else {
+        pendingKeys.push(prevKey);
+      }
+    }
+
+    var i;
+    var childMapping = {};
+    for (var nextKey in next) {
+      if (nextKeysPending.hasOwnProperty(nextKey)) {
+        for (i = 0; i < nextKeysPending[nextKey].length; i++) {
+          var pendingNextKey = nextKeysPending[nextKey][i];
+          childMapping[nextKeysPending[nextKey][i]] = getValueForKey(
+            pendingNextKey
+          );
+        }
+      }
+      childMapping[nextKey] = getValueForKey(nextKey);
+    }
+
+    // Finally, add the keys which didn't appear before any key in `next`
+    for (i = 0; i < pendingKeys.length; i++) {
+      childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
+    }
+
+    return childMapping;
+  }
+};
+
+module.exports = ReactTransitionChildMapping;
+
+},{"37":37,"69":69}],97:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactTransitionEvents
+ */
+
+'use strict';
+
+var ExecutionEnvironment = _dereq_(22);
+
+/**
+ * EVENT_NAME_MAP is used to determine which event fired when a
+ * transition/animation ends, based on the style property used to
+ * define that event.
+ */
+var EVENT_NAME_MAP = {
+  transitionend: {
+    'transition': 'transitionend',
+    'WebkitTransition': 'webkitTransitionEnd',
+    'MozTransition': 'mozTransitionEnd',
+    'OTransition': 'oTransitionEnd',
+    'msTransition': 'MSTransitionEnd'
+  },
+
+  animationend: {
+    'animation': 'animationend',
+    'WebkitAnimation': 'webkitAnimationEnd',
+    'MozAnimation': 'mozAnimationEnd',
+    'OAnimation': 'oAnimationEnd',
+    'msAnimation': 'MSAnimationEnd'
+  }
+};
+
+var endEvents = [];
+
+function detectEvents() {
+  var testEl = document.createElement('div');
+  var style = testEl.style;
+
+  // On some platforms, in particular some releases of Android 4.x,
+  // the un-prefixed "animation" and "transition" properties are defined on the
+  // style object but the events that fire will still be prefixed, so we need
+  // to check if the un-prefixed events are useable, and if not remove them
+  // from the map
+  if (!('AnimationEvent' in window)) {
+    delete EVENT_NAME_MAP.animationend.animation;
+  }
+
+  if (!('TransitionEvent' in window)) {
+    delete EVENT_NAME_MAP.transitionend.transition;
+  }
+
+  for (var baseEventName in EVENT_NAME_MAP) {
+    var baseEvents = EVENT_NAME_MAP[baseEventName];
+    for (var styleName in baseEvents) {
+      if (styleName in style) {
+        endEvents.push(baseEvents[styleName]);
+        break;
+      }
+    }
+  }
+}
+
+if (ExecutionEnvironment.canUseDOM) {
+  detectEvents();
+}
+
+// We use the raw {add|remove}EventListener() call because EventListener
+// does not know how to remove event listeners and we really should
+// clean up. Also, these events are not triggered in older browsers
+// so we should be A-OK here.
+
+function addEventListener(node, eventName, eventListener) {
+  node.addEventListener(eventName, eventListener, false);
+}
+
+function removeEventListener(node, eventName, eventListener) {
+  node.removeEventListener(eventName, eventListener, false);
+}
+
+var ReactTransitionEvents = {
+  addEndEventListener: function(node, eventListener) {
+    if (endEvents.length === 0) {
+      // If CSS transitions are not supported, trigger an "end animation"
+      // event immediately.
+      window.setTimeout(eventListener, 0);
+      return;
+    }
+    endEvents.forEach(function(endEvent) {
+      addEventListener(node, endEvent, eventListener);
+    });
+  },
+
+  removeEndEventListener: function(node, eventListener) {
+    if (endEvents.length === 0) {
+      return;
+    }
+    endEvents.forEach(function(endEvent) {
+      removeEventListener(node, endEvent, eventListener);
+    });
+  }
+};
+
+module.exports = ReactTransitionEvents;
+
+},{"22":22}],98:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactTransitionGroup
+ */
+
+'use strict';
+
+var React = _dereq_(31);
+var ReactTransitionChildMapping = _dereq_(96);
+
+var assign = _dereq_(29);
+var cloneWithProps = _dereq_(122);
+var emptyFunction = _dereq_(129);
+
+var ReactTransitionGroup = React.createClass({
+  displayName: 'ReactTransitionGroup',
+
+  propTypes: {
+    component: React.PropTypes.any,
+    childFactory: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      component: 'span',
+      childFactory: emptyFunction.thatReturnsArgument
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      children: ReactTransitionChildMapping.getChildMapping(this.props.children)
+    };
+  },
+
+  componentWillMount: function() {
+    this.currentlyTransitioningKeys = {};
+    this.keysToEnter = [];
+    this.keysToLeave = [];
+  },
+
+  componentDidMount: function() {
+    var initialChildMapping = this.state.children;
+    for (var key in initialChildMapping) {
+      if (initialChildMapping[key]) {
+        this.performAppear(key);
+      }
+    }
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    var nextChildMapping = ReactTransitionChildMapping.getChildMapping(
+      nextProps.children
+    );
+    var prevChildMapping = this.state.children;
+
+    this.setState({
+      children: ReactTransitionChildMapping.mergeChildMappings(
+        prevChildMapping,
+        nextChildMapping
+      )
+    });
+
+    var key;
+
+    for (key in nextChildMapping) {
+      var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
+      if (nextChildMapping[key] && !hasPrev &&
+          !this.currentlyTransitioningKeys[key]) {
+        this.keysToEnter.push(key);
+      }
+    }
+
+    for (key in prevChildMapping) {
+      var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
+      if (prevChildMapping[key] && !hasNext &&
+          !this.currentlyTransitioningKeys[key]) {
+        this.keysToLeave.push(key);
+      }
+    }
+
+    // If we want to someday check for reordering, we could do it here.
+  },
+
+  componentDidUpdate: function() {
+    var keysToEnter = this.keysToEnter;
+    this.keysToEnter = [];
+    keysToEnter.forEach(this.performEnter);
+
+    var keysToLeave = this.keysToLeave;
+    this.keysToLeave = [];
+    keysToLeave.forEach(this.performLeave);
+  },
+
+  performAppear: function(key) {
+    this.currentlyTransitioningKeys[key] = true;
+
+    var component = this.refs[key];
+
+    if (component.componentWillAppear) {
+      component.componentWillAppear(
+        this._handleDoneAppearing.bind(this, key)
+      );
+    } else {
+      this._handleDoneAppearing(key);
+    }
+  },
+
+  _handleDoneAppearing: function(key) {
+    var component = this.refs[key];
+    if (component.componentDidAppear) {
+      component.componentDidAppear();
+    }
+
+    delete this.currentlyTransitioningKeys[key];
+
+    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
+      this.props.children
+    );
+
+    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+      // This was removed before it had fully appeared. Remove it.
+      this.performLeave(key);
+    }
+  },
+
+  performEnter: function(key) {
+    this.currentlyTransitioningKeys[key] = true;
+
+    var component = this.refs[key];
+
+    if (component.componentWillEnter) {
+      component.componentWillEnter(
+        this._handleDoneEntering.bind(this, key)
+      );
+    } else {
+      this._handleDoneEntering(key);
+    }
+  },
+
+  _handleDoneEntering: function(key) {
+    var component = this.refs[key];
+    if (component.componentDidEnter) {
+      component.componentDidEnter();
+    }
+
+    delete this.currentlyTransitioningKeys[key];
+
+    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
+      this.props.children
+    );
+
+    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+      // This was removed before it had fully entered. Remove it.
+      this.performLeave(key);
+    }
+  },
+
+  performLeave: function(key) {
+    this.currentlyTransitioningKeys[key] = true;
+
+    var component = this.refs[key];
+    if (component.componentWillLeave) {
+      component.componentWillLeave(this._handleDoneLeaving.bind(this, key));
+    } else {
+      // Note that this is somewhat dangerous b/c it calls setState()
+      // again, effectively mutating the component before all the work
+      // is done.
+      this._handleDoneLeaving(key);
+    }
+  },
+
+  _handleDoneLeaving: function(key) {
+    var component = this.refs[key];
+
+    if (component.componentDidLeave) {
+      component.componentDidLeave();
+    }
+
+    delete this.currentlyTransitioningKeys[key];
+
+    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(
+      this.props.children
+    );
+
+    if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
+      // This entered again before it fully left. Add it again.
+      this.performEnter(key);
+    } else {
+      var newChildren = assign({}, this.state.children);
+      delete newChildren[key];
+      this.setState({children: newChildren});
+    }
+  },
+
+  render: function() {
+    // TODO: we could get rid of the need for the wrapper node
+    // by cloning a single child
+    var childrenToRender = [];
+    for (var key in this.state.children) {
+      var child = this.state.children[key];
+      if (child) {
+        // You may need to apply reactive updates to a child as it is leaving.
+        // The normal React way to do it won't work since the child will have
+        // already been removed. In case you need this behavior you can provide
+        // a childFactory function to wrap every child, even the ones that are
+        // leaving.
+        childrenToRender.push(cloneWithProps(
+          this.props.childFactory(child),
+          {ref: key, key: key}
+        ));
+      }
+    }
+    return React.createElement(
+      this.props.component,
+      this.props,
+      childrenToRender
+    );
+  }
+});
+
+module.exports = ReactTransitionGroup;
+
+},{"122":122,"129":129,"29":29,"31":31,"96":96}],99:[function(_dereq_,module,exports){
 /**
  * Copyright 2015, Facebook, Inc.
  * All rights reserved.
@@ -28952,15 +30667,15 @@ module.exports = ReactServerRenderingTransaction;
 
 'use strict';
 
-var ReactLifeCycle = _dereq_(68);
-var ReactCurrentOwner = _dereq_(39);
-var ReactElement = _dereq_(57);
-var ReactInstanceMap = _dereq_(67);
-var ReactUpdates = _dereq_(87);
+var ReactLifeCycle = _dereq_(74);
+var ReactCurrentOwner = _dereq_(45);
+var ReactElement = _dereq_(63);
+var ReactInstanceMap = _dereq_(73);
+var ReactUpdates = _dereq_(100);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
+var warning = _dereq_(171);
 
 function enqueueUpdate(internalInstance) {
   if (internalInstance !== ReactLifeCycle.currentlyMountingInstance) {
@@ -29235,7 +30950,7 @@ var ReactUpdateQueue = {
 
 module.exports = ReactUpdateQueue;
 
-},{"135":135,"154":154,"27":27,"39":39,"57":57,"67":67,"68":68,"87":87}],87:[function(_dereq_,module,exports){
+},{"100":100,"150":150,"171":171,"29":29,"45":45,"63":63,"73":73,"74":74}],100:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29249,16 +30964,16 @@ module.exports = ReactUpdateQueue;
 
 'use strict';
 
-var CallbackQueue = _dereq_(6);
-var PooledClass = _dereq_(28);
-var ReactCurrentOwner = _dereq_(39);
-var ReactPerf = _dereq_(75);
-var ReactReconciler = _dereq_(81);
-var Transaction = _dereq_(103);
+var CallbackQueue = _dereq_(7);
+var PooledClass = _dereq_(30);
+var ReactCurrentOwner = _dereq_(45);
+var ReactPerf = _dereq_(82);
+var ReactReconciler = _dereq_(89);
+var Transaction = _dereq_(116);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
+var warning = _dereq_(171);
 
 var dirtyComponents = [];
 var asapCallbackQueue = CallbackQueue.getPooled();
@@ -29515,7 +31230,7 @@ var ReactUpdates = {
 
 module.exports = ReactUpdates;
 
-},{"103":103,"135":135,"154":154,"27":27,"28":28,"39":39,"6":6,"75":75,"81":81}],88:[function(_dereq_,module,exports){
+},{"116":116,"150":150,"171":171,"29":29,"30":30,"45":45,"7":7,"82":82,"89":89}],101:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29531,7 +31246,7 @@ module.exports = ReactUpdates;
 
 'use strict';
 
-var DOMProperty = _dereq_(10);
+var DOMProperty = _dereq_(11);
 
 var MUST_USE_ATTRIBUTE = DOMProperty.injection.MUST_USE_ATTRIBUTE;
 
@@ -29607,7 +31322,7 @@ var SVGDOMPropertyConfig = {
 
 module.exports = SVGDOMPropertyConfig;
 
-},{"10":10}],89:[function(_dereq_,module,exports){
+},{"11":11}],102:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29621,15 +31336,15 @@ module.exports = SVGDOMPropertyConfig;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPropagators = _dereq_(20);
-var ReactInputSelection = _dereq_(65);
-var SyntheticEvent = _dereq_(95);
+var EventConstants = _dereq_(16);
+var EventPropagators = _dereq_(21);
+var ReactInputSelection = _dereq_(71);
+var SyntheticEvent = _dereq_(108);
 
-var getActiveElement = _dereq_(121);
-var isTextInputElement = _dereq_(138);
-var keyOf = _dereq_(141);
-var shallowEqual = _dereq_(150);
+var getActiveElement = _dereq_(136);
+var isTextInputElement = _dereq_(153);
+var keyOf = _dereq_(157);
+var shallowEqual = _dereq_(166);
 
 var topLevelTypes = EventConstants.topLevelTypes;
 
@@ -29802,7 +31517,7 @@ var SelectEventPlugin = {
 
 module.exports = SelectEventPlugin;
 
-},{"121":121,"138":138,"141":141,"15":15,"150":150,"20":20,"65":65,"95":95}],90:[function(_dereq_,module,exports){
+},{"108":108,"136":136,"153":153,"157":157,"16":16,"166":166,"21":21,"71":71}],103:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29833,7 +31548,7 @@ var ServerReactRootIndex = {
 
 module.exports = ServerReactRootIndex;
 
-},{}],91:[function(_dereq_,module,exports){
+},{}],104:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29847,24 +31562,24 @@ module.exports = ServerReactRootIndex;
 
 'use strict';
 
-var EventConstants = _dereq_(15);
-var EventPluginUtils = _dereq_(19);
-var EventPropagators = _dereq_(20);
-var SyntheticClipboardEvent = _dereq_(92);
-var SyntheticEvent = _dereq_(95);
-var SyntheticFocusEvent = _dereq_(96);
-var SyntheticKeyboardEvent = _dereq_(98);
-var SyntheticMouseEvent = _dereq_(99);
-var SyntheticDragEvent = _dereq_(94);
-var SyntheticTouchEvent = _dereq_(100);
-var SyntheticUIEvent = _dereq_(101);
-var SyntheticWheelEvent = _dereq_(102);
+var EventConstants = _dereq_(16);
+var EventPluginUtils = _dereq_(20);
+var EventPropagators = _dereq_(21);
+var SyntheticClipboardEvent = _dereq_(105);
+var SyntheticEvent = _dereq_(108);
+var SyntheticFocusEvent = _dereq_(109);
+var SyntheticKeyboardEvent = _dereq_(111);
+var SyntheticMouseEvent = _dereq_(112);
+var SyntheticDragEvent = _dereq_(107);
+var SyntheticTouchEvent = _dereq_(113);
+var SyntheticUIEvent = _dereq_(114);
+var SyntheticWheelEvent = _dereq_(115);
 
-var getEventCharCode = _dereq_(122);
+var getEventCharCode = _dereq_(137);
 
-var invariant = _dereq_(135);
-var keyOf = _dereq_(141);
-var warning = _dereq_(154);
+var invariant = _dereq_(150);
+var keyOf = _dereq_(157);
+var warning = _dereq_(171);
 
 var topLevelTypes = EventConstants.topLevelTypes;
 
@@ -30259,7 +31974,7 @@ var SimpleEventPlugin = {
 
 module.exports = SimpleEventPlugin;
 
-},{"100":100,"101":101,"102":102,"122":122,"135":135,"141":141,"15":15,"154":154,"19":19,"20":20,"92":92,"94":94,"95":95,"96":96,"98":98,"99":99}],92:[function(_dereq_,module,exports){
+},{"105":105,"107":107,"108":108,"109":109,"111":111,"112":112,"113":113,"114":114,"115":115,"137":137,"150":150,"157":157,"16":16,"171":171,"20":20,"21":21}],105:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30274,7 +31989,7 @@ module.exports = SimpleEventPlugin;
 
 'use strict';
 
-var SyntheticEvent = _dereq_(95);
+var SyntheticEvent = _dereq_(108);
 
 /**
  * @interface Event
@@ -30304,7 +32019,7 @@ SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 
 module.exports = SyntheticClipboardEvent;
 
-},{"95":95}],93:[function(_dereq_,module,exports){
+},{"108":108}],106:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30319,7 +32034,7 @@ module.exports = SyntheticClipboardEvent;
 
 'use strict';
 
-var SyntheticEvent = _dereq_(95);
+var SyntheticEvent = _dereq_(108);
 
 /**
  * @interface Event
@@ -30349,7 +32064,7 @@ SyntheticEvent.augmentClass(
 
 module.exports = SyntheticCompositionEvent;
 
-},{"95":95}],94:[function(_dereq_,module,exports){
+},{"108":108}],107:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30364,7 +32079,7 @@ module.exports = SyntheticCompositionEvent;
 
 'use strict';
 
-var SyntheticMouseEvent = _dereq_(99);
+var SyntheticMouseEvent = _dereq_(112);
 
 /**
  * @interface DragEvent
@@ -30388,7 +32103,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 
 module.exports = SyntheticDragEvent;
 
-},{"99":99}],95:[function(_dereq_,module,exports){
+},{"112":112}],108:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30403,11 +32118,11 @@ module.exports = SyntheticDragEvent;
 
 'use strict';
 
-var PooledClass = _dereq_(28);
+var PooledClass = _dereq_(30);
 
-var assign = _dereq_(27);
-var emptyFunction = _dereq_(114);
-var getEventTarget = _dereq_(125);
+var assign = _dereq_(29);
+var emptyFunction = _dereq_(129);
+var getEventTarget = _dereq_(140);
 
 /**
  * @interface Event
@@ -30554,7 +32269,7 @@ PooledClass.addPoolingTo(SyntheticEvent, PooledClass.threeArgumentPooler);
 
 module.exports = SyntheticEvent;
 
-},{"114":114,"125":125,"27":27,"28":28}],96:[function(_dereq_,module,exports){
+},{"129":129,"140":140,"29":29,"30":30}],109:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30569,7 +32284,7 @@ module.exports = SyntheticEvent;
 
 'use strict';
 
-var SyntheticUIEvent = _dereq_(101);
+var SyntheticUIEvent = _dereq_(114);
 
 /**
  * @interface FocusEvent
@@ -30593,7 +32308,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 
 module.exports = SyntheticFocusEvent;
 
-},{"101":101}],97:[function(_dereq_,module,exports){
+},{"114":114}],110:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30608,7 +32323,7 @@ module.exports = SyntheticFocusEvent;
 
 'use strict';
 
-var SyntheticEvent = _dereq_(95);
+var SyntheticEvent = _dereq_(108);
 
 /**
  * @interface Event
@@ -30639,7 +32354,7 @@ SyntheticEvent.augmentClass(
 
 module.exports = SyntheticInputEvent;
 
-},{"95":95}],98:[function(_dereq_,module,exports){
+},{"108":108}],111:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30654,11 +32369,11 @@ module.exports = SyntheticInputEvent;
 
 'use strict';
 
-var SyntheticUIEvent = _dereq_(101);
+var SyntheticUIEvent = _dereq_(114);
 
-var getEventCharCode = _dereq_(122);
-var getEventKey = _dereq_(123);
-var getEventModifierState = _dereq_(124);
+var getEventCharCode = _dereq_(137);
+var getEventKey = _dereq_(138);
+var getEventModifierState = _dereq_(139);
 
 /**
  * @interface KeyboardEvent
@@ -30726,7 +32441,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 
 module.exports = SyntheticKeyboardEvent;
 
-},{"101":101,"122":122,"123":123,"124":124}],99:[function(_dereq_,module,exports){
+},{"114":114,"137":137,"138":138,"139":139}],112:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30741,10 +32456,10 @@ module.exports = SyntheticKeyboardEvent;
 
 'use strict';
 
-var SyntheticUIEvent = _dereq_(101);
-var ViewportMetrics = _dereq_(104);
+var SyntheticUIEvent = _dereq_(114);
+var ViewportMetrics = _dereq_(117);
 
-var getEventModifierState = _dereq_(124);
+var getEventModifierState = _dereq_(139);
 
 /**
  * @interface MouseEvent
@@ -30807,7 +32522,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 
 module.exports = SyntheticMouseEvent;
 
-},{"101":101,"104":104,"124":124}],100:[function(_dereq_,module,exports){
+},{"114":114,"117":117,"139":139}],113:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30822,9 +32537,9 @@ module.exports = SyntheticMouseEvent;
 
 'use strict';
 
-var SyntheticUIEvent = _dereq_(101);
+var SyntheticUIEvent = _dereq_(114);
 
-var getEventModifierState = _dereq_(124);
+var getEventModifierState = _dereq_(139);
 
 /**
  * @interface TouchEvent
@@ -30855,7 +32570,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 
 module.exports = SyntheticTouchEvent;
 
-},{"101":101,"124":124}],101:[function(_dereq_,module,exports){
+},{"114":114,"139":139}],114:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30870,9 +32585,9 @@ module.exports = SyntheticTouchEvent;
 
 'use strict';
 
-var SyntheticEvent = _dereq_(95);
+var SyntheticEvent = _dereq_(108);
 
-var getEventTarget = _dereq_(125);
+var getEventTarget = _dereq_(140);
 
 /**
  * @interface UIEvent
@@ -30917,7 +32632,7 @@ SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
 
-},{"125":125,"95":95}],102:[function(_dereq_,module,exports){
+},{"108":108,"140":140}],115:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30932,7 +32647,7 @@ module.exports = SyntheticUIEvent;
 
 'use strict';
 
-var SyntheticMouseEvent = _dereq_(99);
+var SyntheticMouseEvent = _dereq_(112);
 
 /**
  * @interface WheelEvent
@@ -30978,7 +32693,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 
 module.exports = SyntheticWheelEvent;
 
-},{"99":99}],103:[function(_dereq_,module,exports){
+},{"112":112}],116:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30992,7 +32707,7 @@ module.exports = SyntheticWheelEvent;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * `Transaction` creates a black box that is able to wrap any method such that
@@ -31217,7 +32932,7 @@ var Transaction = {
 
 module.exports = Transaction;
 
-},{"135":135}],104:[function(_dereq_,module,exports){
+},{"150":150}],117:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31246,7 +32961,7 @@ var ViewportMetrics = {
 
 module.exports = ViewportMetrics;
 
-},{}],105:[function(_dereq_,module,exports){
+},{}],118:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -31260,7 +32975,7 @@ module.exports = ViewportMetrics;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  *
@@ -31310,7 +33025,7 @@ function accumulateInto(current, next) {
 
 module.exports = accumulateInto;
 
-},{"135":135}],106:[function(_dereq_,module,exports){
+},{"150":150}],119:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31344,7 +33059,7 @@ function adler32(data) {
 
 module.exports = adler32;
 
-},{}],107:[function(_dereq_,module,exports){
+},{}],120:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31376,7 +33091,7 @@ function camelize(string) {
 
 module.exports = camelize;
 
-},{}],108:[function(_dereq_,module,exports){
+},{}],121:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -31391,7 +33106,7 @@ module.exports = camelize;
 
 "use strict";
 
-var camelize = _dereq_(107);
+var camelize = _dereq_(120);
 
 var msPattern = /^-ms-/;
 
@@ -31418,7 +33133,64 @@ function camelizeStyleName(string) {
 
 module.exports = camelizeStyleName;
 
-},{"107":107}],109:[function(_dereq_,module,exports){
+},{"120":120}],122:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @typechecks static-only
+ * @providesModule cloneWithProps
+ */
+
+'use strict';
+
+var ReactElement = _dereq_(63);
+var ReactPropTransferer = _dereq_(83);
+
+var keyOf = _dereq_(157);
+var warning = _dereq_(171);
+
+var CHILDREN_PROP = keyOf({children: null});
+
+/**
+ * Sometimes you want to change the props of a child passed to you. Usually
+ * this is to add a CSS class.
+ *
+ * @param {ReactElement} child child element you'd like to clone
+ * @param {object} props props you'd like to modify. className and style will be
+ * merged automatically.
+ * @return {ReactElement} a clone of child with props merged in.
+ */
+function cloneWithProps(child, props) {
+  if ("production" !== "development") {
+    ("production" !== "development" ? warning(
+      !child.ref,
+      'You are calling cloneWithProps() on a child with a ref. This is ' +
+      'dangerous because you\'re creating a new child which will not be ' +
+      'added as a ref to its parent.'
+    ) : null);
+  }
+
+  var newProps = ReactPropTransferer.mergeProps(props, child.props);
+
+  // Use `child.props.children` if it is provided.
+  if (!newProps.hasOwnProperty(CHILDREN_PROP) &&
+      child.props.hasOwnProperty(CHILDREN_PROP)) {
+    newProps.children = child.props.children;
+  }
+
+  // The current API doesn't retain _owner and _context, which is why this
+  // doesn't use ReactElement.cloneAndReplaceProps.
+  return ReactElement.createElement(child.type, newProps);
+}
+
+module.exports = cloneWithProps;
+
+},{"157":157,"171":171,"63":63,"83":83}],123:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31431,7 +33203,7 @@ module.exports = camelizeStyleName;
  * @typechecks
  */
 
-var isTextNode = _dereq_(139);
+var isTextNode = _dereq_(154);
 
 /*jslint bitwise:true */
 
@@ -31462,7 +33234,7 @@ function containsNode(outerNode, innerNode) {
 
 module.exports = containsNode;
 
-},{"139":139}],110:[function(_dereq_,module,exports){
+},{"154":154}],124:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31475,7 +33247,7 @@ module.exports = containsNode;
  * @typechecks
  */
 
-var toArray = _dereq_(152);
+var toArray = _dereq_(168);
 
 /**
  * Perform a heuristic test to determine if an object is "array-like".
@@ -31548,7 +33320,7 @@ function createArrayFromMixed(obj) {
 
 module.exports = createArrayFromMixed;
 
-},{"152":152}],111:[function(_dereq_,module,exports){
+},{"168":168}],125:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31564,10 +33336,10 @@ module.exports = createArrayFromMixed;
 'use strict';
 
 // Defeat circular references by requiring this directly.
-var ReactClass = _dereq_(33);
-var ReactElement = _dereq_(57);
+var ReactClass = _dereq_(38);
+var ReactElement = _dereq_(63);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Create a component that will throw an exception when unmounted.
@@ -31608,7 +33380,7 @@ function createFullPageComponent(tag) {
 
 module.exports = createFullPageComponent;
 
-},{"135":135,"33":33,"57":57}],112:[function(_dereq_,module,exports){
+},{"150":150,"38":38,"63":63}],126:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31623,11 +33395,11 @@ module.exports = createFullPageComponent;
 
 /*jslint evil: true, sub: true */
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
-var createArrayFromMixed = _dereq_(110);
-var getMarkupWrap = _dereq_(127);
-var invariant = _dereq_(135);
+var createArrayFromMixed = _dereq_(124);
+var getMarkupWrap = _dereq_(142);
+var invariant = _dereq_(150);
 
 /**
  * Dummy container used to render all markup.
@@ -31696,7 +33468,61 @@ function createNodesFromMarkup(markup, handleScript) {
 
 module.exports = createNodesFromMarkup;
 
-},{"110":110,"127":127,"135":135,"21":21}],113:[function(_dereq_,module,exports){
+},{"124":124,"142":142,"150":150,"22":22}],127:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule cx
+ */
+
+/**
+ * This function is used to mark string literals representing CSS class names
+ * so that they can be transformed statically. This allows for modularization
+ * and minification of CSS class names.
+ *
+ * In static_upstream, this function is actually implemented, but it should
+ * eventually be replaced with something more descriptive, and the transform
+ * that is used in the main stack should be ported for use elsewhere.
+ *
+ * @param string|object className to modularize, or an object of key/values.
+ *                      In the object case, the values are conditions that
+ *                      determine if the className keys should be included.
+ * @param [string ...]  Variable list of classNames in the string case.
+ * @return string       Renderable space-separated CSS className.
+ */
+
+'use strict';
+var warning = _dereq_(171);
+
+var warned = false;
+
+function cx(classNames) {
+  if ("production" !== "development") {
+    ("production" !== "development" ? warning(
+      warned,
+      'React.addons.classSet will be deprecated in a future version. See ' +
+      'http://fb.me/react-addons-classset'
+    ) : null);
+    warned = true;
+  }
+
+  if (typeof classNames == 'object') {
+    return Object.keys(classNames).filter(function(className) {
+      return classNames[className];
+    }).join(' ');
+  } else {
+    return Array.prototype.join.call(arguments, ' ');
+  }
+}
+
+module.exports = cx;
+
+},{"171":171}],128:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31711,7 +33537,7 @@ module.exports = createNodesFromMarkup;
 
 'use strict';
 
-var CSSProperty = _dereq_(4);
+var CSSProperty = _dereq_(5);
 
 var isUnitlessNumber = CSSProperty.isUnitlessNumber;
 
@@ -31754,7 +33580,7 @@ function dangerousStyleValue(name, value) {
 
 module.exports = dangerousStyleValue;
 
-},{"4":4}],114:[function(_dereq_,module,exports){
+},{"5":5}],129:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31788,7 +33614,7 @@ emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 
 module.exports = emptyFunction;
 
-},{}],115:[function(_dereq_,module,exports){
+},{}],130:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31810,7 +33636,7 @@ if ("production" !== "development") {
 
 module.exports = emptyObject;
 
-},{}],116:[function(_dereq_,module,exports){
+},{}],131:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31850,7 +33676,7 @@ function escapeTextContentForBrowser(text) {
 
 module.exports = escapeTextContentForBrowser;
 
-},{}],117:[function(_dereq_,module,exports){
+},{}],132:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31865,13 +33691,13 @@ module.exports = escapeTextContentForBrowser;
 
 'use strict';
 
-var ReactCurrentOwner = _dereq_(39);
-var ReactInstanceMap = _dereq_(67);
-var ReactMount = _dereq_(70);
+var ReactCurrentOwner = _dereq_(45);
+var ReactInstanceMap = _dereq_(73);
+var ReactMount = _dereq_(77);
 
-var invariant = _dereq_(135);
-var isNode = _dereq_(137);
-var warning = _dereq_(154);
+var invariant = _dereq_(150);
+var isNode = _dereq_(152);
+var warning = _dereq_(171);
 
 /**
  * Returns the DOM node rendered by this element.
@@ -31921,7 +33747,7 @@ function findDOMNode(componentOrElement) {
 
 module.exports = findDOMNode;
 
-},{"135":135,"137":137,"154":154,"39":39,"67":67,"70":70}],118:[function(_dereq_,module,exports){
+},{"150":150,"152":152,"171":171,"45":45,"73":73,"77":77}],133:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31935,8 +33761,8 @@ module.exports = findDOMNode;
 
 'use strict';
 
-var traverseAllChildren = _dereq_(153);
-var warning = _dereq_(154);
+var traverseAllChildren = _dereq_(169);
+var warning = _dereq_(171);
 
 /**
  * @param {function} traverseContext Context passed through traversal.
@@ -31977,7 +33803,7 @@ function flattenChildren(children) {
 
 module.exports = flattenChildren;
 
-},{"153":153,"154":154}],119:[function(_dereq_,module,exports){
+},{"169":169,"171":171}],134:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -32006,7 +33832,7 @@ function focusNode(node) {
 
 module.exports = focusNode;
 
-},{}],120:[function(_dereq_,module,exports){
+},{}],135:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32037,7 +33863,7 @@ var forEachAccumulated = function(arr, cb, scope) {
 
 module.exports = forEachAccumulated;
 
-},{}],121:[function(_dereq_,module,exports){
+},{}],136:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32066,7 +33892,7 @@ function getActiveElement() /*?DOMElement*/ {
 
 module.exports = getActiveElement;
 
-},{}],122:[function(_dereq_,module,exports){
+},{}],137:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32118,7 +33944,7 @@ function getEventCharCode(nativeEvent) {
 
 module.exports = getEventCharCode;
 
-},{}],123:[function(_dereq_,module,exports){
+},{}],138:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32133,7 +33959,7 @@ module.exports = getEventCharCode;
 
 'use strict';
 
-var getEventCharCode = _dereq_(122);
+var getEventCharCode = _dereq_(137);
 
 /**
  * Normalization of deprecated HTML5 `key` values
@@ -32223,7 +34049,7 @@ function getEventKey(nativeEvent) {
 
 module.exports = getEventKey;
 
-},{"122":122}],124:[function(_dereq_,module,exports){
+},{"137":137}],139:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32270,7 +34096,7 @@ function getEventModifierState(nativeEvent) {
 
 module.exports = getEventModifierState;
 
-},{}],125:[function(_dereq_,module,exports){
+},{}],140:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32301,7 +34127,7 @@ function getEventTarget(nativeEvent) {
 
 module.exports = getEventTarget;
 
-},{}],126:[function(_dereq_,module,exports){
+},{}],141:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32345,7 +34171,7 @@ function getIteratorFn(maybeIterable) {
 
 module.exports = getIteratorFn;
 
-},{}],127:[function(_dereq_,module,exports){
+},{}],142:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32357,9 +34183,9 @@ module.exports = getIteratorFn;
  * @providesModule getMarkupWrap
  */
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Dummy container used to detect which wraps are necessary.
@@ -32460,7 +34286,7 @@ function getMarkupWrap(nodeName) {
 
 module.exports = getMarkupWrap;
 
-},{"135":135,"21":21}],128:[function(_dereq_,module,exports){
+},{"150":150,"22":22}],143:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32535,7 +34361,7 @@ function getNodeForCharacterOffset(root, offset) {
 
 module.exports = getNodeForCharacterOffset;
 
-},{}],129:[function(_dereq_,module,exports){
+},{}],144:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32570,7 +34396,7 @@ function getReactRootElementInContainer(container) {
 
 module.exports = getReactRootElementInContainer;
 
-},{}],130:[function(_dereq_,module,exports){
+},{}],145:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32584,7 +34410,7 @@ module.exports = getReactRootElementInContainer;
 
 'use strict';
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
 var contentKey = null;
 
@@ -32607,7 +34433,7 @@ function getTextContentAccessor() {
 
 module.exports = getTextContentAccessor;
 
-},{"21":21}],131:[function(_dereq_,module,exports){
+},{"22":22}],146:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32647,7 +34473,7 @@ function getUnboundedScrollPosition(scrollable) {
 
 module.exports = getUnboundedScrollPosition;
 
-},{}],132:[function(_dereq_,module,exports){
+},{}],147:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32680,7 +34506,7 @@ function hyphenate(string) {
 
 module.exports = hyphenate;
 
-},{}],133:[function(_dereq_,module,exports){
+},{}],148:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32695,7 +34521,7 @@ module.exports = hyphenate;
 
 "use strict";
 
-var hyphenate = _dereq_(132);
+var hyphenate = _dereq_(147);
 
 var msPattern = /^ms-/;
 
@@ -32721,7 +34547,7 @@ function hyphenateStyleName(string) {
 
 module.exports = hyphenateStyleName;
 
-},{"132":132}],134:[function(_dereq_,module,exports){
+},{"147":147}],149:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32736,13 +34562,13 @@ module.exports = hyphenateStyleName;
 
 'use strict';
 
-var ReactCompositeComponent = _dereq_(37);
-var ReactEmptyComponent = _dereq_(59);
-var ReactNativeComponent = _dereq_(73);
+var ReactCompositeComponent = _dereq_(43);
+var ReactEmptyComponent = _dereq_(65);
+var ReactNativeComponent = _dereq_(80);
 
-var assign = _dereq_(27);
-var invariant = _dereq_(135);
-var warning = _dereq_(154);
+var assign = _dereq_(29);
+var invariant = _dereq_(150);
+var warning = _dereq_(171);
 
 // To avoid a cyclic dependency, we create the final class in this module
 var ReactCompositeComponentWrapper = function() { };
@@ -32856,7 +34682,7 @@ function instantiateReactComponent(node, parentCompositeType) {
 
 module.exports = instantiateReactComponent;
 
-},{"135":135,"154":154,"27":27,"37":37,"59":59,"73":73}],135:[function(_dereq_,module,exports){
+},{"150":150,"171":171,"29":29,"43":43,"65":65,"80":80}],150:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32911,7 +34737,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 
-},{}],136:[function(_dereq_,module,exports){
+},{}],151:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32925,7 +34751,7 @@ module.exports = invariant;
 
 'use strict';
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
 var useHasFeature;
 if (ExecutionEnvironment.canUseDOM) {
@@ -32976,7 +34802,7 @@ function isEventSupported(eventNameSuffix, capture) {
 
 module.exports = isEventSupported;
 
-},{"21":21}],137:[function(_dereq_,module,exports){
+},{"22":22}],152:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33003,7 +34829,7 @@ function isNode(object) {
 
 module.exports = isNode;
 
-},{}],138:[function(_dereq_,module,exports){
+},{}],153:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33046,7 +34872,7 @@ function isTextInputElement(elem) {
 
 module.exports = isTextInputElement;
 
-},{}],139:[function(_dereq_,module,exports){
+},{}],154:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33059,7 +34885,7 @@ module.exports = isTextInputElement;
  * @typechecks
  */
 
-var isNode = _dereq_(137);
+var isNode = _dereq_(152);
 
 /**
  * @param {*} object The object to check.
@@ -33071,7 +34897,48 @@ function isTextNode(object) {
 
 module.exports = isTextNode;
 
-},{"137":137}],140:[function(_dereq_,module,exports){
+},{"152":152}],155:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule joinClasses
+ * @typechecks static-only
+ */
+
+'use strict';
+
+/**
+ * Combines multiple className strings into one.
+ * http://jsperf.com/joinclasses-args-vs-array
+ *
+ * @param {...?string} classes
+ * @return {string}
+ */
+function joinClasses(className/*, ... */) {
+  if (!className) {
+    className = '';
+  }
+  var nextClass;
+  var argLength = arguments.length;
+  if (argLength > 1) {
+    for (var ii = 1; ii < argLength; ii++) {
+      nextClass = arguments[ii];
+      if (nextClass) {
+        className = (className ? className + ' ' : '') + nextClass;
+      }
+    }
+  }
+  return className;
+}
+
+module.exports = joinClasses;
+
+},{}],156:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33086,7 +34953,7 @@ module.exports = isTextNode;
 
 'use strict';
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Constructs an enumeration with keys equal to their value.
@@ -33124,7 +34991,7 @@ var keyMirror = function(obj) {
 
 module.exports = keyMirror;
 
-},{"135":135}],141:[function(_dereq_,module,exports){
+},{"150":150}],157:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33160,7 +35027,7 @@ var keyOf = function(oneKeyObj) {
 
 module.exports = keyOf;
 
-},{}],142:[function(_dereq_,module,exports){
+},{}],158:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33213,7 +35080,7 @@ function mapObject(object, callback, context) {
 
 module.exports = mapObject;
 
-},{}],143:[function(_dereq_,module,exports){
+},{}],159:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33246,7 +35113,7 @@ function memoizeStringOnly(callback) {
 
 module.exports = memoizeStringOnly;
 
-},{}],144:[function(_dereq_,module,exports){
+},{}],160:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33259,9 +35126,9 @@ module.exports = memoizeStringOnly;
  */
 'use strict';
 
-var ReactElement = _dereq_(57);
+var ReactElement = _dereq_(63);
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Returns the first child in a collection of children and verifies that there
@@ -33284,7 +35151,7 @@ function onlyChild(children) {
 
 module.exports = onlyChild;
 
-},{"135":135,"57":57}],145:[function(_dereq_,module,exports){
+},{"150":150,"63":63}],161:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33299,7 +35166,7 @@ module.exports = onlyChild;
 
 "use strict";
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
 var performance;
 
@@ -33312,7 +35179,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = performance || {};
 
-},{"21":21}],146:[function(_dereq_,module,exports){
+},{"22":22}],162:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33325,7 +35192,7 @@ module.exports = performance || {};
  * @typechecks
  */
 
-var performance = _dereq_(145);
+var performance = _dereq_(161);
 
 /**
  * Detect if we can use `window.performance.now()` and gracefully fallback to
@@ -33340,7 +35207,7 @@ var performanceNow = performance.now.bind(performance);
 
 module.exports = performanceNow;
 
-},{"145":145}],147:[function(_dereq_,module,exports){
+},{"161":161}],163:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33354,7 +35221,7 @@ module.exports = performanceNow;
 
 'use strict';
 
-var escapeTextContentForBrowser = _dereq_(116);
+var escapeTextContentForBrowser = _dereq_(131);
 
 /**
  * Escapes attribute value to prevent scripting attacks.
@@ -33368,7 +35235,7 @@ function quoteAttributeValueForBrowser(value) {
 
 module.exports = quoteAttributeValueForBrowser;
 
-},{"116":116}],148:[function(_dereq_,module,exports){
+},{"131":131}],164:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33384,7 +35251,7 @@ module.exports = quoteAttributeValueForBrowser;
 
 'use strict';
 
-var ExecutionEnvironment = _dereq_(21);
+var ExecutionEnvironment = _dereq_(22);
 
 var WHITESPACE_TEST = /^[ \r\n\t\f]/;
 var NONVISIBLE_TEST = /<(!--|link|noscript|meta|script|style)[ \r\n\t\f\/>]/;
@@ -33457,7 +35324,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = setInnerHTML;
 
-},{"21":21}],149:[function(_dereq_,module,exports){
+},{"22":22}],165:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33471,9 +35338,9 @@ module.exports = setInnerHTML;
 
 'use strict';
 
-var ExecutionEnvironment = _dereq_(21);
-var escapeTextContentForBrowser = _dereq_(116);
-var setInnerHTML = _dereq_(148);
+var ExecutionEnvironment = _dereq_(22);
+var escapeTextContentForBrowser = _dereq_(131);
+var setInnerHTML = _dereq_(164);
 
 /**
  * Set the textContent property of a node, ensuring that whitespace is preserved
@@ -33499,7 +35366,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = setTextContent;
 
-},{"116":116,"148":148,"21":21}],150:[function(_dereq_,module,exports){
+},{"131":131,"164":164,"22":22}],166:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33543,7 +35410,7 @@ function shallowEqual(objA, objB) {
 
 module.exports = shallowEqual;
 
-},{}],151:[function(_dereq_,module,exports){
+},{}],167:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33558,7 +35425,7 @@ module.exports = shallowEqual;
 
 'use strict';
 
-var warning = _dereq_(154);
+var warning = _dereq_(171);
 
 /**
  * Given a `prevElement` and `nextElement`, determines if the existing
@@ -33645,7 +35512,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 
 module.exports = shouldUpdateReactComponent;
 
-},{"154":154}],152:[function(_dereq_,module,exports){
+},{"171":171}],168:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -33658,7 +35525,7 @@ module.exports = shouldUpdateReactComponent;
  * @typechecks
  */
 
-var invariant = _dereq_(135);
+var invariant = _dereq_(150);
 
 /**
  * Convert array-like objects to arrays.
@@ -33715,7 +35582,7 @@ function toArray(obj) {
 
 module.exports = toArray;
 
-},{"135":135}],153:[function(_dereq_,module,exports){
+},{"150":150}],169:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33729,13 +35596,13 @@ module.exports = toArray;
 
 'use strict';
 
-var ReactElement = _dereq_(57);
-var ReactFragment = _dereq_(63);
-var ReactInstanceHandles = _dereq_(66);
+var ReactElement = _dereq_(63);
+var ReactFragment = _dereq_(69);
+var ReactInstanceHandles = _dereq_(72);
 
-var getIteratorFn = _dereq_(126);
-var invariant = _dereq_(135);
-var warning = _dereq_(154);
+var getIteratorFn = _dereq_(141);
+var invariant = _dereq_(150);
+var warning = _dereq_(171);
 
 var SEPARATOR = ReactInstanceHandles.SEPARATOR;
 var SUBSEPARATOR = ':';
@@ -33966,7 +35833,173 @@ function traverseAllChildren(children, callback, traverseContext) {
 
 module.exports = traverseAllChildren;
 
-},{"126":126,"135":135,"154":154,"57":57,"63":63,"66":66}],154:[function(_dereq_,module,exports){
+},{"141":141,"150":150,"171":171,"63":63,"69":69,"72":72}],170:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule update
+ */
+
+'use strict';
+
+var assign = _dereq_(29);
+var keyOf = _dereq_(157);
+var invariant = _dereq_(150);
+
+function shallowCopy(x) {
+  if (Array.isArray(x)) {
+    return x.concat();
+  } else if (x && typeof x === 'object') {
+    return assign(new x.constructor(), x);
+  } else {
+    return x;
+  }
+}
+
+var COMMAND_PUSH = keyOf({$push: null});
+var COMMAND_UNSHIFT = keyOf({$unshift: null});
+var COMMAND_SPLICE = keyOf({$splice: null});
+var COMMAND_SET = keyOf({$set: null});
+var COMMAND_MERGE = keyOf({$merge: null});
+var COMMAND_APPLY = keyOf({$apply: null});
+
+var ALL_COMMANDS_LIST = [
+  COMMAND_PUSH,
+  COMMAND_UNSHIFT,
+  COMMAND_SPLICE,
+  COMMAND_SET,
+  COMMAND_MERGE,
+  COMMAND_APPLY
+];
+
+var ALL_COMMANDS_SET = {};
+
+ALL_COMMANDS_LIST.forEach(function(command) {
+  ALL_COMMANDS_SET[command] = true;
+});
+
+function invariantArrayCase(value, spec, command) {
+  ("production" !== "development" ? invariant(
+    Array.isArray(value),
+    'update(): expected target of %s to be an array; got %s.',
+    command,
+    value
+  ) : invariant(Array.isArray(value)));
+  var specValue = spec[command];
+  ("production" !== "development" ? invariant(
+    Array.isArray(specValue),
+    'update(): expected spec of %s to be an array; got %s. ' +
+    'Did you forget to wrap your parameter in an array?',
+    command,
+    specValue
+  ) : invariant(Array.isArray(specValue)));
+}
+
+function update(value, spec) {
+  ("production" !== "development" ? invariant(
+    typeof spec === 'object',
+    'update(): You provided a key path to update() that did not contain one ' +
+    'of %s. Did you forget to include {%s: ...}?',
+    ALL_COMMANDS_LIST.join(', '),
+    COMMAND_SET
+  ) : invariant(typeof spec === 'object'));
+
+  if (spec.hasOwnProperty(COMMAND_SET)) {
+    ("production" !== "development" ? invariant(
+      Object.keys(spec).length === 1,
+      'Cannot have more than one key in an object with %s',
+      COMMAND_SET
+    ) : invariant(Object.keys(spec).length === 1));
+
+    return spec[COMMAND_SET];
+  }
+
+  var nextValue = shallowCopy(value);
+
+  if (spec.hasOwnProperty(COMMAND_MERGE)) {
+    var mergeObj = spec[COMMAND_MERGE];
+    ("production" !== "development" ? invariant(
+      mergeObj && typeof mergeObj === 'object',
+      'update(): %s expects a spec of type \'object\'; got %s',
+      COMMAND_MERGE,
+      mergeObj
+    ) : invariant(mergeObj && typeof mergeObj === 'object'));
+    ("production" !== "development" ? invariant(
+      nextValue && typeof nextValue === 'object',
+      'update(): %s expects a target of type \'object\'; got %s',
+      COMMAND_MERGE,
+      nextValue
+    ) : invariant(nextValue && typeof nextValue === 'object'));
+    assign(nextValue, spec[COMMAND_MERGE]);
+  }
+
+  if (spec.hasOwnProperty(COMMAND_PUSH)) {
+    invariantArrayCase(value, spec, COMMAND_PUSH);
+    spec[COMMAND_PUSH].forEach(function(item) {
+      nextValue.push(item);
+    });
+  }
+
+  if (spec.hasOwnProperty(COMMAND_UNSHIFT)) {
+    invariantArrayCase(value, spec, COMMAND_UNSHIFT);
+    spec[COMMAND_UNSHIFT].forEach(function(item) {
+      nextValue.unshift(item);
+    });
+  }
+
+  if (spec.hasOwnProperty(COMMAND_SPLICE)) {
+    ("production" !== "development" ? invariant(
+      Array.isArray(value),
+      'Expected %s target to be an array; got %s',
+      COMMAND_SPLICE,
+      value
+    ) : invariant(Array.isArray(value)));
+    ("production" !== "development" ? invariant(
+      Array.isArray(spec[COMMAND_SPLICE]),
+      'update(): expected spec of %s to be an array of arrays; got %s. ' +
+      'Did you forget to wrap your parameters in an array?',
+      COMMAND_SPLICE,
+      spec[COMMAND_SPLICE]
+    ) : invariant(Array.isArray(spec[COMMAND_SPLICE])));
+    spec[COMMAND_SPLICE].forEach(function(args) {
+      ("production" !== "development" ? invariant(
+        Array.isArray(args),
+        'update(): expected spec of %s to be an array of arrays; got %s. ' +
+        'Did you forget to wrap your parameters in an array?',
+        COMMAND_SPLICE,
+        spec[COMMAND_SPLICE]
+      ) : invariant(Array.isArray(args)));
+      nextValue.splice.apply(nextValue, args);
+    });
+  }
+
+  if (spec.hasOwnProperty(COMMAND_APPLY)) {
+    ("production" !== "development" ? invariant(
+      typeof spec[COMMAND_APPLY] === 'function',
+      'update(): expected spec of %s to be a function; got %s.',
+      COMMAND_APPLY,
+      spec[COMMAND_APPLY]
+    ) : invariant(typeof spec[COMMAND_APPLY] === 'function'));
+    nextValue = spec[COMMAND_APPLY](nextValue);
+  }
+
+  for (var k in spec) {
+    if (!(ALL_COMMANDS_SET.hasOwnProperty(k) && ALL_COMMANDS_SET[k])) {
+      nextValue[k] = update(value[k], spec[k]);
+    }
+  }
+
+  return nextValue;
+}
+
+module.exports = update;
+
+},{"150":150,"157":157,"29":29}],171:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -33980,7 +36013,7 @@ module.exports = traverseAllChildren;
 
 "use strict";
 
-var emptyFunction = _dereq_(114);
+var emptyFunction = _dereq_(129);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -34027,7 +36060,7 @@ if ("production" !== "development") {
 
 module.exports = warning;
 
-},{"114":114}]},{},[1])(1)
+},{"129":129}]},{},[1])(1)
 });
 /*!
   SerializeJSON jQuery plugin.
@@ -34515,6 +36548,4494 @@ O.prototype.je=function(a,b){D("Firebase.createUser",2,2,arguments.length);cc("F
 O.prototype.removeUser=O.prototype.Ie;O.prototype.ee=function(a,b){D("Firebase.changePassword",2,2,arguments.length);cc("Firebase.changePassword",1,a,!1);dc("Firebase.changePassword",a,"email");dc("Firebase.changePassword",a,"oldPassword");dc("Firebase.changePassword",a,"newPassword");F("Firebase.changePassword",2,b,!1);this.g.T.ee(a,b)};O.prototype.changePassword=O.prototype.ee;
 O.prototype.Je=function(a,b){D("Firebase.resetPassword",2,2,arguments.length);cc("Firebase.resetPassword",1,a,!1);dc("Firebase.resetPassword",a,"email");F("Firebase.resetPassword",2,b,!1);this.g.T.Je(a,b)};O.prototype.resetPassword=O.prototype.Je;O.goOffline=function(){D("Firebase.goOffline",0,0,arguments.length);Ah.Qb().tb()};O.goOnline=function(){D("Firebase.goOnline",0,0,arguments.length);Ah.Qb().kc()};
 function qb(a,b){x(!b||!0===a||!1===a,"Can't turn on custom loggers persistently.");!0===a?("undefined"!==typeof console&&("function"===typeof console.log?ob=q(console.log,console):"object"===typeof console.log&&(ob=function(a){console.log(a)})),b&&Ba.set("logging_enabled",!0)):a?ob=a:(ob=null,Ba.remove("logging_enabled"))}O.enableLogging=qb;O.ServerValue={TIMESTAMP:{".sv":"timestamp"}};O.SDK_VERSION="2.0.6";O.INTERNAL=Y;O.Context=Ah;O.TEST_ACCESS=$;})();
+
+//! moment.js
+//! version : 2.9.0
+//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
+//! license : MIT
+//! momentjs.com
+
+(function (undefined) {
+    /************************************
+        Constants
+    ************************************/
+
+    var moment,
+        VERSION = '2.9.0',
+        // the global-scope this is NOT the global object in Node.js
+        globalScope = (typeof global !== 'undefined' && (typeof window === 'undefined' || window === global.window)) ? global : this,
+        oldGlobalMoment,
+        round = Math.round,
+        hasOwnProperty = Object.prototype.hasOwnProperty,
+        i,
+
+        YEAR = 0,
+        MONTH = 1,
+        DATE = 2,
+        HOUR = 3,
+        MINUTE = 4,
+        SECOND = 5,
+        MILLISECOND = 6,
+
+        // internal storage for locale config files
+        locales = {},
+
+        // extra moment internal properties (plugins register props here)
+        momentProperties = [],
+
+        // check for nodeJS
+        hasModule = (typeof module !== 'undefined' && module && module.exports),
+
+        // ASP.NET json date format regex
+        aspNetJsonRegex = /^\/?Date\((\-?\d+)/i,
+        aspNetTimeSpanJsonRegex = /(\-)?(?:(\d*)\.)?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/,
+
+        // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
+        // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
+        isoDurationRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/,
+
+        // format tokens
+        formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|x|X|zz?|ZZ?|.)/g,
+        localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,
+
+        // parsing token regexes
+        parseTokenOneOrTwoDigits = /\d\d?/, // 0 - 99
+        parseTokenOneToThreeDigits = /\d{1,3}/, // 0 - 999
+        parseTokenOneToFourDigits = /\d{1,4}/, // 0 - 9999
+        parseTokenOneToSixDigits = /[+\-]?\d{1,6}/, // -999,999 - 999,999
+        parseTokenDigits = /\d+/, // nonzero number of digits
+        parseTokenWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i, // any word (or two) characters or numbers including two/three word month in arabic.
+        parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/gi, // +00:00 -00:00 +0000 -0000 or Z
+        parseTokenT = /T/i, // T (ISO separator)
+        parseTokenOffsetMs = /[\+\-]?\d+/, // 1234567890123
+        parseTokenTimestampMs = /[\+\-]?\d+(\.\d{1,3})?/, // 123456789 123456789.123
+
+        //strict parsing regexes
+        parseTokenOneDigit = /\d/, // 0 - 9
+        parseTokenTwoDigits = /\d\d/, // 00 - 99
+        parseTokenThreeDigits = /\d{3}/, // 000 - 999
+        parseTokenFourDigits = /\d{4}/, // 0000 - 9999
+        parseTokenSixDigits = /[+-]?\d{6}/, // -999,999 - 999,999
+        parseTokenSignedNumber = /[+-]?\d+/, // -inf - inf
+
+        // iso 8601 regex
+        // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+        isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/,
+
+        isoFormat = 'YYYY-MM-DDTHH:mm:ssZ',
+
+        isoDates = [
+            ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
+            ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
+            ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
+            ['GGGG-[W]WW', /\d{4}-W\d{2}/],
+            ['YYYY-DDD', /\d{4}-\d{3}/]
+        ],
+
+        // iso time formats and regexes
+        isoTimes = [
+            ['HH:mm:ss.SSSS', /(T| )\d\d:\d\d:\d\d\.\d+/],
+            ['HH:mm:ss', /(T| )\d\d:\d\d:\d\d/],
+            ['HH:mm', /(T| )\d\d:\d\d/],
+            ['HH', /(T| )\d\d/]
+        ],
+
+        // timezone chunker '+10:00' > ['10', '00'] or '-1530' > ['-', '15', '30']
+        parseTimezoneChunker = /([\+\-]|\d\d)/gi,
+
+        // getter and setter names
+        proxyGettersAndSetters = 'Date|Hours|Minutes|Seconds|Milliseconds'.split('|'),
+        unitMillisecondFactors = {
+            'Milliseconds' : 1,
+            'Seconds' : 1e3,
+            'Minutes' : 6e4,
+            'Hours' : 36e5,
+            'Days' : 864e5,
+            'Months' : 2592e6,
+            'Years' : 31536e6
+        },
+
+        unitAliases = {
+            ms : 'millisecond',
+            s : 'second',
+            m : 'minute',
+            h : 'hour',
+            d : 'day',
+            D : 'date',
+            w : 'week',
+            W : 'isoWeek',
+            M : 'month',
+            Q : 'quarter',
+            y : 'year',
+            DDD : 'dayOfYear',
+            e : 'weekday',
+            E : 'isoWeekday',
+            gg: 'weekYear',
+            GG: 'isoWeekYear'
+        },
+
+        camelFunctions = {
+            dayofyear : 'dayOfYear',
+            isoweekday : 'isoWeekday',
+            isoweek : 'isoWeek',
+            weekyear : 'weekYear',
+            isoweekyear : 'isoWeekYear'
+        },
+
+        // format function strings
+        formatFunctions = {},
+
+        // default relative time thresholds
+        relativeTimeThresholds = {
+            s: 45,  // seconds to minute
+            m: 45,  // minutes to hour
+            h: 22,  // hours to day
+            d: 26,  // days to month
+            M: 11   // months to year
+        },
+
+        // tokens to ordinalize and pad
+        ordinalizeTokens = 'DDD w W M D d'.split(' '),
+        paddedTokens = 'M D H h m s w W'.split(' '),
+
+        formatTokenFunctions = {
+            M    : function () {
+                return this.month() + 1;
+            },
+            MMM  : function (format) {
+                return this.localeData().monthsShort(this, format);
+            },
+            MMMM : function (format) {
+                return this.localeData().months(this, format);
+            },
+            D    : function () {
+                return this.date();
+            },
+            DDD  : function () {
+                return this.dayOfYear();
+            },
+            d    : function () {
+                return this.day();
+            },
+            dd   : function (format) {
+                return this.localeData().weekdaysMin(this, format);
+            },
+            ddd  : function (format) {
+                return this.localeData().weekdaysShort(this, format);
+            },
+            dddd : function (format) {
+                return this.localeData().weekdays(this, format);
+            },
+            w    : function () {
+                return this.week();
+            },
+            W    : function () {
+                return this.isoWeek();
+            },
+            YY   : function () {
+                return leftZeroFill(this.year() % 100, 2);
+            },
+            YYYY : function () {
+                return leftZeroFill(this.year(), 4);
+            },
+            YYYYY : function () {
+                return leftZeroFill(this.year(), 5);
+            },
+            YYYYYY : function () {
+                var y = this.year(), sign = y >= 0 ? '+' : '-';
+                return sign + leftZeroFill(Math.abs(y), 6);
+            },
+            gg   : function () {
+                return leftZeroFill(this.weekYear() % 100, 2);
+            },
+            gggg : function () {
+                return leftZeroFill(this.weekYear(), 4);
+            },
+            ggggg : function () {
+                return leftZeroFill(this.weekYear(), 5);
+            },
+            GG   : function () {
+                return leftZeroFill(this.isoWeekYear() % 100, 2);
+            },
+            GGGG : function () {
+                return leftZeroFill(this.isoWeekYear(), 4);
+            },
+            GGGGG : function () {
+                return leftZeroFill(this.isoWeekYear(), 5);
+            },
+            e : function () {
+                return this.weekday();
+            },
+            E : function () {
+                return this.isoWeekday();
+            },
+            a    : function () {
+                return this.localeData().meridiem(this.hours(), this.minutes(), true);
+            },
+            A    : function () {
+                return this.localeData().meridiem(this.hours(), this.minutes(), false);
+            },
+            H    : function () {
+                return this.hours();
+            },
+            h    : function () {
+                return this.hours() % 12 || 12;
+            },
+            m    : function () {
+                return this.minutes();
+            },
+            s    : function () {
+                return this.seconds();
+            },
+            S    : function () {
+                return toInt(this.milliseconds() / 100);
+            },
+            SS   : function () {
+                return leftZeroFill(toInt(this.milliseconds() / 10), 2);
+            },
+            SSS  : function () {
+                return leftZeroFill(this.milliseconds(), 3);
+            },
+            SSSS : function () {
+                return leftZeroFill(this.milliseconds(), 3);
+            },
+            Z    : function () {
+                var a = this.utcOffset(),
+                    b = '+';
+                if (a < 0) {
+                    a = -a;
+                    b = '-';
+                }
+                return b + leftZeroFill(toInt(a / 60), 2) + ':' + leftZeroFill(toInt(a) % 60, 2);
+            },
+            ZZ   : function () {
+                var a = this.utcOffset(),
+                    b = '+';
+                if (a < 0) {
+                    a = -a;
+                    b = '-';
+                }
+                return b + leftZeroFill(toInt(a / 60), 2) + leftZeroFill(toInt(a) % 60, 2);
+            },
+            z : function () {
+                return this.zoneAbbr();
+            },
+            zz : function () {
+                return this.zoneName();
+            },
+            x    : function () {
+                return this.valueOf();
+            },
+            X    : function () {
+                return this.unix();
+            },
+            Q : function () {
+                return this.quarter();
+            }
+        },
+
+        deprecations = {},
+
+        lists = ['months', 'monthsShort', 'weekdays', 'weekdaysShort', 'weekdaysMin'],
+
+        updateInProgress = false;
+
+    // Pick the first defined of two or three arguments. dfl comes from
+    // default.
+    function dfl(a, b, c) {
+        switch (arguments.length) {
+            case 2: return a != null ? a : b;
+            case 3: return a != null ? a : b != null ? b : c;
+            default: throw new Error('Implement me');
+        }
+    }
+
+    function hasOwnProp(a, b) {
+        return hasOwnProperty.call(a, b);
+    }
+
+    function defaultParsingFlags() {
+        // We need to deep clone this object, and es5 standard is not very
+        // helpful.
+        return {
+            empty : false,
+            unusedTokens : [],
+            unusedInput : [],
+            overflow : -2,
+            charsLeftOver : 0,
+            nullInput : false,
+            invalidMonth : null,
+            invalidFormat : false,
+            userInvalidated : false,
+            iso: false
+        };
+    }
+
+    function printMsg(msg) {
+        if (moment.suppressDeprecationWarnings === false &&
+                typeof console !== 'undefined' && console.warn) {
+            console.warn('Deprecation warning: ' + msg);
+        }
+    }
+
+    function deprecate(msg, fn) {
+        var firstTime = true;
+        return extend(function () {
+            if (firstTime) {
+                printMsg(msg);
+                firstTime = false;
+            }
+            return fn.apply(this, arguments);
+        }, fn);
+    }
+
+    function deprecateSimple(name, msg) {
+        if (!deprecations[name]) {
+            printMsg(msg);
+            deprecations[name] = true;
+        }
+    }
+
+    function padToken(func, count) {
+        return function (a) {
+            return leftZeroFill(func.call(this, a), count);
+        };
+    }
+    function ordinalizeToken(func, period) {
+        return function (a) {
+            return this.localeData().ordinal(func.call(this, a), period);
+        };
+    }
+
+    function monthDiff(a, b) {
+        // difference in months
+        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
+            // b is in (anchor - 1 month, anchor + 1 month)
+            anchor = a.clone().add(wholeMonthDiff, 'months'),
+            anchor2, adjust;
+
+        if (b - anchor < 0) {
+            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
+            // linear across the month
+            adjust = (b - anchor) / (anchor - anchor2);
+        } else {
+            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
+            // linear across the month
+            adjust = (b - anchor) / (anchor2 - anchor);
+        }
+
+        return -(wholeMonthDiff + adjust);
+    }
+
+    while (ordinalizeTokens.length) {
+        i = ordinalizeTokens.pop();
+        formatTokenFunctions[i + 'o'] = ordinalizeToken(formatTokenFunctions[i], i);
+    }
+    while (paddedTokens.length) {
+        i = paddedTokens.pop();
+        formatTokenFunctions[i + i] = padToken(formatTokenFunctions[i], 2);
+    }
+    formatTokenFunctions.DDDD = padToken(formatTokenFunctions.DDD, 3);
+
+
+    function meridiemFixWrap(locale, hour, meridiem) {
+        var isPm;
+
+        if (meridiem == null) {
+            // nothing to do
+            return hour;
+        }
+        if (locale.meridiemHour != null) {
+            return locale.meridiemHour(hour, meridiem);
+        } else if (locale.isPM != null) {
+            // Fallback
+            isPm = locale.isPM(meridiem);
+            if (isPm && hour < 12) {
+                hour += 12;
+            }
+            if (!isPm && hour === 12) {
+                hour = 0;
+            }
+            return hour;
+        } else {
+            // thie is not supposed to happen
+            return hour;
+        }
+    }
+
+    /************************************
+        Constructors
+    ************************************/
+
+    function Locale() {
+    }
+
+    // Moment prototype object
+    function Moment(config, skipOverflow) {
+        if (skipOverflow !== false) {
+            checkOverflow(config);
+        }
+        copyConfig(this, config);
+        this._d = new Date(+config._d);
+        // Prevent infinite loop in case updateOffset creates new moment
+        // objects.
+        if (updateInProgress === false) {
+            updateInProgress = true;
+            moment.updateOffset(this);
+            updateInProgress = false;
+        }
+    }
+
+    // Duration Constructor
+    function Duration(duration) {
+        var normalizedInput = normalizeObjectUnits(duration),
+            years = normalizedInput.year || 0,
+            quarters = normalizedInput.quarter || 0,
+            months = normalizedInput.month || 0,
+            weeks = normalizedInput.week || 0,
+            days = normalizedInput.day || 0,
+            hours = normalizedInput.hour || 0,
+            minutes = normalizedInput.minute || 0,
+            seconds = normalizedInput.second || 0,
+            milliseconds = normalizedInput.millisecond || 0;
+
+        // representation for dateAddRemove
+        this._milliseconds = +milliseconds +
+            seconds * 1e3 + // 1000
+            minutes * 6e4 + // 1000 * 60
+            hours * 36e5; // 1000 * 60 * 60
+        // Because of dateAddRemove treats 24 hours as different from a
+        // day when working around DST, we need to store them separately
+        this._days = +days +
+            weeks * 7;
+        // It is impossible translate months into days without knowing
+        // which months you are are talking about, so we have to store
+        // it separately.
+        this._months = +months +
+            quarters * 3 +
+            years * 12;
+
+        this._data = {};
+
+        this._locale = moment.localeData();
+
+        this._bubble();
+    }
+
+    /************************************
+        Helpers
+    ************************************/
+
+
+    function extend(a, b) {
+        for (var i in b) {
+            if (hasOwnProp(b, i)) {
+                a[i] = b[i];
+            }
+        }
+
+        if (hasOwnProp(b, 'toString')) {
+            a.toString = b.toString;
+        }
+
+        if (hasOwnProp(b, 'valueOf')) {
+            a.valueOf = b.valueOf;
+        }
+
+        return a;
+    }
+
+    function copyConfig(to, from) {
+        var i, prop, val;
+
+        if (typeof from._isAMomentObject !== 'undefined') {
+            to._isAMomentObject = from._isAMomentObject;
+        }
+        if (typeof from._i !== 'undefined') {
+            to._i = from._i;
+        }
+        if (typeof from._f !== 'undefined') {
+            to._f = from._f;
+        }
+        if (typeof from._l !== 'undefined') {
+            to._l = from._l;
+        }
+        if (typeof from._strict !== 'undefined') {
+            to._strict = from._strict;
+        }
+        if (typeof from._tzm !== 'undefined') {
+            to._tzm = from._tzm;
+        }
+        if (typeof from._isUTC !== 'undefined') {
+            to._isUTC = from._isUTC;
+        }
+        if (typeof from._offset !== 'undefined') {
+            to._offset = from._offset;
+        }
+        if (typeof from._pf !== 'undefined') {
+            to._pf = from._pf;
+        }
+        if (typeof from._locale !== 'undefined') {
+            to._locale = from._locale;
+        }
+
+        if (momentProperties.length > 0) {
+            for (i in momentProperties) {
+                prop = momentProperties[i];
+                val = from[prop];
+                if (typeof val !== 'undefined') {
+                    to[prop] = val;
+                }
+            }
+        }
+
+        return to;
+    }
+
+    function absRound(number) {
+        if (number < 0) {
+            return Math.ceil(number);
+        } else {
+            return Math.floor(number);
+        }
+    }
+
+    // left zero fill a number
+    // see http://jsperf.com/left-zero-filling for performance comparison
+    function leftZeroFill(number, targetLength, forceSign) {
+        var output = '' + Math.abs(number),
+            sign = number >= 0;
+
+        while (output.length < targetLength) {
+            output = '0' + output;
+        }
+        return (sign ? (forceSign ? '+' : '') : '-') + output;
+    }
+
+    function positiveMomentsDifference(base, other) {
+        var res = {milliseconds: 0, months: 0};
+
+        res.months = other.month() - base.month() +
+            (other.year() - base.year()) * 12;
+        if (base.clone().add(res.months, 'M').isAfter(other)) {
+            --res.months;
+        }
+
+        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
+
+        return res;
+    }
+
+    function momentsDifference(base, other) {
+        var res;
+        other = makeAs(other, base);
+        if (base.isBefore(other)) {
+            res = positiveMomentsDifference(base, other);
+        } else {
+            res = positiveMomentsDifference(other, base);
+            res.milliseconds = -res.milliseconds;
+            res.months = -res.months;
+        }
+
+        return res;
+    }
+
+    // TODO: remove 'name' arg after deprecation is removed
+    function createAdder(direction, name) {
+        return function (val, period) {
+            var dur, tmp;
+            //invert the arguments, but complain about it
+            if (period !== null && !isNaN(+period)) {
+                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period).');
+                tmp = val; val = period; period = tmp;
+            }
+
+            val = typeof val === 'string' ? +val : val;
+            dur = moment.duration(val, period);
+            addOrSubtractDurationFromMoment(this, dur, direction);
+            return this;
+        };
+    }
+
+    function addOrSubtractDurationFromMoment(mom, duration, isAdding, updateOffset) {
+        var milliseconds = duration._milliseconds,
+            days = duration._days,
+            months = duration._months;
+        updateOffset = updateOffset == null ? true : updateOffset;
+
+        if (milliseconds) {
+            mom._d.setTime(+mom._d + milliseconds * isAdding);
+        }
+        if (days) {
+            rawSetter(mom, 'Date', rawGetter(mom, 'Date') + days * isAdding);
+        }
+        if (months) {
+            rawMonthSetter(mom, rawGetter(mom, 'Month') + months * isAdding);
+        }
+        if (updateOffset) {
+            moment.updateOffset(mom, days || months);
+        }
+    }
+
+    // check if is an array
+    function isArray(input) {
+        return Object.prototype.toString.call(input) === '[object Array]';
+    }
+
+    function isDate(input) {
+        return Object.prototype.toString.call(input) === '[object Date]' ||
+            input instanceof Date;
+    }
+
+    // compare two arrays, return the number of differences
+    function compareArrays(array1, array2, dontConvert) {
+        var len = Math.min(array1.length, array2.length),
+            lengthDiff = Math.abs(array1.length - array2.length),
+            diffs = 0,
+            i;
+        for (i = 0; i < len; i++) {
+            if ((dontConvert && array1[i] !== array2[i]) ||
+                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
+                diffs++;
+            }
+        }
+        return diffs + lengthDiff;
+    }
+
+    function normalizeUnits(units) {
+        if (units) {
+            var lowered = units.toLowerCase().replace(/(.)s$/, '$1');
+            units = unitAliases[units] || camelFunctions[lowered] || lowered;
+        }
+        return units;
+    }
+
+    function normalizeObjectUnits(inputObject) {
+        var normalizedInput = {},
+            normalizedProp,
+            prop;
+
+        for (prop in inputObject) {
+            if (hasOwnProp(inputObject, prop)) {
+                normalizedProp = normalizeUnits(prop);
+                if (normalizedProp) {
+                    normalizedInput[normalizedProp] = inputObject[prop];
+                }
+            }
+        }
+
+        return normalizedInput;
+    }
+
+    function makeList(field) {
+        var count, setter;
+
+        if (field.indexOf('week') === 0) {
+            count = 7;
+            setter = 'day';
+        }
+        else if (field.indexOf('month') === 0) {
+            count = 12;
+            setter = 'month';
+        }
+        else {
+            return;
+        }
+
+        moment[field] = function (format, index) {
+            var i, getter,
+                method = moment._locale[field],
+                results = [];
+
+            if (typeof format === 'number') {
+                index = format;
+                format = undefined;
+            }
+
+            getter = function (i) {
+                var m = moment().utc().set(setter, i);
+                return method.call(moment._locale, m, format || '');
+            };
+
+            if (index != null) {
+                return getter(index);
+            }
+            else {
+                for (i = 0; i < count; i++) {
+                    results.push(getter(i));
+                }
+                return results;
+            }
+        };
+    }
+
+    function toInt(argumentForCoercion) {
+        var coercedNumber = +argumentForCoercion,
+            value = 0;
+
+        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
+            if (coercedNumber >= 0) {
+                value = Math.floor(coercedNumber);
+            } else {
+                value = Math.ceil(coercedNumber);
+            }
+        }
+
+        return value;
+    }
+
+    function daysInMonth(year, month) {
+        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    }
+
+    function weeksInYear(year, dow, doy) {
+        return weekOfYear(moment([year, 11, 31 + dow - doy]), dow, doy).week;
+    }
+
+    function daysInYear(year) {
+        return isLeapYear(year) ? 366 : 365;
+    }
+
+    function isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    }
+
+    function checkOverflow(m) {
+        var overflow;
+        if (m._a && m._pf.overflow === -2) {
+            overflow =
+                m._a[MONTH] < 0 || m._a[MONTH] > 11 ? MONTH :
+                m._a[DATE] < 1 || m._a[DATE] > daysInMonth(m._a[YEAR], m._a[MONTH]) ? DATE :
+                m._a[HOUR] < 0 || m._a[HOUR] > 24 ||
+                    (m._a[HOUR] === 24 && (m._a[MINUTE] !== 0 ||
+                                           m._a[SECOND] !== 0 ||
+                                           m._a[MILLISECOND] !== 0)) ? HOUR :
+                m._a[MINUTE] < 0 || m._a[MINUTE] > 59 ? MINUTE :
+                m._a[SECOND] < 0 || m._a[SECOND] > 59 ? SECOND :
+                m._a[MILLISECOND] < 0 || m._a[MILLISECOND] > 999 ? MILLISECOND :
+                -1;
+
+            if (m._pf._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+                overflow = DATE;
+            }
+
+            m._pf.overflow = overflow;
+        }
+    }
+
+    function isValid(m) {
+        if (m._isValid == null) {
+            m._isValid = !isNaN(m._d.getTime()) &&
+                m._pf.overflow < 0 &&
+                !m._pf.empty &&
+                !m._pf.invalidMonth &&
+                !m._pf.nullInput &&
+                !m._pf.invalidFormat &&
+                !m._pf.userInvalidated;
+
+            if (m._strict) {
+                m._isValid = m._isValid &&
+                    m._pf.charsLeftOver === 0 &&
+                    m._pf.unusedTokens.length === 0 &&
+                    m._pf.bigHour === undefined;
+            }
+        }
+        return m._isValid;
+    }
+
+    function normalizeLocale(key) {
+        return key ? key.toLowerCase().replace('_', '-') : key;
+    }
+
+    // pick the locale from the array
+    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
+    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
+    function chooseLocale(names) {
+        var i = 0, j, next, locale, split;
+
+        while (i < names.length) {
+            split = normalizeLocale(names[i]).split('-');
+            j = split.length;
+            next = normalizeLocale(names[i + 1]);
+            next = next ? next.split('-') : null;
+            while (j > 0) {
+                locale = loadLocale(split.slice(0, j).join('-'));
+                if (locale) {
+                    return locale;
+                }
+                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
+                    //the next array item is better than a shallower substring of this one
+                    break;
+                }
+                j--;
+            }
+            i++;
+        }
+        return null;
+    }
+
+    function loadLocale(name) {
+        var oldLocale = null;
+        if (!locales[name] && hasModule) {
+            try {
+                oldLocale = moment.locale();
+                require('./locale/' + name);
+                // because defineLocale currently also sets the global locale, we want to undo that for lazy loaded locales
+                moment.locale(oldLocale);
+            } catch (e) { }
+        }
+        return locales[name];
+    }
+
+    // Return a moment from input, that is local/utc/utcOffset equivalent to
+    // model.
+    function makeAs(input, model) {
+        var res, diff;
+        if (model._isUTC) {
+            res = model.clone();
+            diff = (moment.isMoment(input) || isDate(input) ?
+                    +input : +moment(input)) - (+res);
+            // Use low-level api, because this fn is low-level api.
+            res._d.setTime(+res._d + diff);
+            moment.updateOffset(res, false);
+            return res;
+        } else {
+            return moment(input).local();
+        }
+    }
+
+    /************************************
+        Locale
+    ************************************/
+
+
+    extend(Locale.prototype, {
+
+        set : function (config) {
+            var prop, i;
+            for (i in config) {
+                prop = config[i];
+                if (typeof prop === 'function') {
+                    this[i] = prop;
+                } else {
+                    this['_' + i] = prop;
+                }
+            }
+            // Lenient ordinal parsing accepts just a number in addition to
+            // number + (possibly) stuff coming from _ordinalParseLenient.
+            this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + /\d{1,2}/.source);
+        },
+
+        _months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+        months : function (m) {
+            return this._months[m.month()];
+        },
+
+        _monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
+        monthsShort : function (m) {
+            return this._monthsShort[m.month()];
+        },
+
+        monthsParse : function (monthName, format, strict) {
+            var i, mom, regex;
+
+            if (!this._monthsParse) {
+                this._monthsParse = [];
+                this._longMonthsParse = [];
+                this._shortMonthsParse = [];
+            }
+
+            for (i = 0; i < 12; i++) {
+                // make the regex if we don't have it already
+                mom = moment.utc([2000, i]);
+                if (strict && !this._longMonthsParse[i]) {
+                    this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
+                    this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
+                }
+                if (!strict && !this._monthsParse[i]) {
+                    regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
+                    this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
+                }
+                // test the regex
+                if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
+                    return i;
+                } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
+                    return i;
+                } else if (!strict && this._monthsParse[i].test(monthName)) {
+                    return i;
+                }
+            }
+        },
+
+        _weekdays : 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),
+        weekdays : function (m) {
+            return this._weekdays[m.day()];
+        },
+
+        _weekdaysShort : 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
+        weekdaysShort : function (m) {
+            return this._weekdaysShort[m.day()];
+        },
+
+        _weekdaysMin : 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
+        weekdaysMin : function (m) {
+            return this._weekdaysMin[m.day()];
+        },
+
+        weekdaysParse : function (weekdayName) {
+            var i, mom, regex;
+
+            if (!this._weekdaysParse) {
+                this._weekdaysParse = [];
+            }
+
+            for (i = 0; i < 7; i++) {
+                // make the regex if we don't have it already
+                if (!this._weekdaysParse[i]) {
+                    mom = moment([2000, 1]).day(i);
+                    regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
+                    this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
+                }
+                // test the regex
+                if (this._weekdaysParse[i].test(weekdayName)) {
+                    return i;
+                }
+            }
+        },
+
+        _longDateFormat : {
+            LTS : 'h:mm:ss A',
+            LT : 'h:mm A',
+            L : 'MM/DD/YYYY',
+            LL : 'MMMM D, YYYY',
+            LLL : 'MMMM D, YYYY LT',
+            LLLL : 'dddd, MMMM D, YYYY LT'
+        },
+        longDateFormat : function (key) {
+            var output = this._longDateFormat[key];
+            if (!output && this._longDateFormat[key.toUpperCase()]) {
+                output = this._longDateFormat[key.toUpperCase()].replace(/MMMM|MM|DD|dddd/g, function (val) {
+                    return val.slice(1);
+                });
+                this._longDateFormat[key] = output;
+            }
+            return output;
+        },
+
+        isPM : function (input) {
+            // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
+            // Using charAt should be more compatible.
+            return ((input + '').toLowerCase().charAt(0) === 'p');
+        },
+
+        _meridiemParse : /[ap]\.?m?\.?/i,
+        meridiem : function (hours, minutes, isLower) {
+            if (hours > 11) {
+                return isLower ? 'pm' : 'PM';
+            } else {
+                return isLower ? 'am' : 'AM';
+            }
+        },
+
+
+        _calendar : {
+            sameDay : '[Today at] LT',
+            nextDay : '[Tomorrow at] LT',
+            nextWeek : 'dddd [at] LT',
+            lastDay : '[Yesterday at] LT',
+            lastWeek : '[Last] dddd [at] LT',
+            sameElse : 'L'
+        },
+        calendar : function (key, mom, now) {
+            var output = this._calendar[key];
+            return typeof output === 'function' ? output.apply(mom, [now]) : output;
+        },
+
+        _relativeTime : {
+            future : 'in %s',
+            past : '%s ago',
+            s : 'a few seconds',
+            m : 'a minute',
+            mm : '%d minutes',
+            h : 'an hour',
+            hh : '%d hours',
+            d : 'a day',
+            dd : '%d days',
+            M : 'a month',
+            MM : '%d months',
+            y : 'a year',
+            yy : '%d years'
+        },
+
+        relativeTime : function (number, withoutSuffix, string, isFuture) {
+            var output = this._relativeTime[string];
+            return (typeof output === 'function') ?
+                output(number, withoutSuffix, string, isFuture) :
+                output.replace(/%d/i, number);
+        },
+
+        pastFuture : function (diff, output) {
+            var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
+            return typeof format === 'function' ? format(output) : format.replace(/%s/i, output);
+        },
+
+        ordinal : function (number) {
+            return this._ordinal.replace('%d', number);
+        },
+        _ordinal : '%d',
+        _ordinalParse : /\d{1,2}/,
+
+        preparse : function (string) {
+            return string;
+        },
+
+        postformat : function (string) {
+            return string;
+        },
+
+        week : function (mom) {
+            return weekOfYear(mom, this._week.dow, this._week.doy).week;
+        },
+
+        _week : {
+            dow : 0, // Sunday is the first day of the week.
+            doy : 6  // The week that contains Jan 1st is the first week of the year.
+        },
+
+        firstDayOfWeek : function () {
+            return this._week.dow;
+        },
+
+        firstDayOfYear : function () {
+            return this._week.doy;
+        },
+
+        _invalidDate: 'Invalid date',
+        invalidDate: function () {
+            return this._invalidDate;
+        }
+    });
+
+    /************************************
+        Formatting
+    ************************************/
+
+
+    function removeFormattingTokens(input) {
+        if (input.match(/\[[\s\S]/)) {
+            return input.replace(/^\[|\]$/g, '');
+        }
+        return input.replace(/\\/g, '');
+    }
+
+    function makeFormatFunction(format) {
+        var array = format.match(formattingTokens), i, length;
+
+        for (i = 0, length = array.length; i < length; i++) {
+            if (formatTokenFunctions[array[i]]) {
+                array[i] = formatTokenFunctions[array[i]];
+            } else {
+                array[i] = removeFormattingTokens(array[i]);
+            }
+        }
+
+        return function (mom) {
+            var output = '';
+            for (i = 0; i < length; i++) {
+                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
+            }
+            return output;
+        };
+    }
+
+    // format date using native date object
+    function formatMoment(m, format) {
+        if (!m.isValid()) {
+            return m.localeData().invalidDate();
+        }
+
+        format = expandFormat(format, m.localeData());
+
+        if (!formatFunctions[format]) {
+            formatFunctions[format] = makeFormatFunction(format);
+        }
+
+        return formatFunctions[format](m);
+    }
+
+    function expandFormat(format, locale) {
+        var i = 5;
+
+        function replaceLongDateFormatTokens(input) {
+            return locale.longDateFormat(input) || input;
+        }
+
+        localFormattingTokens.lastIndex = 0;
+        while (i >= 0 && localFormattingTokens.test(format)) {
+            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+            localFormattingTokens.lastIndex = 0;
+            i -= 1;
+        }
+
+        return format;
+    }
+
+
+    /************************************
+        Parsing
+    ************************************/
+
+
+    // get the regex to find the next token
+    function getParseRegexForToken(token, config) {
+        var a, strict = config._strict;
+        switch (token) {
+        case 'Q':
+            return parseTokenOneDigit;
+        case 'DDDD':
+            return parseTokenThreeDigits;
+        case 'YYYY':
+        case 'GGGG':
+        case 'gggg':
+            return strict ? parseTokenFourDigits : parseTokenOneToFourDigits;
+        case 'Y':
+        case 'G':
+        case 'g':
+            return parseTokenSignedNumber;
+        case 'YYYYYY':
+        case 'YYYYY':
+        case 'GGGGG':
+        case 'ggggg':
+            return strict ? parseTokenSixDigits : parseTokenOneToSixDigits;
+        case 'S':
+            if (strict) {
+                return parseTokenOneDigit;
+            }
+            /* falls through */
+        case 'SS':
+            if (strict) {
+                return parseTokenTwoDigits;
+            }
+            /* falls through */
+        case 'SSS':
+            if (strict) {
+                return parseTokenThreeDigits;
+            }
+            /* falls through */
+        case 'DDD':
+            return parseTokenOneToThreeDigits;
+        case 'MMM':
+        case 'MMMM':
+        case 'dd':
+        case 'ddd':
+        case 'dddd':
+            return parseTokenWord;
+        case 'a':
+        case 'A':
+            return config._locale._meridiemParse;
+        case 'x':
+            return parseTokenOffsetMs;
+        case 'X':
+            return parseTokenTimestampMs;
+        case 'Z':
+        case 'ZZ':
+            return parseTokenTimezone;
+        case 'T':
+            return parseTokenT;
+        case 'SSSS':
+            return parseTokenDigits;
+        case 'MM':
+        case 'DD':
+        case 'YY':
+        case 'GG':
+        case 'gg':
+        case 'HH':
+        case 'hh':
+        case 'mm':
+        case 'ss':
+        case 'ww':
+        case 'WW':
+            return strict ? parseTokenTwoDigits : parseTokenOneOrTwoDigits;
+        case 'M':
+        case 'D':
+        case 'd':
+        case 'H':
+        case 'h':
+        case 'm':
+        case 's':
+        case 'w':
+        case 'W':
+        case 'e':
+        case 'E':
+            return parseTokenOneOrTwoDigits;
+        case 'Do':
+            return strict ? config._locale._ordinalParse : config._locale._ordinalParseLenient;
+        default :
+            a = new RegExp(regexpEscape(unescapeFormat(token.replace('\\', '')), 'i'));
+            return a;
+        }
+    }
+
+    function utcOffsetFromString(string) {
+        string = string || '';
+        var possibleTzMatches = (string.match(parseTokenTimezone) || []),
+            tzChunk = possibleTzMatches[possibleTzMatches.length - 1] || [],
+            parts = (tzChunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
+            minutes = +(parts[1] * 60) + toInt(parts[2]);
+
+        return parts[0] === '+' ? minutes : -minutes;
+    }
+
+    // function to convert string input to date
+    function addTimeToArrayFromToken(token, input, config) {
+        var a, datePartArray = config._a;
+
+        switch (token) {
+        // QUARTER
+        case 'Q':
+            if (input != null) {
+                datePartArray[MONTH] = (toInt(input) - 1) * 3;
+            }
+            break;
+        // MONTH
+        case 'M' : // fall through to MM
+        case 'MM' :
+            if (input != null) {
+                datePartArray[MONTH] = toInt(input) - 1;
+            }
+            break;
+        case 'MMM' : // fall through to MMMM
+        case 'MMMM' :
+            a = config._locale.monthsParse(input, token, config._strict);
+            // if we didn't find a month name, mark the date as invalid.
+            if (a != null) {
+                datePartArray[MONTH] = a;
+            } else {
+                config._pf.invalidMonth = input;
+            }
+            break;
+        // DAY OF MONTH
+        case 'D' : // fall through to DD
+        case 'DD' :
+            if (input != null) {
+                datePartArray[DATE] = toInt(input);
+            }
+            break;
+        case 'Do' :
+            if (input != null) {
+                datePartArray[DATE] = toInt(parseInt(
+                            input.match(/\d{1,2}/)[0], 10));
+            }
+            break;
+        // DAY OF YEAR
+        case 'DDD' : // fall through to DDDD
+        case 'DDDD' :
+            if (input != null) {
+                config._dayOfYear = toInt(input);
+            }
+
+            break;
+        // YEAR
+        case 'YY' :
+            datePartArray[YEAR] = moment.parseTwoDigitYear(input);
+            break;
+        case 'YYYY' :
+        case 'YYYYY' :
+        case 'YYYYYY' :
+            datePartArray[YEAR] = toInt(input);
+            break;
+        // AM / PM
+        case 'a' : // fall through to A
+        case 'A' :
+            config._meridiem = input;
+            // config._isPm = config._locale.isPM(input);
+            break;
+        // HOUR
+        case 'h' : // fall through to hh
+        case 'hh' :
+            config._pf.bigHour = true;
+            /* falls through */
+        case 'H' : // fall through to HH
+        case 'HH' :
+            datePartArray[HOUR] = toInt(input);
+            break;
+        // MINUTE
+        case 'm' : // fall through to mm
+        case 'mm' :
+            datePartArray[MINUTE] = toInt(input);
+            break;
+        // SECOND
+        case 's' : // fall through to ss
+        case 'ss' :
+            datePartArray[SECOND] = toInt(input);
+            break;
+        // MILLISECOND
+        case 'S' :
+        case 'SS' :
+        case 'SSS' :
+        case 'SSSS' :
+            datePartArray[MILLISECOND] = toInt(('0.' + input) * 1000);
+            break;
+        // UNIX OFFSET (MILLISECONDS)
+        case 'x':
+            config._d = new Date(toInt(input));
+            break;
+        // UNIX TIMESTAMP WITH MS
+        case 'X':
+            config._d = new Date(parseFloat(input) * 1000);
+            break;
+        // TIMEZONE
+        case 'Z' : // fall through to ZZ
+        case 'ZZ' :
+            config._useUTC = true;
+            config._tzm = utcOffsetFromString(input);
+            break;
+        // WEEKDAY - human
+        case 'dd':
+        case 'ddd':
+        case 'dddd':
+            a = config._locale.weekdaysParse(input);
+            // if we didn't get a weekday name, mark the date as invalid
+            if (a != null) {
+                config._w = config._w || {};
+                config._w['d'] = a;
+            } else {
+                config._pf.invalidWeekday = input;
+            }
+            break;
+        // WEEK, WEEK DAY - numeric
+        case 'w':
+        case 'ww':
+        case 'W':
+        case 'WW':
+        case 'd':
+        case 'e':
+        case 'E':
+            token = token.substr(0, 1);
+            /* falls through */
+        case 'gggg':
+        case 'GGGG':
+        case 'GGGGG':
+            token = token.substr(0, 2);
+            if (input) {
+                config._w = config._w || {};
+                config._w[token] = toInt(input);
+            }
+            break;
+        case 'gg':
+        case 'GG':
+            config._w = config._w || {};
+            config._w[token] = moment.parseTwoDigitYear(input);
+        }
+    }
+
+    function dayOfYearFromWeekInfo(config) {
+        var w, weekYear, week, weekday, dow, doy, temp;
+
+        w = config._w;
+        if (w.GG != null || w.W != null || w.E != null) {
+            dow = 1;
+            doy = 4;
+
+            // TODO: We need to take the current isoWeekYear, but that depends on
+            // how we interpret now (local, utc, fixed offset). So create
+            // a now version of current config (take local/utc/offset flags, and
+            // create now).
+            weekYear = dfl(w.GG, config._a[YEAR], weekOfYear(moment(), 1, 4).year);
+            week = dfl(w.W, 1);
+            weekday = dfl(w.E, 1);
+        } else {
+            dow = config._locale._week.dow;
+            doy = config._locale._week.doy;
+
+            weekYear = dfl(w.gg, config._a[YEAR], weekOfYear(moment(), dow, doy).year);
+            week = dfl(w.w, 1);
+
+            if (w.d != null) {
+                // weekday -- low day numbers are considered next week
+                weekday = w.d;
+                if (weekday < dow) {
+                    ++week;
+                }
+            } else if (w.e != null) {
+                // local weekday -- counting starts from begining of week
+                weekday = w.e + dow;
+            } else {
+                // default to begining of week
+                weekday = dow;
+            }
+        }
+        temp = dayOfYearFromWeeks(weekYear, week, weekday, doy, dow);
+
+        config._a[YEAR] = temp.year;
+        config._dayOfYear = temp.dayOfYear;
+    }
+
+    // convert an array to a date.
+    // the array should mirror the parameters below
+    // note: all values past the year are optional and will default to the lowest possible value.
+    // [year, month, day , hour, minute, second, millisecond]
+    function dateFromConfig(config) {
+        var i, date, input = [], currentDate, yearToUse;
+
+        if (config._d) {
+            return;
+        }
+
+        currentDate = currentDateArray(config);
+
+        //compute day of the year from weeks and weekdays
+        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
+            dayOfYearFromWeekInfo(config);
+        }
+
+        //if the day of the year is set, figure out what it is
+        if (config._dayOfYear) {
+            yearToUse = dfl(config._a[YEAR], currentDate[YEAR]);
+
+            if (config._dayOfYear > daysInYear(yearToUse)) {
+                config._pf._overflowDayOfYear = true;
+            }
+
+            date = makeUTCDate(yearToUse, 0, config._dayOfYear);
+            config._a[MONTH] = date.getUTCMonth();
+            config._a[DATE] = date.getUTCDate();
+        }
+
+        // Default to current date.
+        // * if no year, month, day of month are given, default to today
+        // * if day of month is given, default month and year
+        // * if month is given, default only year
+        // * if year is given, don't default anything
+        for (i = 0; i < 3 && config._a[i] == null; ++i) {
+            config._a[i] = input[i] = currentDate[i];
+        }
+
+        // Zero out whatever was not defaulted, including time
+        for (; i < 7; i++) {
+            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
+        }
+
+        // Check for 24:00:00.000
+        if (config._a[HOUR] === 24 &&
+                config._a[MINUTE] === 0 &&
+                config._a[SECOND] === 0 &&
+                config._a[MILLISECOND] === 0) {
+            config._nextDay = true;
+            config._a[HOUR] = 0;
+        }
+
+        config._d = (config._useUTC ? makeUTCDate : makeDate).apply(null, input);
+        // Apply timezone offset from input. The actual utcOffset can be changed
+        // with parseZone.
+        if (config._tzm != null) {
+            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+        }
+
+        if (config._nextDay) {
+            config._a[HOUR] = 24;
+        }
+    }
+
+    function dateFromObject(config) {
+        var normalizedInput;
+
+        if (config._d) {
+            return;
+        }
+
+        normalizedInput = normalizeObjectUnits(config._i);
+        config._a = [
+            normalizedInput.year,
+            normalizedInput.month,
+            normalizedInput.day || normalizedInput.date,
+            normalizedInput.hour,
+            normalizedInput.minute,
+            normalizedInput.second,
+            normalizedInput.millisecond
+        ];
+
+        dateFromConfig(config);
+    }
+
+    function currentDateArray(config) {
+        var now = new Date();
+        if (config._useUTC) {
+            return [
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate()
+            ];
+        } else {
+            return [now.getFullYear(), now.getMonth(), now.getDate()];
+        }
+    }
+
+    // date from string and format string
+    function makeDateFromStringAndFormat(config) {
+        if (config._f === moment.ISO_8601) {
+            parseISO(config);
+            return;
+        }
+
+        config._a = [];
+        config._pf.empty = true;
+
+        // This array is used to make a Date, either with `new Date` or `Date.UTC`
+        var string = '' + config._i,
+            i, parsedInput, tokens, token, skipped,
+            stringLength = string.length,
+            totalParsedInputLength = 0;
+
+        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
+
+        for (i = 0; i < tokens.length; i++) {
+            token = tokens[i];
+            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+            if (parsedInput) {
+                skipped = string.substr(0, string.indexOf(parsedInput));
+                if (skipped.length > 0) {
+                    config._pf.unusedInput.push(skipped);
+                }
+                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
+                totalParsedInputLength += parsedInput.length;
+            }
+            // don't parse if it's not a known token
+            if (formatTokenFunctions[token]) {
+                if (parsedInput) {
+                    config._pf.empty = false;
+                }
+                else {
+                    config._pf.unusedTokens.push(token);
+                }
+                addTimeToArrayFromToken(token, parsedInput, config);
+            }
+            else if (config._strict && !parsedInput) {
+                config._pf.unusedTokens.push(token);
+            }
+        }
+
+        // add remaining unparsed input length to the string
+        config._pf.charsLeftOver = stringLength - totalParsedInputLength;
+        if (string.length > 0) {
+            config._pf.unusedInput.push(string);
+        }
+
+        // clear _12h flag if hour is <= 12
+        if (config._pf.bigHour === true && config._a[HOUR] <= 12) {
+            config._pf.bigHour = undefined;
+        }
+        // handle meridiem
+        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR],
+                config._meridiem);
+        dateFromConfig(config);
+        checkOverflow(config);
+    }
+
+    function unescapeFormat(s) {
+        return s.replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+            return p1 || p2 || p3 || p4;
+        });
+    }
+
+    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+    function regexpEscape(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    }
+
+    // date from string and array of format strings
+    function makeDateFromStringAndArray(config) {
+        var tempConfig,
+            bestMoment,
+
+            scoreToBeat,
+            i,
+            currentScore;
+
+        if (config._f.length === 0) {
+            config._pf.invalidFormat = true;
+            config._d = new Date(NaN);
+            return;
+        }
+
+        for (i = 0; i < config._f.length; i++) {
+            currentScore = 0;
+            tempConfig = copyConfig({}, config);
+            if (config._useUTC != null) {
+                tempConfig._useUTC = config._useUTC;
+            }
+            tempConfig._pf = defaultParsingFlags();
+            tempConfig._f = config._f[i];
+            makeDateFromStringAndFormat(tempConfig);
+
+            if (!isValid(tempConfig)) {
+                continue;
+            }
+
+            // if there is any input that was not parsed add a penalty for that format
+            currentScore += tempConfig._pf.charsLeftOver;
+
+            //or tokens
+            currentScore += tempConfig._pf.unusedTokens.length * 10;
+
+            tempConfig._pf.score = currentScore;
+
+            if (scoreToBeat == null || currentScore < scoreToBeat) {
+                scoreToBeat = currentScore;
+                bestMoment = tempConfig;
+            }
+        }
+
+        extend(config, bestMoment || tempConfig);
+    }
+
+    // date from iso format
+    function parseISO(config) {
+        var i, l,
+            string = config._i,
+            match = isoRegex.exec(string);
+
+        if (match) {
+            config._pf.iso = true;
+            for (i = 0, l = isoDates.length; i < l; i++) {
+                if (isoDates[i][1].exec(string)) {
+                    // match[5] should be 'T' or undefined
+                    config._f = isoDates[i][0] + (match[6] || ' ');
+                    break;
+                }
+            }
+            for (i = 0, l = isoTimes.length; i < l; i++) {
+                if (isoTimes[i][1].exec(string)) {
+                    config._f += isoTimes[i][0];
+                    break;
+                }
+            }
+            if (string.match(parseTokenTimezone)) {
+                config._f += 'Z';
+            }
+            makeDateFromStringAndFormat(config);
+        } else {
+            config._isValid = false;
+        }
+    }
+
+    // date from iso format or fallback
+    function makeDateFromString(config) {
+        parseISO(config);
+        if (config._isValid === false) {
+            delete config._isValid;
+            moment.createFromInputFallback(config);
+        }
+    }
+
+    function map(arr, fn) {
+        var res = [], i;
+        for (i = 0; i < arr.length; ++i) {
+            res.push(fn(arr[i], i));
+        }
+        return res;
+    }
+
+    function makeDateFromInput(config) {
+        var input = config._i, matched;
+        if (input === undefined) {
+            config._d = new Date();
+        } else if (isDate(input)) {
+            config._d = new Date(+input);
+        } else if ((matched = aspNetJsonRegex.exec(input)) !== null) {
+            config._d = new Date(+matched[1]);
+        } else if (typeof input === 'string') {
+            makeDateFromString(config);
+        } else if (isArray(input)) {
+            config._a = map(input.slice(0), function (obj) {
+                return parseInt(obj, 10);
+            });
+            dateFromConfig(config);
+        } else if (typeof(input) === 'object') {
+            dateFromObject(config);
+        } else if (typeof(input) === 'number') {
+            // from milliseconds
+            config._d = new Date(input);
+        } else {
+            moment.createFromInputFallback(config);
+        }
+    }
+
+    function makeDate(y, m, d, h, M, s, ms) {
+        //can't just apply() to create a date:
+        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
+        var date = new Date(y, m, d, h, M, s, ms);
+
+        //the date constructor doesn't accept years < 1970
+        if (y < 1970) {
+            date.setFullYear(y);
+        }
+        return date;
+    }
+
+    function makeUTCDate(y) {
+        var date = new Date(Date.UTC.apply(null, arguments));
+        if (y < 1970) {
+            date.setUTCFullYear(y);
+        }
+        return date;
+    }
+
+    function parseWeekday(input, locale) {
+        if (typeof input === 'string') {
+            if (!isNaN(input)) {
+                input = parseInt(input, 10);
+            }
+            else {
+                input = locale.weekdaysParse(input);
+                if (typeof input !== 'number') {
+                    return null;
+                }
+            }
+        }
+        return input;
+    }
+
+    /************************************
+        Relative Time
+    ************************************/
+
+
+    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
+    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
+        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+    }
+
+    function relativeTime(posNegDuration, withoutSuffix, locale) {
+        var duration = moment.duration(posNegDuration).abs(),
+            seconds = round(duration.as('s')),
+            minutes = round(duration.as('m')),
+            hours = round(duration.as('h')),
+            days = round(duration.as('d')),
+            months = round(duration.as('M')),
+            years = round(duration.as('y')),
+
+            args = seconds < relativeTimeThresholds.s && ['s', seconds] ||
+                minutes === 1 && ['m'] ||
+                minutes < relativeTimeThresholds.m && ['mm', minutes] ||
+                hours === 1 && ['h'] ||
+                hours < relativeTimeThresholds.h && ['hh', hours] ||
+                days === 1 && ['d'] ||
+                days < relativeTimeThresholds.d && ['dd', days] ||
+                months === 1 && ['M'] ||
+                months < relativeTimeThresholds.M && ['MM', months] ||
+                years === 1 && ['y'] || ['yy', years];
+
+        args[2] = withoutSuffix;
+        args[3] = +posNegDuration > 0;
+        args[4] = locale;
+        return substituteTimeAgo.apply({}, args);
+    }
+
+
+    /************************************
+        Week of Year
+    ************************************/
+
+
+    // firstDayOfWeek       0 = sun, 6 = sat
+    //                      the day of the week that starts the week
+    //                      (usually sunday or monday)
+    // firstDayOfWeekOfYear 0 = sun, 6 = sat
+    //                      the first week is the week that contains the first
+    //                      of this day of the week
+    //                      (eg. ISO weeks use thursday (4))
+    function weekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
+        var end = firstDayOfWeekOfYear - firstDayOfWeek,
+            daysToDayOfWeek = firstDayOfWeekOfYear - mom.day(),
+            adjustedMoment;
+
+
+        if (daysToDayOfWeek > end) {
+            daysToDayOfWeek -= 7;
+        }
+
+        if (daysToDayOfWeek < end - 7) {
+            daysToDayOfWeek += 7;
+        }
+
+        adjustedMoment = moment(mom).add(daysToDayOfWeek, 'd');
+        return {
+            week: Math.ceil(adjustedMoment.dayOfYear() / 7),
+            year: adjustedMoment.year()
+        };
+    }
+
+    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+    function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
+        var d = makeUTCDate(year, 0, 1).getUTCDay(), daysToAdd, dayOfYear;
+
+        d = d === 0 ? 7 : d;
+        weekday = weekday != null ? weekday : firstDayOfWeek;
+        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0) - (d < firstDayOfWeek ? 7 : 0);
+        dayOfYear = 7 * (week - 1) + (weekday - firstDayOfWeek) + daysToAdd + 1;
+
+        return {
+            year: dayOfYear > 0 ? year : year - 1,
+            dayOfYear: dayOfYear > 0 ?  dayOfYear : daysInYear(year - 1) + dayOfYear
+        };
+    }
+
+    /************************************
+        Top Level Functions
+    ************************************/
+
+    function makeMoment(config) {
+        var input = config._i,
+            format = config._f,
+            res;
+
+        config._locale = config._locale || moment.localeData(config._l);
+
+        if (input === null || (format === undefined && input === '')) {
+            return moment.invalid({nullInput: true});
+        }
+
+        if (typeof input === 'string') {
+            config._i = input = config._locale.preparse(input);
+        }
+
+        if (moment.isMoment(input)) {
+            return new Moment(input, true);
+        } else if (format) {
+            if (isArray(format)) {
+                makeDateFromStringAndArray(config);
+            } else {
+                makeDateFromStringAndFormat(config);
+            }
+        } else {
+            makeDateFromInput(config);
+        }
+
+        res = new Moment(config);
+        if (res._nextDay) {
+            // Adding is smart enough around DST
+            res.add(1, 'd');
+            res._nextDay = undefined;
+        }
+
+        return res;
+    }
+
+    moment = function (input, format, locale, strict) {
+        var c;
+
+        if (typeof(locale) === 'boolean') {
+            strict = locale;
+            locale = undefined;
+        }
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c = {};
+        c._isAMomentObject = true;
+        c._i = input;
+        c._f = format;
+        c._l = locale;
+        c._strict = strict;
+        c._isUTC = false;
+        c._pf = defaultParsingFlags();
+
+        return makeMoment(c);
+    };
+
+    moment.suppressDeprecationWarnings = false;
+
+    moment.createFromInputFallback = deprecate(
+        'moment construction falls back to js Date. This is ' +
+        'discouraged and will be removed in upcoming major ' +
+        'release. Please refer to ' +
+        'https://github.com/moment/moment/issues/1407 for more info.',
+        function (config) {
+            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+        }
+    );
+
+    // Pick a moment m from moments so that m[fn](other) is true for all
+    // other. This relies on the function fn to be transitive.
+    //
+    // moments should either be an array of moment objects or an array, whose
+    // first element is an array of moment objects.
+    function pickBy(fn, moments) {
+        var res, i;
+        if (moments.length === 1 && isArray(moments[0])) {
+            moments = moments[0];
+        }
+        if (!moments.length) {
+            return moment();
+        }
+        res = moments[0];
+        for (i = 1; i < moments.length; ++i) {
+            if (moments[i][fn](res)) {
+                res = moments[i];
+            }
+        }
+        return res;
+    }
+
+    moment.min = function () {
+        var args = [].slice.call(arguments, 0);
+
+        return pickBy('isBefore', args);
+    };
+
+    moment.max = function () {
+        var args = [].slice.call(arguments, 0);
+
+        return pickBy('isAfter', args);
+    };
+
+    // creating with utc
+    moment.utc = function (input, format, locale, strict) {
+        var c;
+
+        if (typeof(locale) === 'boolean') {
+            strict = locale;
+            locale = undefined;
+        }
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c = {};
+        c._isAMomentObject = true;
+        c._useUTC = true;
+        c._isUTC = true;
+        c._l = locale;
+        c._i = input;
+        c._f = format;
+        c._strict = strict;
+        c._pf = defaultParsingFlags();
+
+        return makeMoment(c).utc();
+    };
+
+    // creating with unix timestamp (in seconds)
+    moment.unix = function (input) {
+        return moment(input * 1000);
+    };
+
+    // duration
+    moment.duration = function (input, key) {
+        var duration = input,
+            // matching against regexp is expensive, do it on demand
+            match = null,
+            sign,
+            ret,
+            parseIso,
+            diffRes;
+
+        if (moment.isDuration(input)) {
+            duration = {
+                ms: input._milliseconds,
+                d: input._days,
+                M: input._months
+            };
+        } else if (typeof input === 'number') {
+            duration = {};
+            if (key) {
+                duration[key] = input;
+            } else {
+                duration.milliseconds = input;
+            }
+        } else if (!!(match = aspNetTimeSpanJsonRegex.exec(input))) {
+            sign = (match[1] === '-') ? -1 : 1;
+            duration = {
+                y: 0,
+                d: toInt(match[DATE]) * sign,
+                h: toInt(match[HOUR]) * sign,
+                m: toInt(match[MINUTE]) * sign,
+                s: toInt(match[SECOND]) * sign,
+                ms: toInt(match[MILLISECOND]) * sign
+            };
+        } else if (!!(match = isoDurationRegex.exec(input))) {
+            sign = (match[1] === '-') ? -1 : 1;
+            parseIso = function (inp) {
+                // We'd normally use ~~inp for this, but unfortunately it also
+                // converts floats to ints.
+                // inp may be undefined, so careful calling replace on it.
+                var res = inp && parseFloat(inp.replace(',', '.'));
+                // apply sign while we're at it
+                return (isNaN(res) ? 0 : res) * sign;
+            };
+            duration = {
+                y: parseIso(match[2]),
+                M: parseIso(match[3]),
+                d: parseIso(match[4]),
+                h: parseIso(match[5]),
+                m: parseIso(match[6]),
+                s: parseIso(match[7]),
+                w: parseIso(match[8])
+            };
+        } else if (duration == null) {// checks for null or undefined
+            duration = {};
+        } else if (typeof duration === 'object' &&
+                ('from' in duration || 'to' in duration)) {
+            diffRes = momentsDifference(moment(duration.from), moment(duration.to));
+
+            duration = {};
+            duration.ms = diffRes.milliseconds;
+            duration.M = diffRes.months;
+        }
+
+        ret = new Duration(duration);
+
+        if (moment.isDuration(input) && hasOwnProp(input, '_locale')) {
+            ret._locale = input._locale;
+        }
+
+        return ret;
+    };
+
+    // version number
+    moment.version = VERSION;
+
+    // default format
+    moment.defaultFormat = isoFormat;
+
+    // constant that refers to the ISO standard
+    moment.ISO_8601 = function () {};
+
+    // Plugins that add properties should also add the key here (null value),
+    // so we can properly clone ourselves.
+    moment.momentProperties = momentProperties;
+
+    // This function will be called whenever a moment is mutated.
+    // It is intended to keep the offset in sync with the timezone.
+    moment.updateOffset = function () {};
+
+    // This function allows you to set a threshold for relative time strings
+    moment.relativeTimeThreshold = function (threshold, limit) {
+        if (relativeTimeThresholds[threshold] === undefined) {
+            return false;
+        }
+        if (limit === undefined) {
+            return relativeTimeThresholds[threshold];
+        }
+        relativeTimeThresholds[threshold] = limit;
+        return true;
+    };
+
+    moment.lang = deprecate(
+        'moment.lang is deprecated. Use moment.locale instead.',
+        function (key, value) {
+            return moment.locale(key, value);
+        }
+    );
+
+    // This function will load locale and then set the global locale.  If
+    // no arguments are passed in, it will simply return the current global
+    // locale key.
+    moment.locale = function (key, values) {
+        var data;
+        if (key) {
+            if (typeof(values) !== 'undefined') {
+                data = moment.defineLocale(key, values);
+            }
+            else {
+                data = moment.localeData(key);
+            }
+
+            if (data) {
+                moment.duration._locale = moment._locale = data;
+            }
+        }
+
+        return moment._locale._abbr;
+    };
+
+    moment.defineLocale = function (name, values) {
+        if (values !== null) {
+            values.abbr = name;
+            if (!locales[name]) {
+                locales[name] = new Locale();
+            }
+            locales[name].set(values);
+
+            // backwards compat for now: also set the locale
+            moment.locale(name);
+
+            return locales[name];
+        } else {
+            // useful for testing
+            delete locales[name];
+            return null;
+        }
+    };
+
+    moment.langData = deprecate(
+        'moment.langData is deprecated. Use moment.localeData instead.',
+        function (key) {
+            return moment.localeData(key);
+        }
+    );
+
+    // returns locale data
+    moment.localeData = function (key) {
+        var locale;
+
+        if (key && key._locale && key._locale._abbr) {
+            key = key._locale._abbr;
+        }
+
+        if (!key) {
+            return moment._locale;
+        }
+
+        if (!isArray(key)) {
+            //short-circuit everything else
+            locale = loadLocale(key);
+            if (locale) {
+                return locale;
+            }
+            key = [key];
+        }
+
+        return chooseLocale(key);
+    };
+
+    // compare moment object
+    moment.isMoment = function (obj) {
+        return obj instanceof Moment ||
+            (obj != null && hasOwnProp(obj, '_isAMomentObject'));
+    };
+
+    // for typechecking Duration objects
+    moment.isDuration = function (obj) {
+        return obj instanceof Duration;
+    };
+
+    for (i = lists.length - 1; i >= 0; --i) {
+        makeList(lists[i]);
+    }
+
+    moment.normalizeUnits = function (units) {
+        return normalizeUnits(units);
+    };
+
+    moment.invalid = function (flags) {
+        var m = moment.utc(NaN);
+        if (flags != null) {
+            extend(m._pf, flags);
+        }
+        else {
+            m._pf.userInvalidated = true;
+        }
+
+        return m;
+    };
+
+    moment.parseZone = function () {
+        return moment.apply(null, arguments).parseZone();
+    };
+
+    moment.parseTwoDigitYear = function (input) {
+        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+    };
+
+    moment.isDate = isDate;
+
+    /************************************
+        Moment Prototype
+    ************************************/
+
+
+    extend(moment.fn = Moment.prototype, {
+
+        clone : function () {
+            return moment(this);
+        },
+
+        valueOf : function () {
+            return +this._d - ((this._offset || 0) * 60000);
+        },
+
+        unix : function () {
+            return Math.floor(+this / 1000);
+        },
+
+        toString : function () {
+            return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+        },
+
+        toDate : function () {
+            return this._offset ? new Date(+this) : this._d;
+        },
+
+        toISOString : function () {
+            var m = moment(this).utc();
+            if (0 < m.year() && m.year() <= 9999) {
+                if ('function' === typeof Date.prototype.toISOString) {
+                    // native implementation is ~50x faster, use it when we can
+                    return this.toDate().toISOString();
+                } else {
+                    return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+                }
+            } else {
+                return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            }
+        },
+
+        toArray : function () {
+            var m = this;
+            return [
+                m.year(),
+                m.month(),
+                m.date(),
+                m.hours(),
+                m.minutes(),
+                m.seconds(),
+                m.milliseconds()
+            ];
+        },
+
+        isValid : function () {
+            return isValid(this);
+        },
+
+        isDSTShifted : function () {
+            if (this._a) {
+                return this.isValid() && compareArrays(this._a, (this._isUTC ? moment.utc(this._a) : moment(this._a)).toArray()) > 0;
+            }
+
+            return false;
+        },
+
+        parsingFlags : function () {
+            return extend({}, this._pf);
+        },
+
+        invalidAt: function () {
+            return this._pf.overflow;
+        },
+
+        utc : function (keepLocalTime) {
+            return this.utcOffset(0, keepLocalTime);
+        },
+
+        local : function (keepLocalTime) {
+            if (this._isUTC) {
+                this.utcOffset(0, keepLocalTime);
+                this._isUTC = false;
+
+                if (keepLocalTime) {
+                    this.subtract(this._dateUtcOffset(), 'm');
+                }
+            }
+            return this;
+        },
+
+        format : function (inputString) {
+            var output = formatMoment(this, inputString || moment.defaultFormat);
+            return this.localeData().postformat(output);
+        },
+
+        add : createAdder(1, 'add'),
+
+        subtract : createAdder(-1, 'subtract'),
+
+        diff : function (input, units, asFloat) {
+            var that = makeAs(input, this),
+                zoneDiff = (that.utcOffset() - this.utcOffset()) * 6e4,
+                anchor, diff, output, daysAdjust;
+
+            units = normalizeUnits(units);
+
+            if (units === 'year' || units === 'month' || units === 'quarter') {
+                output = monthDiff(this, that);
+                if (units === 'quarter') {
+                    output = output / 3;
+                } else if (units === 'year') {
+                    output = output / 12;
+                }
+            } else {
+                diff = this - that;
+                output = units === 'second' ? diff / 1e3 : // 1000
+                    units === 'minute' ? diff / 6e4 : // 1000 * 60
+                    units === 'hour' ? diff / 36e5 : // 1000 * 60 * 60
+                    units === 'day' ? (diff - zoneDiff) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
+                    units === 'week' ? (diff - zoneDiff) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
+                    diff;
+            }
+            return asFloat ? output : absRound(output);
+        },
+
+        from : function (time, withoutSuffix) {
+            return moment.duration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
+        },
+
+        fromNow : function (withoutSuffix) {
+            return this.from(moment(), withoutSuffix);
+        },
+
+        calendar : function (time) {
+            // We want to compare the start of today, vs this.
+            // Getting start-of-today depends on whether we're locat/utc/offset
+            // or not.
+            var now = time || moment(),
+                sod = makeAs(now, this).startOf('day'),
+                diff = this.diff(sod, 'days', true),
+                format = diff < -6 ? 'sameElse' :
+                    diff < -1 ? 'lastWeek' :
+                    diff < 0 ? 'lastDay' :
+                    diff < 1 ? 'sameDay' :
+                    diff < 2 ? 'nextDay' :
+                    diff < 7 ? 'nextWeek' : 'sameElse';
+            return this.format(this.localeData().calendar(format, this, moment(now)));
+        },
+
+        isLeapYear : function () {
+            return isLeapYear(this.year());
+        },
+
+        isDST : function () {
+            return (this.utcOffset() > this.clone().month(0).utcOffset() ||
+                this.utcOffset() > this.clone().month(5).utcOffset());
+        },
+
+        day : function (input) {
+            var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
+            if (input != null) {
+                input = parseWeekday(input, this.localeData());
+                return this.add(input - day, 'd');
+            } else {
+                return day;
+            }
+        },
+
+        month : makeAccessor('Month', true),
+
+        startOf : function (units) {
+            units = normalizeUnits(units);
+            // the following switch intentionally omits break keywords
+            // to utilize falling through the cases.
+            switch (units) {
+            case 'year':
+                this.month(0);
+                /* falls through */
+            case 'quarter':
+            case 'month':
+                this.date(1);
+                /* falls through */
+            case 'week':
+            case 'isoWeek':
+            case 'day':
+                this.hours(0);
+                /* falls through */
+            case 'hour':
+                this.minutes(0);
+                /* falls through */
+            case 'minute':
+                this.seconds(0);
+                /* falls through */
+            case 'second':
+                this.milliseconds(0);
+                /* falls through */
+            }
+
+            // weeks are a special case
+            if (units === 'week') {
+                this.weekday(0);
+            } else if (units === 'isoWeek') {
+                this.isoWeekday(1);
+            }
+
+            // quarters are also special
+            if (units === 'quarter') {
+                this.month(Math.floor(this.month() / 3) * 3);
+            }
+
+            return this;
+        },
+
+        endOf: function (units) {
+            units = normalizeUnits(units);
+            if (units === undefined || units === 'millisecond') {
+                return this;
+            }
+            return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
+        },
+
+        isAfter: function (input, units) {
+            var inputMs;
+            units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
+            if (units === 'millisecond') {
+                input = moment.isMoment(input) ? input : moment(input);
+                return +this > +input;
+            } else {
+                inputMs = moment.isMoment(input) ? +input : +moment(input);
+                return inputMs < +this.clone().startOf(units);
+            }
+        },
+
+        isBefore: function (input, units) {
+            var inputMs;
+            units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
+            if (units === 'millisecond') {
+                input = moment.isMoment(input) ? input : moment(input);
+                return +this < +input;
+            } else {
+                inputMs = moment.isMoment(input) ? +input : +moment(input);
+                return +this.clone().endOf(units) < inputMs;
+            }
+        },
+
+        isBetween: function (from, to, units) {
+            return this.isAfter(from, units) && this.isBefore(to, units);
+        },
+
+        isSame: function (input, units) {
+            var inputMs;
+            units = normalizeUnits(units || 'millisecond');
+            if (units === 'millisecond') {
+                input = moment.isMoment(input) ? input : moment(input);
+                return +this === +input;
+            } else {
+                inputMs = +moment(input);
+                return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
+            }
+        },
+
+        min: deprecate(
+                 'moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
+                 function (other) {
+                     other = moment.apply(null, arguments);
+                     return other < this ? this : other;
+                 }
+         ),
+
+        max: deprecate(
+                'moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
+                function (other) {
+                    other = moment.apply(null, arguments);
+                    return other > this ? this : other;
+                }
+        ),
+
+        zone : deprecate(
+                'moment().zone is deprecated, use moment().utcOffset instead. ' +
+                'https://github.com/moment/moment/issues/1779',
+                function (input, keepLocalTime) {
+                    if (input != null) {
+                        if (typeof input !== 'string') {
+                            input = -input;
+                        }
+
+                        this.utcOffset(input, keepLocalTime);
+
+                        return this;
+                    } else {
+                        return -this.utcOffset();
+                    }
+                }
+        ),
+
+        // keepLocalTime = true means only change the timezone, without
+        // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
+        // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
+        // +0200, so we adjust the time as needed, to be valid.
+        //
+        // Keeping the time actually adds/subtracts (one hour)
+        // from the actual represented time. That is why we call updateOffset
+        // a second time. In case it wants us to change the offset again
+        // _changeInProgress == true case, then we have to adjust, because
+        // there is no such time in the given timezone.
+        utcOffset : function (input, keepLocalTime) {
+            var offset = this._offset || 0,
+                localAdjust;
+            if (input != null) {
+                if (typeof input === 'string') {
+                    input = utcOffsetFromString(input);
+                }
+                if (Math.abs(input) < 16) {
+                    input = input * 60;
+                }
+                if (!this._isUTC && keepLocalTime) {
+                    localAdjust = this._dateUtcOffset();
+                }
+                this._offset = input;
+                this._isUTC = true;
+                if (localAdjust != null) {
+                    this.add(localAdjust, 'm');
+                }
+                if (offset !== input) {
+                    if (!keepLocalTime || this._changeInProgress) {
+                        addOrSubtractDurationFromMoment(this,
+                                moment.duration(input - offset, 'm'), 1, false);
+                    } else if (!this._changeInProgress) {
+                        this._changeInProgress = true;
+                        moment.updateOffset(this, true);
+                        this._changeInProgress = null;
+                    }
+                }
+
+                return this;
+            } else {
+                return this._isUTC ? offset : this._dateUtcOffset();
+            }
+        },
+
+        isLocal : function () {
+            return !this._isUTC;
+        },
+
+        isUtcOffset : function () {
+            return this._isUTC;
+        },
+
+        isUtc : function () {
+            return this._isUTC && this._offset === 0;
+        },
+
+        zoneAbbr : function () {
+            return this._isUTC ? 'UTC' : '';
+        },
+
+        zoneName : function () {
+            return this._isUTC ? 'Coordinated Universal Time' : '';
+        },
+
+        parseZone : function () {
+            if (this._tzm) {
+                this.utcOffset(this._tzm);
+            } else if (typeof this._i === 'string') {
+                this.utcOffset(utcOffsetFromString(this._i));
+            }
+            return this;
+        },
+
+        hasAlignedHourOffset : function (input) {
+            if (!input) {
+                input = 0;
+            }
+            else {
+                input = moment(input).utcOffset();
+            }
+
+            return (this.utcOffset() - input) % 60 === 0;
+        },
+
+        daysInMonth : function () {
+            return daysInMonth(this.year(), this.month());
+        },
+
+        dayOfYear : function (input) {
+            var dayOfYear = round((moment(this).startOf('day') - moment(this).startOf('year')) / 864e5) + 1;
+            return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+        },
+
+        quarter : function (input) {
+            return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+        },
+
+        weekYear : function (input) {
+            var year = weekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year;
+            return input == null ? year : this.add((input - year), 'y');
+        },
+
+        isoWeekYear : function (input) {
+            var year = weekOfYear(this, 1, 4).year;
+            return input == null ? year : this.add((input - year), 'y');
+        },
+
+        week : function (input) {
+            var week = this.localeData().week(this);
+            return input == null ? week : this.add((input - week) * 7, 'd');
+        },
+
+        isoWeek : function (input) {
+            var week = weekOfYear(this, 1, 4).week;
+            return input == null ? week : this.add((input - week) * 7, 'd');
+        },
+
+        weekday : function (input) {
+            var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
+            return input == null ? weekday : this.add(input - weekday, 'd');
+        },
+
+        isoWeekday : function (input) {
+            // behaves the same as moment#day except
+            // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
+            // as a setter, sunday should belong to the previous week.
+            return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
+        },
+
+        isoWeeksInYear : function () {
+            return weeksInYear(this.year(), 1, 4);
+        },
+
+        weeksInYear : function () {
+            var weekInfo = this.localeData()._week;
+            return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
+        },
+
+        get : function (units) {
+            units = normalizeUnits(units);
+            return this[units]();
+        },
+
+        set : function (units, value) {
+            var unit;
+            if (typeof units === 'object') {
+                for (unit in units) {
+                    this.set(unit, units[unit]);
+                }
+            }
+            else {
+                units = normalizeUnits(units);
+                if (typeof this[units] === 'function') {
+                    this[units](value);
+                }
+            }
+            return this;
+        },
+
+        // If passed a locale key, it will set the locale for this
+        // instance.  Otherwise, it will return the locale configuration
+        // variables for this instance.
+        locale : function (key) {
+            var newLocaleData;
+
+            if (key === undefined) {
+                return this._locale._abbr;
+            } else {
+                newLocaleData = moment.localeData(key);
+                if (newLocaleData != null) {
+                    this._locale = newLocaleData;
+                }
+                return this;
+            }
+        },
+
+        lang : deprecate(
+            'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
+            function (key) {
+                if (key === undefined) {
+                    return this.localeData();
+                } else {
+                    return this.locale(key);
+                }
+            }
+        ),
+
+        localeData : function () {
+            return this._locale;
+        },
+
+        _dateUtcOffset : function () {
+            // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+            // https://github.com/moment/moment/pull/1871
+            return -Math.round(this._d.getTimezoneOffset() / 15) * 15;
+        }
+
+    });
+
+    function rawMonthSetter(mom, value) {
+        var dayOfMonth;
+
+        // TODO: Move this out of here!
+        if (typeof value === 'string') {
+            value = mom.localeData().monthsParse(value);
+            // TODO: Another silent failure?
+            if (typeof value !== 'number') {
+                return mom;
+            }
+        }
+
+        dayOfMonth = Math.min(mom.date(),
+                daysInMonth(mom.year(), value));
+        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+        return mom;
+    }
+
+    function rawGetter(mom, unit) {
+        return mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]();
+    }
+
+    function rawSetter(mom, unit, value) {
+        if (unit === 'Month') {
+            return rawMonthSetter(mom, value);
+        } else {
+            return mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+        }
+    }
+
+    function makeAccessor(unit, keepTime) {
+        return function (value) {
+            if (value != null) {
+                rawSetter(this, unit, value);
+                moment.updateOffset(this, keepTime);
+                return this;
+            } else {
+                return rawGetter(this, unit);
+            }
+        };
+    }
+
+    moment.fn.millisecond = moment.fn.milliseconds = makeAccessor('Milliseconds', false);
+    moment.fn.second = moment.fn.seconds = makeAccessor('Seconds', false);
+    moment.fn.minute = moment.fn.minutes = makeAccessor('Minutes', false);
+    // Setting the hour should keep the time, because the user explicitly
+    // specified which hour he wants. So trying to maintain the same hour (in
+    // a new timezone) makes sense. Adding/subtracting hours does not follow
+    // this rule.
+    moment.fn.hour = moment.fn.hours = makeAccessor('Hours', true);
+    // moment.fn.month is defined separately
+    moment.fn.date = makeAccessor('Date', true);
+    moment.fn.dates = deprecate('dates accessor is deprecated. Use date instead.', makeAccessor('Date', true));
+    moment.fn.year = makeAccessor('FullYear', true);
+    moment.fn.years = deprecate('years accessor is deprecated. Use year instead.', makeAccessor('FullYear', true));
+
+    // add plural methods
+    moment.fn.days = moment.fn.day;
+    moment.fn.months = moment.fn.month;
+    moment.fn.weeks = moment.fn.week;
+    moment.fn.isoWeeks = moment.fn.isoWeek;
+    moment.fn.quarters = moment.fn.quarter;
+
+    // add aliased format methods
+    moment.fn.toJSON = moment.fn.toISOString;
+
+    // alias isUtc for dev-friendliness
+    moment.fn.isUTC = moment.fn.isUtc;
+
+    /************************************
+        Duration Prototype
+    ************************************/
+
+
+    function daysToYears (days) {
+        // 400 years have 146097 days (taking into account leap year rules)
+        return days * 400 / 146097;
+    }
+
+    function yearsToDays (years) {
+        // years * 365 + absRound(years / 4) -
+        //     absRound(years / 100) + absRound(years / 400);
+        return years * 146097 / 400;
+    }
+
+    extend(moment.duration.fn = Duration.prototype, {
+
+        _bubble : function () {
+            var milliseconds = this._milliseconds,
+                days = this._days,
+                months = this._months,
+                data = this._data,
+                seconds, minutes, hours, years = 0;
+
+            // The following code bubbles up values, see the tests for
+            // examples of what that means.
+            data.milliseconds = milliseconds % 1000;
+
+            seconds = absRound(milliseconds / 1000);
+            data.seconds = seconds % 60;
+
+            minutes = absRound(seconds / 60);
+            data.minutes = minutes % 60;
+
+            hours = absRound(minutes / 60);
+            data.hours = hours % 24;
+
+            days += absRound(hours / 24);
+
+            // Accurately convert days to years, assume start from year 0.
+            years = absRound(daysToYears(days));
+            days -= absRound(yearsToDays(years));
+
+            // 30 days to a month
+            // TODO (iskren): Use anchor date (like 1st Jan) to compute this.
+            months += absRound(days / 30);
+            days %= 30;
+
+            // 12 months -> 1 year
+            years += absRound(months / 12);
+            months %= 12;
+
+            data.days = days;
+            data.months = months;
+            data.years = years;
+        },
+
+        abs : function () {
+            this._milliseconds = Math.abs(this._milliseconds);
+            this._days = Math.abs(this._days);
+            this._months = Math.abs(this._months);
+
+            this._data.milliseconds = Math.abs(this._data.milliseconds);
+            this._data.seconds = Math.abs(this._data.seconds);
+            this._data.minutes = Math.abs(this._data.minutes);
+            this._data.hours = Math.abs(this._data.hours);
+            this._data.months = Math.abs(this._data.months);
+            this._data.years = Math.abs(this._data.years);
+
+            return this;
+        },
+
+        weeks : function () {
+            return absRound(this.days() / 7);
+        },
+
+        valueOf : function () {
+            return this._milliseconds +
+              this._days * 864e5 +
+              (this._months % 12) * 2592e6 +
+              toInt(this._months / 12) * 31536e6;
+        },
+
+        humanize : function (withSuffix) {
+            var output = relativeTime(this, !withSuffix, this.localeData());
+
+            if (withSuffix) {
+                output = this.localeData().pastFuture(+this, output);
+            }
+
+            return this.localeData().postformat(output);
+        },
+
+        add : function (input, val) {
+            // supports only 2.0-style add(1, 's') or add(moment)
+            var dur = moment.duration(input, val);
+
+            this._milliseconds += dur._milliseconds;
+            this._days += dur._days;
+            this._months += dur._months;
+
+            this._bubble();
+
+            return this;
+        },
+
+        subtract : function (input, val) {
+            var dur = moment.duration(input, val);
+
+            this._milliseconds -= dur._milliseconds;
+            this._days -= dur._days;
+            this._months -= dur._months;
+
+            this._bubble();
+
+            return this;
+        },
+
+        get : function (units) {
+            units = normalizeUnits(units);
+            return this[units.toLowerCase() + 's']();
+        },
+
+        as : function (units) {
+            var days, months;
+            units = normalizeUnits(units);
+
+            if (units === 'month' || units === 'year') {
+                days = this._days + this._milliseconds / 864e5;
+                months = this._months + daysToYears(days) * 12;
+                return units === 'month' ? months : months / 12;
+            } else {
+                // handle milliseconds separately because of floating point math errors (issue #1867)
+                days = this._days + Math.round(yearsToDays(this._months / 12));
+                switch (units) {
+                    case 'week': return days / 7 + this._milliseconds / 6048e5;
+                    case 'day': return days + this._milliseconds / 864e5;
+                    case 'hour': return days * 24 + this._milliseconds / 36e5;
+                    case 'minute': return days * 24 * 60 + this._milliseconds / 6e4;
+                    case 'second': return days * 24 * 60 * 60 + this._milliseconds / 1000;
+                    // Math.floor prevents floating point math errors here
+                    case 'millisecond': return Math.floor(days * 24 * 60 * 60 * 1000) + this._milliseconds;
+                    default: throw new Error('Unknown unit ' + units);
+                }
+            }
+        },
+
+        lang : moment.fn.lang,
+        locale : moment.fn.locale,
+
+        toIsoString : deprecate(
+            'toIsoString() is deprecated. Please use toISOString() instead ' +
+            '(notice the capitals)',
+            function () {
+                return this.toISOString();
+            }
+        ),
+
+        toISOString : function () {
+            // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+            var years = Math.abs(this.years()),
+                months = Math.abs(this.months()),
+                days = Math.abs(this.days()),
+                hours = Math.abs(this.hours()),
+                minutes = Math.abs(this.minutes()),
+                seconds = Math.abs(this.seconds() + this.milliseconds() / 1000);
+
+            if (!this.asSeconds()) {
+                // this is the same as C#'s (Noda) and python (isodate)...
+                // but not other JS (goog.date)
+                return 'P0D';
+            }
+
+            return (this.asSeconds() < 0 ? '-' : '') +
+                'P' +
+                (years ? years + 'Y' : '') +
+                (months ? months + 'M' : '') +
+                (days ? days + 'D' : '') +
+                ((hours || minutes || seconds) ? 'T' : '') +
+                (hours ? hours + 'H' : '') +
+                (minutes ? minutes + 'M' : '') +
+                (seconds ? seconds + 'S' : '');
+        },
+
+        localeData : function () {
+            return this._locale;
+        },
+
+        toJSON : function () {
+            return this.toISOString();
+        }
+    });
+
+    moment.duration.fn.toString = moment.duration.fn.toISOString;
+
+    function makeDurationGetter(name) {
+        moment.duration.fn[name] = function () {
+            return this._data[name];
+        };
+    }
+
+    for (i in unitMillisecondFactors) {
+        if (hasOwnProp(unitMillisecondFactors, i)) {
+            makeDurationGetter(i.toLowerCase());
+        }
+    }
+
+    moment.duration.fn.asMilliseconds = function () {
+        return this.as('ms');
+    };
+    moment.duration.fn.asSeconds = function () {
+        return this.as('s');
+    };
+    moment.duration.fn.asMinutes = function () {
+        return this.as('m');
+    };
+    moment.duration.fn.asHours = function () {
+        return this.as('h');
+    };
+    moment.duration.fn.asDays = function () {
+        return this.as('d');
+    };
+    moment.duration.fn.asWeeks = function () {
+        return this.as('weeks');
+    };
+    moment.duration.fn.asMonths = function () {
+        return this.as('M');
+    };
+    moment.duration.fn.asYears = function () {
+        return this.as('y');
+    };
+
+    /************************************
+        Default Locale
+    ************************************/
+
+
+    // Set default locale, other locale will inherit from English.
+    moment.locale('en', {
+        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
+        ordinal : function (number) {
+            var b = number % 10,
+                output = (toInt(number % 100 / 10) === 1) ? 'th' :
+                (b === 1) ? 'st' :
+                (b === 2) ? 'nd' :
+                (b === 3) ? 'rd' : 'th';
+            return number + output;
+        }
+    });
+
+    /* EMBED_LOCALES */
+
+    /************************************
+        Exposing Moment
+    ************************************/
+
+    function makeGlobal(shouldDeprecate) {
+        /*global ender:false */
+        if (typeof ender !== 'undefined') {
+            return;
+        }
+        oldGlobalMoment = globalScope.moment;
+        if (shouldDeprecate) {
+            globalScope.moment = deprecate(
+                    'Accessing Moment through the global scope is ' +
+                    'deprecated, and will be removed in an upcoming ' +
+                    'release.',
+                    moment);
+        } else {
+            globalScope.moment = moment;
+        }
+    }
+
+    // CommonJS module is defined
+    if (hasModule) {
+        module.exports = moment;
+    } else if (typeof define === 'function' && define.amd) {
+        define(function (require, exports, module) {
+            if (module.config && module.config() && module.config().noGlobal === true) {
+                // release the global variable
+                globalScope.moment = oldGlobalMoment;
+            }
+
+            return moment;
+        });
+        makeGlobal(true);
+    } else {
+        makeGlobal();
+    }
+}).call(this);
+
+/*! tether 0.6.5 */
+
+
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory(require,exports,module);
+  } else {
+    root.Tether = factory();
+  }
+}(this, function(require,exports,module) {
+
+(function() {
+  var Evented, addClass, defer, deferred, extend, flush, getBounds, getOffsetParent, getOrigin, getScrollBarSize, getScrollParent, hasClass, node, removeClass, uniqueId, updateClasses, zeroPosCache,
+    __hasProp = {}.hasOwnProperty,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+    __slice = [].slice;
+
+  if (this.Tether == null) {
+    this.Tether = {
+      modules: []
+    };
+  }
+
+  getScrollParent = function(el) {
+    var parent, position, scrollParent, style, _ref;
+    position = getComputedStyle(el).position;
+    if (position === 'fixed') {
+      return el;
+    }
+    scrollParent = void 0;
+    parent = el;
+    while (parent = parent.parentNode) {
+      try {
+        style = getComputedStyle(parent);
+      } catch (_error) {}
+      if (style == null) {
+        return parent;
+      }
+      if (/(auto|scroll)/.test(style['overflow'] + style['overflow-y'] + style['overflow-x'])) {
+        if (position !== 'absolute' || ((_ref = style['position']) === 'relative' || _ref === 'absolute' || _ref === 'fixed')) {
+          return parent;
+        }
+      }
+    }
+    return document.body;
+  };
+
+  uniqueId = (function() {
+    var id;
+    id = 0;
+    return function() {
+      return id++;
+    };
+  })();
+
+  zeroPosCache = {};
+
+  getOrigin = function(doc) {
+    var id, k, node, v, _ref;
+    node = doc._tetherZeroElement;
+    if (node == null) {
+      node = doc.createElement('div');
+      node.setAttribute('data-tether-id', uniqueId());
+      extend(node.style, {
+        top: 0,
+        left: 0,
+        position: 'absolute'
+      });
+      doc.body.appendChild(node);
+      doc._tetherZeroElement = node;
+    }
+    id = node.getAttribute('data-tether-id');
+    if (zeroPosCache[id] == null) {
+      zeroPosCache[id] = {};
+      _ref = node.getBoundingClientRect();
+      for (k in _ref) {
+        v = _ref[k];
+        zeroPosCache[id][k] = v;
+      }
+      defer(function() {
+        return zeroPosCache[id] = void 0;
+      });
+    }
+    return zeroPosCache[id];
+  };
+
+  node = null;
+
+  getBounds = function(el) {
+    var box, doc, docEl, k, origin, v, _ref;
+    if (el === document) {
+      doc = document;
+      el = document.documentElement;
+    } else {
+      doc = el.ownerDocument;
+    }
+    docEl = doc.documentElement;
+    box = {};
+    _ref = el.getBoundingClientRect();
+    for (k in _ref) {
+      v = _ref[k];
+      box[k] = v;
+    }
+    origin = getOrigin(doc);
+    box.top -= origin.top;
+    box.left -= origin.left;
+    if (box.width == null) {
+      box.width = document.body.scrollWidth - box.left - box.right;
+    }
+    if (box.height == null) {
+      box.height = document.body.scrollHeight - box.top - box.bottom;
+    }
+    box.top = box.top - docEl.clientTop;
+    box.left = box.left - docEl.clientLeft;
+    box.right = doc.body.clientWidth - box.width - box.left;
+    box.bottom = doc.body.clientHeight - box.height - box.top;
+    return box;
+  };
+
+  getOffsetParent = function(el) {
+    return el.offsetParent || document.documentElement;
+  };
+
+  getScrollBarSize = function() {
+    var inner, outer, width, widthContained, widthScroll;
+    inner = document.createElement('div');
+    inner.style.width = '100%';
+    inner.style.height = '200px';
+    outer = document.createElement('div');
+    extend(outer.style, {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      pointerEvents: 'none',
+      visibility: 'hidden',
+      width: '200px',
+      height: '150px',
+      overflow: 'hidden'
+    });
+    outer.appendChild(inner);
+    document.body.appendChild(outer);
+    widthContained = inner.offsetWidth;
+    outer.style.overflow = 'scroll';
+    widthScroll = inner.offsetWidth;
+    if (widthContained === widthScroll) {
+      widthScroll = outer.clientWidth;
+    }
+    document.body.removeChild(outer);
+    width = widthContained - widthScroll;
+    return {
+      width: width,
+      height: width
+    };
+  };
+
+  extend = function(out) {
+    var args, key, obj, val, _i, _len, _ref;
+    if (out == null) {
+      out = {};
+    }
+    args = [];
+    Array.prototype.push.apply(args, arguments);
+    _ref = args.slice(1);
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      obj = _ref[_i];
+      if (obj) {
+        for (key in obj) {
+          if (!__hasProp.call(obj, key)) continue;
+          val = obj[key];
+          out[key] = val;
+        }
+      }
+    }
+    return out;
+  };
+
+  removeClass = function(el, name) {
+    var cls, _i, _len, _ref, _results;
+    if (el.classList != null) {
+      _ref = name.split(' ');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        cls = _ref[_i];
+        if (cls.trim()) {
+          _results.push(el.classList.remove(cls));
+        }
+      }
+      return _results;
+    } else {
+      return el.className = el.className.replace(new RegExp("(^| )" + (name.split(' ').join('|')) + "( |$)", 'gi'), ' ');
+    }
+  };
+
+  addClass = function(el, name) {
+    var cls, _i, _len, _ref, _results;
+    if (el.classList != null) {
+      _ref = name.split(' ');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        cls = _ref[_i];
+        if (cls.trim()) {
+          _results.push(el.classList.add(cls));
+        }
+      }
+      return _results;
+    } else {
+      removeClass(el, name);
+      return el.className += " " + name;
+    }
+  };
+
+  hasClass = function(el, name) {
+    if (el.classList != null) {
+      return el.classList.contains(name);
+    } else {
+      return new RegExp("(^| )" + name + "( |$)", 'gi').test(el.className);
+    }
+  };
+
+  updateClasses = function(el, add, all) {
+    var cls, _i, _j, _len, _len1, _results;
+    for (_i = 0, _len = all.length; _i < _len; _i++) {
+      cls = all[_i];
+      if (__indexOf.call(add, cls) < 0) {
+        if (hasClass(el, cls)) {
+          removeClass(el, cls);
+        }
+      }
+    }
+    _results = [];
+    for (_j = 0, _len1 = add.length; _j < _len1; _j++) {
+      cls = add[_j];
+      if (!hasClass(el, cls)) {
+        _results.push(addClass(el, cls));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
+  deferred = [];
+
+  defer = function(fn) {
+    return deferred.push(fn);
+  };
+
+  flush = function() {
+    var fn, _results;
+    _results = [];
+    while (fn = deferred.pop()) {
+      _results.push(fn());
+    }
+    return _results;
+  };
+
+  Evented = (function() {
+    function Evented() {}
+
+    Evented.prototype.on = function(event, handler, ctx, once) {
+      var _base;
+      if (once == null) {
+        once = false;
+      }
+      if (this.bindings == null) {
+        this.bindings = {};
+      }
+      if ((_base = this.bindings)[event] == null) {
+        _base[event] = [];
+      }
+      return this.bindings[event].push({
+        handler: handler,
+        ctx: ctx,
+        once: once
+      });
+    };
+
+    Evented.prototype.once = function(event, handler, ctx) {
+      return this.on(event, handler, ctx, true);
+    };
+
+    Evented.prototype.off = function(event, handler) {
+      var i, _ref, _results;
+      if (((_ref = this.bindings) != null ? _ref[event] : void 0) == null) {
+        return;
+      }
+      if (handler == null) {
+        return delete this.bindings[event];
+      } else {
+        i = 0;
+        _results = [];
+        while (i < this.bindings[event].length) {
+          if (this.bindings[event][i].handler === handler) {
+            _results.push(this.bindings[event].splice(i, 1));
+          } else {
+            _results.push(i++);
+          }
+        }
+        return _results;
+      }
+    };
+
+    Evented.prototype.trigger = function() {
+      var args, ctx, event, handler, i, once, _ref, _ref1, _results;
+      event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      if ((_ref = this.bindings) != null ? _ref[event] : void 0) {
+        i = 0;
+        _results = [];
+        while (i < this.bindings[event].length) {
+          _ref1 = this.bindings[event][i], handler = _ref1.handler, ctx = _ref1.ctx, once = _ref1.once;
+          handler.apply(ctx != null ? ctx : this, args);
+          if (once) {
+            _results.push(this.bindings[event].splice(i, 1));
+          } else {
+            _results.push(i++);
+          }
+        }
+        return _results;
+      }
+    };
+
+    return Evented;
+
+  })();
+
+  this.Tether.Utils = {
+    getScrollParent: getScrollParent,
+    getBounds: getBounds,
+    getOffsetParent: getOffsetParent,
+    extend: extend,
+    addClass: addClass,
+    removeClass: removeClass,
+    hasClass: hasClass,
+    updateClasses: updateClasses,
+    defer: defer,
+    flush: flush,
+    uniqueId: uniqueId,
+    Evented: Evented,
+    getScrollBarSize: getScrollBarSize
+  };
+
+}).call(this);
+
+(function() {
+  var MIRROR_LR, MIRROR_TB, OFFSET_MAP, Tether, addClass, addOffset, attachmentToOffset, autoToFixedAttachment, defer, extend, flush, getBounds, getOffsetParent, getOuterSize, getScrollBarSize, getScrollParent, getSize, now, offsetToPx, parseAttachment, parseOffset, position, removeClass, tethers, transformKey, updateClasses, within, _Tether, _ref,
+    __slice = [].slice,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  if (this.Tether == null) {
+    throw new Error("You must include the utils.js file before tether.js");
+  }
+
+  Tether = this.Tether;
+
+  _ref = Tether.Utils, getScrollParent = _ref.getScrollParent, getSize = _ref.getSize, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getOffsetParent = _ref.getOffsetParent, extend = _ref.extend, addClass = _ref.addClass, removeClass = _ref.removeClass, updateClasses = _ref.updateClasses, defer = _ref.defer, flush = _ref.flush, getScrollBarSize = _ref.getScrollBarSize;
+
+  within = function(a, b, diff) {
+    if (diff == null) {
+      diff = 1;
+    }
+    return (a + diff >= b && b >= a - diff);
+  };
+
+  transformKey = (function() {
+    var el, key, _i, _len, _ref1;
+    el = document.createElement('div');
+    _ref1 = ['transform', 'webkitTransform', 'OTransform', 'MozTransform', 'msTransform'];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      key = _ref1[_i];
+      if (el.style[key] !== void 0) {
+        return key;
+      }
+    }
+  })();
+
+  tethers = [];
+
+  position = function() {
+    var tether, _i, _len;
+    for (_i = 0, _len = tethers.length; _i < _len; _i++) {
+      tether = tethers[_i];
+      tether.position(false);
+    }
+    return flush();
+  };
+
+  now = function() {
+    var _ref1;
+    return (_ref1 = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref1 : +(new Date);
+  };
+
+  (function() {
+    var event, lastCall, lastDuration, pendingTimeout, tick, _i, _len, _ref1, _results;
+    lastCall = null;
+    lastDuration = null;
+    pendingTimeout = null;
+    tick = function() {
+      if ((lastDuration != null) && lastDuration > 16) {
+        lastDuration = Math.min(lastDuration - 16, 250);
+        pendingTimeout = setTimeout(tick, 250);
+        return;
+      }
+      if ((lastCall != null) && (now() - lastCall) < 10) {
+        return;
+      }
+      if (pendingTimeout != null) {
+        clearTimeout(pendingTimeout);
+        pendingTimeout = null;
+      }
+      lastCall = now();
+      position();
+      return lastDuration = now() - lastCall;
+    };
+    _ref1 = ['resize', 'scroll', 'touchmove'];
+    _results = [];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      event = _ref1[_i];
+      _results.push(window.addEventListener(event, tick));
+    }
+    return _results;
+  })();
+
+  MIRROR_LR = {
+    center: 'center',
+    left: 'right',
+    right: 'left'
+  };
+
+  MIRROR_TB = {
+    middle: 'middle',
+    top: 'bottom',
+    bottom: 'top'
+  };
+
+  OFFSET_MAP = {
+    top: 0,
+    left: 0,
+    middle: '50%',
+    center: '50%',
+    bottom: '100%',
+    right: '100%'
+  };
+
+  autoToFixedAttachment = function(attachment, relativeToAttachment) {
+    var left, top;
+    left = attachment.left, top = attachment.top;
+    if (left === 'auto') {
+      left = MIRROR_LR[relativeToAttachment.left];
+    }
+    if (top === 'auto') {
+      top = MIRROR_TB[relativeToAttachment.top];
+    }
+    return {
+      left: left,
+      top: top
+    };
+  };
+
+  attachmentToOffset = function(attachment) {
+    var _ref1, _ref2;
+    return {
+      left: (_ref1 = OFFSET_MAP[attachment.left]) != null ? _ref1 : attachment.left,
+      top: (_ref2 = OFFSET_MAP[attachment.top]) != null ? _ref2 : attachment.top
+    };
+  };
+
+  addOffset = function() {
+    var left, offsets, out, top, _i, _len, _ref1;
+    offsets = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    out = {
+      top: 0,
+      left: 0
+    };
+    for (_i = 0, _len = offsets.length; _i < _len; _i++) {
+      _ref1 = offsets[_i], top = _ref1.top, left = _ref1.left;
+      if (typeof top === 'string') {
+        top = parseFloat(top, 10);
+      }
+      if (typeof left === 'string') {
+        left = parseFloat(left, 10);
+      }
+      out.top += top;
+      out.left += left;
+    }
+    return out;
+  };
+
+  offsetToPx = function(offset, size) {
+    if (typeof offset.left === 'string' && offset.left.indexOf('%') !== -1) {
+      offset.left = parseFloat(offset.left, 10) / 100 * size.width;
+    }
+    if (typeof offset.top === 'string' && offset.top.indexOf('%') !== -1) {
+      offset.top = parseFloat(offset.top, 10) / 100 * size.height;
+    }
+    return offset;
+  };
+
+  parseAttachment = parseOffset = function(value) {
+    var left, top, _ref1;
+    _ref1 = value.split(' '), top = _ref1[0], left = _ref1[1];
+    return {
+      top: top,
+      left: left
+    };
+  };
+
+  _Tether = (function() {
+    _Tether.modules = [];
+
+    function _Tether(options) {
+      this.position = __bind(this.position, this);
+      var module, _i, _len, _ref1, _ref2;
+      tethers.push(this);
+      this.history = [];
+      this.setOptions(options, false);
+      _ref1 = Tether.modules;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        module = _ref1[_i];
+        if ((_ref2 = module.initialize) != null) {
+          _ref2.call(this);
+        }
+      }
+      this.position();
+    }
+
+    _Tether.prototype.getClass = function(key) {
+      var _ref1, _ref2;
+      if ((_ref1 = this.options.classes) != null ? _ref1[key] : void 0) {
+        return this.options.classes[key];
+      } else if (((_ref2 = this.options.classes) != null ? _ref2[key] : void 0) !== false) {
+        if (this.options.classPrefix) {
+          return "" + this.options.classPrefix + "-" + key;
+        } else {
+          return key;
+        }
+      } else {
+        return '';
+      }
+    };
+
+    _Tether.prototype.setOptions = function(options, position) {
+      var defaults, key, _i, _len, _ref1, _ref2;
+      this.options = options;
+      if (position == null) {
+        position = true;
+      }
+      defaults = {
+        offset: '0 0',
+        targetOffset: '0 0',
+        targetAttachment: 'auto auto',
+        classPrefix: 'tether'
+      };
+      this.options = extend(defaults, this.options);
+      _ref1 = this.options, this.element = _ref1.element, this.target = _ref1.target, this.targetModifier = _ref1.targetModifier;
+      if (this.target === 'viewport') {
+        this.target = document.body;
+        this.targetModifier = 'visible';
+      } else if (this.target === 'scroll-handle') {
+        this.target = document.body;
+        this.targetModifier = 'scroll-handle';
+      }
+      _ref2 = ['element', 'target'];
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        key = _ref2[_i];
+        if (this[key] == null) {
+          throw new Error("Tether Error: Both element and target must be defined");
+        }
+        if (this[key].jquery != null) {
+          this[key] = this[key][0];
+        } else if (typeof this[key] === 'string') {
+          this[key] = document.querySelector(this[key]);
+        }
+      }
+      addClass(this.element, this.getClass('element'));
+      addClass(this.target, this.getClass('target'));
+      if (!this.options.attachment) {
+        throw new Error("Tether Error: You must provide an attachment");
+      }
+      this.targetAttachment = parseAttachment(this.options.targetAttachment);
+      this.attachment = parseAttachment(this.options.attachment);
+      this.offset = parseOffset(this.options.offset);
+      this.targetOffset = parseOffset(this.options.targetOffset);
+      if (this.scrollParent != null) {
+        this.disable();
+      }
+      if (this.targetModifier === 'scroll-handle') {
+        this.scrollParent = this.target;
+      } else {
+        this.scrollParent = getScrollParent(this.target);
+      }
+      if (this.options.enabled !== false) {
+        return this.enable(position);
+      }
+    };
+
+    _Tether.prototype.getTargetBounds = function() {
+      var bounds, fitAdj, hasBottomScroll, height, out, scrollBottom, scrollPercentage, style, target;
+      if (this.targetModifier != null) {
+        switch (this.targetModifier) {
+          case 'visible':
+            if (this.target === document.body) {
+              return {
+                top: pageYOffset,
+                left: pageXOffset,
+                height: innerHeight,
+                width: innerWidth
+              };
+            } else {
+              bounds = getBounds(this.target);
+              out = {
+                height: bounds.height,
+                width: bounds.width,
+                top: bounds.top,
+                left: bounds.left
+              };
+              out.height = Math.min(out.height, bounds.height - (pageYOffset - bounds.top));
+              out.height = Math.min(out.height, bounds.height - ((bounds.top + bounds.height) - (pageYOffset + innerHeight)));
+              out.height = Math.min(innerHeight, out.height);
+              out.height -= 2;
+              out.width = Math.min(out.width, bounds.width - (pageXOffset - bounds.left));
+              out.width = Math.min(out.width, bounds.width - ((bounds.left + bounds.width) - (pageXOffset + innerWidth)));
+              out.width = Math.min(innerWidth, out.width);
+              out.width -= 2;
+              if (out.top < pageYOffset) {
+                out.top = pageYOffset;
+              }
+              if (out.left < pageXOffset) {
+                out.left = pageXOffset;
+              }
+              return out;
+            }
+            break;
+          case 'scroll-handle':
+            target = this.target;
+            if (target === document.body) {
+              target = document.documentElement;
+              bounds = {
+                left: pageXOffset,
+                top: pageYOffset,
+                height: innerHeight,
+                width: innerWidth
+              };
+            } else {
+              bounds = getBounds(target);
+            }
+            style = getComputedStyle(target);
+            hasBottomScroll = target.scrollWidth > target.clientWidth || 'scroll' === [style.overflow, style.overflowX] || this.target !== document.body;
+            scrollBottom = 0;
+            if (hasBottomScroll) {
+              scrollBottom = 15;
+            }
+            height = bounds.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth) - scrollBottom;
+            out = {
+              width: 15,
+              height: height * 0.975 * (height / target.scrollHeight),
+              left: bounds.left + bounds.width - parseFloat(style.borderLeftWidth) - 15
+            };
+            fitAdj = 0;
+            if (height < 408 && this.target === document.body) {
+              fitAdj = -0.00011 * Math.pow(height, 2) - 0.00727 * height + 22.58;
+            }
+            if (this.target !== document.body) {
+              out.height = Math.max(out.height, 24);
+            }
+            scrollPercentage = this.target.scrollTop / (target.scrollHeight - height);
+            out.top = scrollPercentage * (height - out.height - fitAdj) + bounds.top + parseFloat(style.borderTopWidth);
+            if (this.target === document.body) {
+              out.height = Math.max(out.height, 24);
+            }
+            return out;
+        }
+      } else {
+        return getBounds(this.target);
+      }
+    };
+
+    _Tether.prototype.clearCache = function() {
+      return this._cache = {};
+    };
+
+    _Tether.prototype.cache = function(k, getter) {
+      if (this._cache == null) {
+        this._cache = {};
+      }
+      if (this._cache[k] == null) {
+        this._cache[k] = getter.call(this);
+      }
+      return this._cache[k];
+    };
+
+    _Tether.prototype.enable = function(position) {
+      if (position == null) {
+        position = true;
+      }
+      addClass(this.target, this.getClass('enabled'));
+      addClass(this.element, this.getClass('enabled'));
+      this.enabled = true;
+      if (this.scrollParent !== document) {
+        this.scrollParent.addEventListener('scroll', this.position);
+      }
+      if (position) {
+        return this.position();
+      }
+    };
+
+    _Tether.prototype.disable = function() {
+      removeClass(this.target, this.getClass('enabled'));
+      removeClass(this.element, this.getClass('enabled'));
+      this.enabled = false;
+      if (this.scrollParent != null) {
+        return this.scrollParent.removeEventListener('scroll', this.position);
+      }
+    };
+
+    _Tether.prototype.destroy = function() {
+      var i, tether, _i, _len, _results;
+      this.disable();
+      _results = [];
+      for (i = _i = 0, _len = tethers.length; _i < _len; i = ++_i) {
+        tether = tethers[i];
+        if (tether === this) {
+          tethers.splice(i, 1);
+          break;
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    _Tether.prototype.updateAttachClasses = function(elementAttach, targetAttach) {
+      var add, all, side, sides, _i, _j, _len, _len1, _ref1,
+        _this = this;
+      if (elementAttach == null) {
+        elementAttach = this.attachment;
+      }
+      if (targetAttach == null) {
+        targetAttach = this.targetAttachment;
+      }
+      sides = ['left', 'top', 'bottom', 'right', 'middle', 'center'];
+      if ((_ref1 = this._addAttachClasses) != null ? _ref1.length : void 0) {
+        this._addAttachClasses.splice(0, this._addAttachClasses.length);
+      }
+      add = this._addAttachClasses != null ? this._addAttachClasses : this._addAttachClasses = [];
+      if (elementAttach.top) {
+        add.push("" + (this.getClass('element-attached')) + "-" + elementAttach.top);
+      }
+      if (elementAttach.left) {
+        add.push("" + (this.getClass('element-attached')) + "-" + elementAttach.left);
+      }
+      if (targetAttach.top) {
+        add.push("" + (this.getClass('target-attached')) + "-" + targetAttach.top);
+      }
+      if (targetAttach.left) {
+        add.push("" + (this.getClass('target-attached')) + "-" + targetAttach.left);
+      }
+      all = [];
+      for (_i = 0, _len = sides.length; _i < _len; _i++) {
+        side = sides[_i];
+        all.push("" + (this.getClass('element-attached')) + "-" + side);
+      }
+      for (_j = 0, _len1 = sides.length; _j < _len1; _j++) {
+        side = sides[_j];
+        all.push("" + (this.getClass('target-attached')) + "-" + side);
+      }
+      return defer(function() {
+        if (_this._addAttachClasses == null) {
+          return;
+        }
+        updateClasses(_this.element, _this._addAttachClasses, all);
+        updateClasses(_this.target, _this._addAttachClasses, all);
+        return _this._addAttachClasses = void 0;
+      });
+    };
+
+    _Tether.prototype.position = function(flushChanges) {
+      var elementPos, elementStyle, height, left, manualOffset, manualTargetOffset, module, next, offset, offsetBorder, offsetParent, offsetParentSize, offsetParentStyle, offsetPosition, ret, scrollLeft, scrollTop, scrollbarSize, side, targetAttachment, targetOffset, targetPos, targetSize, top, width, _i, _j, _len, _len1, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6,
+        _this = this;
+      if (flushChanges == null) {
+        flushChanges = true;
+      }
+      if (!this.enabled) {
+        return;
+      }
+      this.clearCache();
+      targetAttachment = autoToFixedAttachment(this.targetAttachment, this.attachment);
+      this.updateAttachClasses(this.attachment, targetAttachment);
+      elementPos = this.cache('element-bounds', function() {
+        return getBounds(_this.element);
+      });
+      width = elementPos.width, height = elementPos.height;
+      if (width === 0 && height === 0 && (this.lastSize != null)) {
+        _ref1 = this.lastSize, width = _ref1.width, height = _ref1.height;
+      } else {
+        this.lastSize = {
+          width: width,
+          height: height
+        };
+      }
+      targetSize = targetPos = this.cache('target-bounds', function() {
+        return _this.getTargetBounds();
+      });
+      offset = offsetToPx(attachmentToOffset(this.attachment), {
+        width: width,
+        height: height
+      });
+      targetOffset = offsetToPx(attachmentToOffset(targetAttachment), targetSize);
+      manualOffset = offsetToPx(this.offset, {
+        width: width,
+        height: height
+      });
+      manualTargetOffset = offsetToPx(this.targetOffset, targetSize);
+      offset = addOffset(offset, manualOffset);
+      targetOffset = addOffset(targetOffset, manualTargetOffset);
+      left = targetPos.left + targetOffset.left - offset.left;
+      top = targetPos.top + targetOffset.top - offset.top;
+      _ref2 = Tether.modules;
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        module = _ref2[_i];
+        ret = module.position.call(this, {
+          left: left,
+          top: top,
+          targetAttachment: targetAttachment,
+          targetPos: targetPos,
+          attachment: this.attachment,
+          elementPos: elementPos,
+          offset: offset,
+          targetOffset: targetOffset,
+          manualOffset: manualOffset,
+          manualTargetOffset: manualTargetOffset,
+          scrollbarSize: scrollbarSize
+        });
+        if ((ret == null) || typeof ret !== 'object') {
+          continue;
+        } else if (ret === false) {
+          return false;
+        } else {
+          top = ret.top, left = ret.left;
+        }
+      }
+      next = {
+        page: {
+          top: top,
+          left: left
+        },
+        viewport: {
+          top: top - pageYOffset,
+          bottom: pageYOffset - top - height + innerHeight,
+          left: left - pageXOffset,
+          right: pageXOffset - left - width + innerWidth
+        }
+      };
+      if (document.body.scrollWidth > window.innerWidth) {
+        scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+        next.viewport.bottom -= scrollbarSize.height;
+      }
+      if (document.body.scrollHeight > window.innerHeight) {
+        scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+        next.viewport.right -= scrollbarSize.width;
+      }
+      if (((_ref3 = document.body.style.position) !== '' && _ref3 !== 'static') || ((_ref4 = document.body.parentElement.style.position) !== '' && _ref4 !== 'static')) {
+        next.page.bottom = document.body.scrollHeight - top - height;
+        next.page.right = document.body.scrollWidth - left - width;
+      }
+      if (((_ref5 = this.options.optimizations) != null ? _ref5.moveElement : void 0) !== false && (this.targetModifier == null)) {
+        offsetParent = this.cache('target-offsetparent', function() {
+          return getOffsetParent(_this.target);
+        });
+        offsetPosition = this.cache('target-offsetparent-bounds', function() {
+          return getBounds(offsetParent);
+        });
+        offsetParentStyle = getComputedStyle(offsetParent);
+        elementStyle = getComputedStyle(this.element);
+        offsetParentSize = offsetPosition;
+        offsetBorder = {};
+        _ref6 = ['Top', 'Left', 'Bottom', 'Right'];
+        for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
+          side = _ref6[_j];
+          offsetBorder[side.toLowerCase()] = parseFloat(offsetParentStyle["border" + side + "Width"]);
+        }
+        offsetPosition.right = document.body.scrollWidth - offsetPosition.left - offsetParentSize.width + offsetBorder.right;
+        offsetPosition.bottom = document.body.scrollHeight - offsetPosition.top - offsetParentSize.height + offsetBorder.bottom;
+        if (next.page.top >= (offsetPosition.top + offsetBorder.top) && next.page.bottom >= offsetPosition.bottom) {
+          if (next.page.left >= (offsetPosition.left + offsetBorder.left) && next.page.right >= offsetPosition.right) {
+            scrollTop = offsetParent.scrollTop;
+            scrollLeft = offsetParent.scrollLeft;
+            next.offset = {
+              top: next.page.top - offsetPosition.top + scrollTop - offsetBorder.top,
+              left: next.page.left - offsetPosition.left + scrollLeft - offsetBorder.left
+            };
+          }
+        }
+      }
+      this.move(next);
+      this.history.unshift(next);
+      if (this.history.length > 3) {
+        this.history.pop();
+      }
+      if (flushChanges) {
+        flush();
+      }
+      return true;
+    };
+
+    _Tether.prototype.move = function(position) {
+      var css, elVal, found, key, moved, offsetParent, point, same, transcribe, type, val, write, writeCSS, _i, _len, _ref1, _ref2,
+        _this = this;
+      if (this.element.parentNode == null) {
+        return;
+      }
+      same = {};
+      for (type in position) {
+        same[type] = {};
+        for (key in position[type]) {
+          found = false;
+          _ref1 = this.history;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            point = _ref1[_i];
+            if (!within((_ref2 = point[type]) != null ? _ref2[key] : void 0, position[type][key])) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            same[type][key] = true;
+          }
+        }
+      }
+      css = {
+        top: '',
+        left: '',
+        right: '',
+        bottom: ''
+      };
+      transcribe = function(same, pos) {
+        var xPos, yPos, _ref3;
+        if (((_ref3 = _this.options.optimizations) != null ? _ref3.gpu : void 0) !== false) {
+          if (same.top) {
+            css.top = 0;
+            yPos = pos.top;
+          } else {
+            css.bottom = 0;
+            yPos = -pos.bottom;
+          }
+          if (same.left) {
+            css.left = 0;
+            xPos = pos.left;
+          } else {
+            css.right = 0;
+            xPos = -pos.right;
+          }
+          css[transformKey] = "translateX(" + (Math.round(xPos)) + "px) translateY(" + (Math.round(yPos)) + "px)";
+          if (transformKey !== 'msTransform') {
+            return css[transformKey] += " translateZ(0)";
+          }
+        } else {
+          if (same.top) {
+            css.top = "" + pos.top + "px";
+          } else {
+            css.bottom = "" + pos.bottom + "px";
+          }
+          if (same.left) {
+            return css.left = "" + pos.left + "px";
+          } else {
+            return css.right = "" + pos.right + "px";
+          }
+        }
+      };
+      moved = false;
+      if ((same.page.top || same.page.bottom) && (same.page.left || same.page.right)) {
+        css.position = 'absolute';
+        transcribe(same.page, position.page);
+      } else if ((same.viewport.top || same.viewport.bottom) && (same.viewport.left || same.viewport.right)) {
+        css.position = 'fixed';
+        transcribe(same.viewport, position.viewport);
+      } else if ((same.offset != null) && same.offset.top && same.offset.left) {
+        css.position = 'absolute';
+        offsetParent = this.cache('target-offsetparent', function() {
+          return getOffsetParent(_this.target);
+        });
+        if (getOffsetParent(this.element) !== offsetParent) {
+          defer(function() {
+            _this.element.parentNode.removeChild(_this.element);
+            return offsetParent.appendChild(_this.element);
+          });
+        }
+        transcribe(same.offset, position.offset);
+        moved = true;
+      } else {
+        css.position = 'absolute';
+        transcribe({
+          top: true,
+          left: true
+        }, position.page);
+      }
+      if (!moved && this.element.parentNode.tagName !== 'BODY') {
+        this.element.parentNode.removeChild(this.element);
+        document.body.appendChild(this.element);
+      }
+      writeCSS = {};
+      write = false;
+      for (key in css) {
+        val = css[key];
+        elVal = this.element.style[key];
+        if (elVal !== '' && val !== '' && (key === 'top' || key === 'left' || key === 'bottom' || key === 'right')) {
+          elVal = parseFloat(elVal);
+          val = parseFloat(val);
+        }
+        if (elVal !== val) {
+          write = true;
+          writeCSS[key] = css[key];
+        }
+      }
+      if (write) {
+        return defer(function() {
+          return extend(_this.element.style, writeCSS);
+        });
+      }
+    };
+
+    return _Tether;
+
+  })();
+
+  Tether.position = position;
+
+  this.Tether = extend(_Tether, Tether);
+
+}).call(this);
+
+(function() {
+  var BOUNDS_FORMAT, MIRROR_ATTACH, defer, extend, getBoundingRect, getBounds, getOuterSize, getSize, updateClasses, _ref,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  _ref = this.Tether.Utils, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getSize = _ref.getSize, extend = _ref.extend, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+  MIRROR_ATTACH = {
+    left: 'right',
+    right: 'left',
+    top: 'bottom',
+    bottom: 'top',
+    middle: 'middle'
+  };
+
+  BOUNDS_FORMAT = ['left', 'top', 'right', 'bottom'];
+
+  getBoundingRect = function(tether, to) {
+    var i, pos, side, size, style, _i, _len;
+    if (to === 'scrollParent') {
+      to = tether.scrollParent;
+    } else if (to === 'window') {
+      to = [pageXOffset, pageYOffset, innerWidth + pageXOffset, innerHeight + pageYOffset];
+    }
+    if (to === document) {
+      to = to.documentElement;
+    }
+    if (to.nodeType != null) {
+      pos = size = getBounds(to);
+      style = getComputedStyle(to);
+      to = [pos.left, pos.top, size.width + pos.left, size.height + pos.top];
+      for (i = _i = 0, _len = BOUNDS_FORMAT.length; _i < _len; i = ++_i) {
+        side = BOUNDS_FORMAT[i];
+        side = side[0].toUpperCase() + side.substr(1);
+        if (side === 'Top' || side === 'Left') {
+          to[i] += parseFloat(style["border" + side + "Width"]);
+        } else {
+          to[i] -= parseFloat(style["border" + side + "Width"]);
+        }
+      }
+    }
+    return to;
+  };
+
+  this.Tether.modules.push({
+    position: function(_arg) {
+      var addClasses, allClasses, attachment, bounds, changeAttachX, changeAttachY, cls, constraint, eAttachment, height, left, oob, oobClass, p, pin, pinned, pinnedClass, removeClass, side, tAttachment, targetAttachment, targetHeight, targetSize, targetWidth, to, top, width, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8,
+        _this = this;
+      top = _arg.top, left = _arg.left, targetAttachment = _arg.targetAttachment;
+      if (!this.options.constraints) {
+        return true;
+      }
+      removeClass = function(prefix) {
+        var side, _i, _len, _results;
+        _this.removeClass(prefix);
+        _results = [];
+        for (_i = 0, _len = BOUNDS_FORMAT.length; _i < _len; _i++) {
+          side = BOUNDS_FORMAT[_i];
+          _results.push(_this.removeClass("" + prefix + "-" + side));
+        }
+        return _results;
+      };
+      _ref1 = this.cache('element-bounds', function() {
+        return getBounds(_this.element);
+      }), height = _ref1.height, width = _ref1.width;
+      if (width === 0 && height === 0 && (this.lastSize != null)) {
+        _ref2 = this.lastSize, width = _ref2.width, height = _ref2.height;
+      }
+      targetSize = this.cache('target-bounds', function() {
+        return _this.getTargetBounds();
+      });
+      targetHeight = targetSize.height;
+      targetWidth = targetSize.width;
+      tAttachment = {};
+      eAttachment = {};
+      allClasses = [this.getClass('pinned'), this.getClass('out-of-bounds')];
+      _ref3 = this.options.constraints;
+      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+        constraint = _ref3[_i];
+        if (constraint.outOfBoundsClass) {
+          allClasses.push(constraint.outOfBoundsClass);
+        }
+        if (constraint.pinnedClass) {
+          allClasses.push(constraint.pinnedClass);
+        }
+      }
+      for (_j = 0, _len1 = allClasses.length; _j < _len1; _j++) {
+        cls = allClasses[_j];
+        _ref4 = ['left', 'top', 'right', 'bottom'];
+        for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+          side = _ref4[_k];
+          allClasses.push("" + cls + "-" + side);
+        }
+      }
+      addClasses = [];
+      tAttachment = extend({}, targetAttachment);
+      eAttachment = extend({}, this.attachment);
+      _ref5 = this.options.constraints;
+      for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
+        constraint = _ref5[_l];
+        to = constraint.to, attachment = constraint.attachment, pin = constraint.pin;
+        if (attachment == null) {
+          attachment = '';
+        }
+        if (__indexOf.call(attachment, ' ') >= 0) {
+          _ref6 = attachment.split(' '), changeAttachY = _ref6[0], changeAttachX = _ref6[1];
+        } else {
+          changeAttachX = changeAttachY = attachment;
+        }
+        bounds = getBoundingRect(this, to);
+        if (changeAttachY === 'target' || changeAttachY === 'both') {
+          if (top < bounds[1] && tAttachment.top === 'top') {
+            top += targetHeight;
+            tAttachment.top = 'bottom';
+          }
+          if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+            top -= targetHeight;
+            tAttachment.top = 'top';
+          }
+        }
+        if (changeAttachY === 'together') {
+          if (top < bounds[1] && tAttachment.top === 'top') {
+            if (eAttachment.top === 'bottom') {
+              top += targetHeight;
+              tAttachment.top = 'bottom';
+              top += height;
+              eAttachment.top = 'top';
+            } else if (eAttachment.top === 'top') {
+              top += targetHeight;
+              tAttachment.top = 'bottom';
+              top -= height;
+              eAttachment.top = 'bottom';
+            }
+          }
+          if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+            if (eAttachment.top === 'top') {
+              top -= targetHeight;
+              tAttachment.top = 'top';
+              top -= height;
+              eAttachment.top = 'bottom';
+            } else if (eAttachment.top === 'bottom') {
+              top -= targetHeight;
+              tAttachment.top = 'top';
+              top += height;
+              eAttachment.top = 'top';
+            }
+          }
+          if (tAttachment.top === 'middle') {
+            if (top + height > bounds[3] && eAttachment.top === 'top') {
+              top -= height;
+              eAttachment.top = 'bottom';
+            } else if (top < bounds[1] && eAttachment.top === 'bottom') {
+              top += height;
+              eAttachment.top = 'top';
+            }
+          }
+        }
+        if (changeAttachX === 'target' || changeAttachX === 'both') {
+          if (left < bounds[0] && tAttachment.left === 'left') {
+            left += targetWidth;
+            tAttachment.left = 'right';
+          }
+          if (left + width > bounds[2] && tAttachment.left === 'right') {
+            left -= targetWidth;
+            tAttachment.left = 'left';
+          }
+        }
+        if (changeAttachX === 'together') {
+          if (left < bounds[0] && tAttachment.left === 'left') {
+            if (eAttachment.left === 'right') {
+              left += targetWidth;
+              tAttachment.left = 'right';
+              left += width;
+              eAttachment.left = 'left';
+            } else if (eAttachment.left === 'left') {
+              left += targetWidth;
+              tAttachment.left = 'right';
+              left -= width;
+              eAttachment.left = 'right';
+            }
+          } else if (left + width > bounds[2] && tAttachment.left === 'right') {
+            if (eAttachment.left === 'left') {
+              left -= targetWidth;
+              tAttachment.left = 'left';
+              left -= width;
+              eAttachment.left = 'right';
+            } else if (eAttachment.left === 'right') {
+              left -= targetWidth;
+              tAttachment.left = 'left';
+              left += width;
+              eAttachment.left = 'left';
+            }
+          } else if (tAttachment.left === 'center') {
+            if (left + width > bounds[2] && eAttachment.left === 'left') {
+              left -= width;
+              eAttachment.left = 'right';
+            } else if (left < bounds[0] && eAttachment.left === 'right') {
+              left += width;
+              eAttachment.left = 'left';
+            }
+          }
+        }
+        if (changeAttachY === 'element' || changeAttachY === 'both') {
+          if (top < bounds[1] && eAttachment.top === 'bottom') {
+            top += height;
+            eAttachment.top = 'top';
+          }
+          if (top + height > bounds[3] && eAttachment.top === 'top') {
+            top -= height;
+            eAttachment.top = 'bottom';
+          }
+        }
+        if (changeAttachX === 'element' || changeAttachX === 'both') {
+          if (left < bounds[0] && eAttachment.left === 'right') {
+            left += width;
+            eAttachment.left = 'left';
+          }
+          if (left + width > bounds[2] && eAttachment.left === 'left') {
+            left -= width;
+            eAttachment.left = 'right';
+          }
+        }
+        if (typeof pin === 'string') {
+          pin = (function() {
+            var _len4, _m, _ref7, _results;
+            _ref7 = pin.split(',');
+            _results = [];
+            for (_m = 0, _len4 = _ref7.length; _m < _len4; _m++) {
+              p = _ref7[_m];
+              _results.push(p.trim());
+            }
+            return _results;
+          })();
+        } else if (pin === true) {
+          pin = ['top', 'left', 'right', 'bottom'];
+        }
+        pin || (pin = []);
+        pinned = [];
+        oob = [];
+        if (top < bounds[1]) {
+          if (__indexOf.call(pin, 'top') >= 0) {
+            top = bounds[1];
+            pinned.push('top');
+          } else {
+            oob.push('top');
+          }
+        }
+        if (top + height > bounds[3]) {
+          if (__indexOf.call(pin, 'bottom') >= 0) {
+            top = bounds[3] - height;
+            pinned.push('bottom');
+          } else {
+            oob.push('bottom');
+          }
+        }
+        if (left < bounds[0]) {
+          if (__indexOf.call(pin, 'left') >= 0) {
+            left = bounds[0];
+            pinned.push('left');
+          } else {
+            oob.push('left');
+          }
+        }
+        if (left + width > bounds[2]) {
+          if (__indexOf.call(pin, 'right') >= 0) {
+            left = bounds[2] - width;
+            pinned.push('right');
+          } else {
+            oob.push('right');
+          }
+        }
+        if (pinned.length) {
+          pinnedClass = (_ref7 = this.options.pinnedClass) != null ? _ref7 : this.getClass('pinned');
+          addClasses.push(pinnedClass);
+          for (_m = 0, _len4 = pinned.length; _m < _len4; _m++) {
+            side = pinned[_m];
+            addClasses.push("" + pinnedClass + "-" + side);
+          }
+        }
+        if (oob.length) {
+          oobClass = (_ref8 = this.options.outOfBoundsClass) != null ? _ref8 : this.getClass('out-of-bounds');
+          addClasses.push(oobClass);
+          for (_n = 0, _len5 = oob.length; _n < _len5; _n++) {
+            side = oob[_n];
+            addClasses.push("" + oobClass + "-" + side);
+          }
+        }
+        if (__indexOf.call(pinned, 'left') >= 0 || __indexOf.call(pinned, 'right') >= 0) {
+          eAttachment.left = tAttachment.left = false;
+        }
+        if (__indexOf.call(pinned, 'top') >= 0 || __indexOf.call(pinned, 'bottom') >= 0) {
+          eAttachment.top = tAttachment.top = false;
+        }
+        if (tAttachment.top !== targetAttachment.top || tAttachment.left !== targetAttachment.left || eAttachment.top !== this.attachment.top || eAttachment.left !== this.attachment.left) {
+          this.updateAttachClasses(eAttachment, tAttachment);
+        }
+      }
+      defer(function() {
+        updateClasses(_this.target, addClasses, allClasses);
+        return updateClasses(_this.element, addClasses, allClasses);
+      });
+      return {
+        top: top,
+        left: left
+      };
+    }
+  });
+
+}).call(this);
+
+(function() {
+  var defer, getBounds, updateClasses, _ref;
+
+  _ref = this.Tether.Utils, getBounds = _ref.getBounds, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+  this.Tether.modules.push({
+    position: function(_arg) {
+      var abutted, addClasses, allClasses, bottom, height, left, right, side, sides, targetPos, top, width, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref1, _ref2, _ref3, _ref4, _ref5,
+        _this = this;
+      top = _arg.top, left = _arg.left;
+      _ref1 = this.cache('element-bounds', function() {
+        return getBounds(_this.element);
+      }), height = _ref1.height, width = _ref1.width;
+      targetPos = this.getTargetBounds();
+      bottom = top + height;
+      right = left + width;
+      abutted = [];
+      if (top <= targetPos.bottom && bottom >= targetPos.top) {
+        _ref2 = ['left', 'right'];
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          side = _ref2[_i];
+          if ((_ref3 = targetPos[side]) === left || _ref3 === right) {
+            abutted.push(side);
+          }
+        }
+      }
+      if (left <= targetPos.right && right >= targetPos.left) {
+        _ref4 = ['top', 'bottom'];
+        for (_j = 0, _len1 = _ref4.length; _j < _len1; _j++) {
+          side = _ref4[_j];
+          if ((_ref5 = targetPos[side]) === top || _ref5 === bottom) {
+            abutted.push(side);
+          }
+        }
+      }
+      allClasses = [];
+      addClasses = [];
+      sides = ['left', 'top', 'right', 'bottom'];
+      allClasses.push(this.getClass('abutted'));
+      for (_k = 0, _len2 = sides.length; _k < _len2; _k++) {
+        side = sides[_k];
+        allClasses.push("" + (this.getClass('abutted')) + "-" + side);
+      }
+      if (abutted.length) {
+        addClasses.push(this.getClass('abutted'));
+      }
+      for (_l = 0, _len3 = abutted.length; _l < _len3; _l++) {
+        side = abutted[_l];
+        addClasses.push("" + (this.getClass('abutted')) + "-" + side);
+      }
+      defer(function() {
+        updateClasses(_this.target, addClasses, allClasses);
+        return updateClasses(_this.element, addClasses, allClasses);
+      });
+      return true;
+    }
+  });
+
+}).call(this);
+
+(function() {
+  this.Tether.modules.push({
+    position: function(_arg) {
+      var left, result, shift, shiftLeft, shiftTop, top, _ref;
+      top = _arg.top, left = _arg.left;
+      if (!this.options.shift) {
+        return;
+      }
+      result = function(val) {
+        if (typeof val === 'function') {
+          return val.call(this, {
+            top: top,
+            left: left
+          });
+        } else {
+          return val;
+        }
+      };
+      shift = result(this.options.shift);
+      if (typeof shift === 'string') {
+        shift = shift.split(' ');
+        shift[1] || (shift[1] = shift[0]);
+        shiftTop = shift[0], shiftLeft = shift[1];
+        shiftTop = parseFloat(shiftTop, 10);
+        shiftLeft = parseFloat(shiftLeft, 10);
+      } else {
+        _ref = [shift.top, shift.left], shiftTop = _ref[0], shiftLeft = _ref[1];
+      }
+      top += shiftTop;
+      left += shiftLeft;
+      return {
+        top: top,
+        left: left
+      };
+    }
+  });
+
+}).call(this);
+
+return this.Tether;
+
+}));
 
 //     Backbone.js 1.1.2
 
@@ -37127,3 +43648,2170 @@ function qb(a,b){x(!b||!0===a||!1===a,"Can't turn on custom loggers persistently
   });
 
 })(window._, window.Backbone);
+
+/**
+ * A mixin for handling (effectively) onClickOutside for React components.
+ * Note that we're not intercepting any events in this approach, and we're
+ * not using double events for capturing and discarding in layers or wrappers.
+ *
+ * The idea is that components define function
+ *
+ *   onClickOutside: function() { ... }
+ *
+ * If no such function is defined, an error will be thrown, as this means
+ * either it still needs to be written, or the component should not be using
+ * this mixing since it will not exhibit onClickOutside behaviour.
+ *
+ */
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    // Node. Note that this does not work with strict
+    // CommonJS, but only CommonJS-like environments
+    // that support module.exports
+    module.exports = factory();
+  } else {
+    // Browser globals (root is window)
+    root.OnClickOutside = factory();
+  }
+}(this, function () {
+  "use strict";
+
+  // Use a parallel array because we can't use
+  // objects as keys, they get toString-coerced
+  var registeredComponents = [];
+  var handlers = [];
+
+  return {
+    componentDidMount: function() {
+      if(!this.handleClickOutside)
+        throw new Error("Component lacks a handleClickOutside(event) function for processing outside click events.");
+
+      var fn = (function(localNode, eventHandler) {
+        return function(evt) {
+          var source = evt.target;
+          var found = false;
+          // If source=local then this event came from "somewhere"
+          // inside and should be ignored. We could handle this with
+          // a layered approach, too, but that requires going back to
+          // thinking in terms of Dom node nesting, running counter
+          // to React's "you shouldn't care about the DOM" philosophy.
+          while(source.parentNode) {
+            found = (source === localNode);
+            if(found) return;
+            source = source.parentNode;
+          }
+          eventHandler(evt);
+        }
+      }(this.getDOMNode(), this.handleClickOutside));
+
+      document.addEventListener("mousedown", fn);
+      document.addEventListener("touchstart", fn);
+
+      var pos = registeredComponents.length;
+      registeredComponents.push(this);
+      handlers[pos] = fn;
+    },
+
+    componentWillUnmount: function() {
+      var pos = registeredComponents.indexOf(this);
+      if( pos>-1) {
+        var fn = handlers[pos];
+        if (fn) {
+          document.removeEventListener("mousedown", fn);
+          document.removeEventListener("touchstart", fn);
+        }
+      }
+    }
+  };
+
+}));
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("react"), require("moment"), require("react-onclickoutside"));
+	else if(typeof define === 'function' && define.amd)
+		define(["react", "moment", "react-onclickoutside"], factory);
+	else if(typeof exports === 'object')
+		exports["DatePicker"] = factory(require("react"), require("moment"), require("react-onclickoutside"));
+	else
+		root["DatePicker"] = factory(root["React"], root["moment"], root["OnClickOutside"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_6__, __WEBPACK_EXTERNAL_MODULE_7__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Popover = __webpack_require__(2);
+	var DateUtil = __webpack_require__(3);
+	var Calendar = __webpack_require__(4);
+	var DateInput = __webpack_require__(5);
+
+	var DatePicker = React.createClass({
+	  displayName: "DatePicker",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      focus: false
+	    };
+	  },
+
+	  handleFocus: function handleFocus() {
+	    this.setState({
+	      focus: true
+	    });
+	  },
+
+	  hideCalendar: function hideCalendar() {
+	    setTimeout((function () {
+	      this.setState({
+	        focus: false
+	      });
+	    }).bind(this), 0);
+	  },
+
+	  handleSelect: function handleSelect(date) {
+	    this.setSelected(date);
+
+	    setTimeout((function () {
+	      this.hideCalendar();
+	    }).bind(this), 200);
+	  },
+
+	  setSelected: function setSelected(date) {
+	    this.props.onChange(date.moment());
+	  },
+
+	  onInputClick: function onInputClick() {
+	    this.setState({
+	      focus: true
+	    });
+	  },
+
+	  calendar: function calendar() {
+	    if (this.state.focus) {
+	      return React.createElement(
+	        Popover,
+	        null,
+	        React.createElement(Calendar, {
+	          selected: this.props.selected,
+	          onSelect: this.handleSelect,
+	          hideCalendar: this.hideCalendar,
+	          minDate: this.props.minDate,
+	          maxDate: this.props.maxDate })
+	      );
+	    }
+	  },
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement(DateInput, {
+	        date: this.props.selected,
+	        dateFormat: this.props.dateFormat,
+	        focus: this.state.focus,
+	        onFocus: this.handleFocus,
+	        handleClick: this.onInputClick,
+	        handleEnter: this.hideCalendar,
+	        setSelected: this.setSelected,
+	        hideCalendar: this.hideCalendar,
+	        placeholderText: this.props.placeholderText }),
+	      this.calendar()
+	    );
+	  }
+	});
+
+	module.exports = DatePicker;
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Tether = __webpack_require__(9);
+
+	var Popover = React.createClass({
+	  displayName: "Popover",
+
+	  componentWillMount: function componentWillMount() {
+	    var popoverContainer = document.createElement("span");
+	    popoverContainer.className = "datepicker__container";
+
+	    this._popoverElement = popoverContainer;
+
+	    document.querySelector("body").appendChild(this._popoverElement);
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this._renderPopover();
+	  },
+
+	  componentDidUpdate: function componentDidUpdate() {
+	    this._renderPopover();
+	  },
+
+	  _popoverComponent: function _popoverComponent() {
+	    var className = this.props.className;
+	    return React.createElement(
+	      "div",
+	      { className: className },
+	      this.props.children
+	    );
+	  },
+
+	  _tetherOptions: function _tetherOptions() {
+	    return {
+	      element: this._popoverElement,
+	      target: this.getDOMNode().parentElement,
+	      attachment: "top left",
+	      targetAttachment: "bottom left",
+	      targetOffset: "10px 0",
+	      optimizations: {
+	        moveElement: false // always moves to <body> anyway!
+	      },
+	      constraints: [{
+	        to: "scrollParent",
+	        attachment: "together",
+	        pin: true
+	      }]
+	    };
+	  },
+
+	  _renderPopover: function _renderPopover() {
+	    React.render(this._popoverComponent(), this._popoverElement);
+
+	    if (this._tether != null) {
+	      this._tether.setOptions(this._tetherOptions());
+	    } else {
+	      this._tether = new Tether(this._tetherOptions());
+	    }
+	  },
+
+	  componentWillUnmount: function componentWillUnmount() {
+	    this._tether.destroy();
+	    React.unmountComponentAtNode(this._popoverElement);
+	    if (this._popoverElement.parentNode) {
+	      this._popoverElement.parentNode.removeChild(this._popoverElement);
+	    }
+	  },
+
+	  render: function render() {
+	    return React.createElement("span", null);
+	  }
+	});
+
+	module.exports = Popover;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	function DateUtil(date) {
+	  this._date = date;
+	}
+
+	DateUtil.prototype.isBefore = function (other) {
+	  return this._date.isBefore(other._date, "day");
+	};
+
+	DateUtil.prototype.isAfter = function (other) {
+	  return this._date.isAfter(other._date, "day");
+	};
+
+	DateUtil.prototype.sameDay = function (other) {
+	  return this._date.isSame(other._date, "day");
+	};
+
+	DateUtil.prototype.sameMonth = function (other) {
+	  return this._date.isSame(other._date, "month");
+	};
+
+	DateUtil.prototype.day = function () {
+	  return this._date.date();
+	};
+
+	DateUtil.prototype.mapDaysInWeek = function (callback) {
+	  var week = [];
+	  var firstDay = this._date.clone().startOf("isoWeek");
+
+	  for (var i = 0; i < 7; i++) {
+	    var day = new DateUtil(firstDay.clone().add(i, "days"));
+
+	    week[i] = callback(day, i);
+	  }
+
+	  return week;
+	};
+
+	DateUtil.prototype.mapWeeksInMonth = function (callback) {
+	  var month = [];
+	  var firstDay = this._date.clone().startOf("month").startOf("isoWeek");
+
+	  for (var i = 0; i < 6; i++) {
+	    var weekStart = new DateUtil(firstDay.clone().add(i, "weeks"));
+
+	    month[i] = callback(weekStart, i);
+	  }
+
+	  return month;
+	};
+
+	DateUtil.prototype.weekInMonth = function (other) {
+	  var firstDayInWeek = this._date.clone();
+	  var lastDayInWeek = this._date.clone().isoWeekday(7);
+
+	  return firstDayInWeek.isSame(other._date, "month") || lastDayInWeek.isSame(other._date, "month");
+	};
+
+	DateUtil.prototype.format = function () {
+	  return this._date.format.apply(this._date, arguments);
+	};
+
+	DateUtil.prototype.addMonth = function () {
+	  return new DateUtil(this._date.clone().add(1, "month"));
+	};
+
+	DateUtil.prototype.subtractMonth = function () {
+	  return new DateUtil(this._date.clone().subtract(1, "month"));
+	};
+
+	DateUtil.prototype.clone = function () {
+	  return new DateUtil(this._date.clone());
+	};
+
+	DateUtil.prototype.safeClone = function (alternative) {
+	  if (!!this._date) return this.clone();
+
+	  if (alternative === undefined) alternative = null;
+	  return new DateUtil(alternative);
+	};
+
+	DateUtil.prototype.moment = function () {
+	  return this._date;
+	};
+
+	module.exports = DateUtil;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Day = __webpack_require__(8);
+	var DateUtil = __webpack_require__(3);
+	var moment = __webpack_require__(6);
+
+	var Calendar = React.createClass({
+	  displayName: "Calendar",
+
+	  mixins: [__webpack_require__(7)],
+
+	  handleClickOutside: function handleClickOutside() {
+	    this.props.hideCalendar();
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      date: new DateUtil(this.props.selected).safeClone(moment())
+	    };
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    // When the selected date changed
+	    if (nextProps.selected !== this.props.selected) {
+	      this.setState({
+	        date: new DateUtil(nextProps.selected).clone()
+	      });
+	    }
+	  },
+
+	  increaseMonth: function increaseMonth() {
+	    this.setState({
+	      date: this.state.date.addMonth()
+	    });
+	  },
+
+	  decreaseMonth: function decreaseMonth() {
+	    this.setState({
+	      date: this.state.date.subtractMonth()
+	    });
+	  },
+
+	  weeks: function weeks() {
+	    return this.state.date.mapWeeksInMonth(this.renderWeek);
+	  },
+
+	  handleDayClick: function handleDayClick(day) {
+	    this.props.onSelect(day);
+	  },
+
+	  renderWeek: function renderWeek(weekStart, key) {
+	    if (!weekStart.weekInMonth(this.state.date)) {
+	      return;
+	    }
+
+	    return React.createElement(
+	      "div",
+	      { key: key },
+	      this.days(weekStart)
+	    );
+	  },
+
+	  renderDay: function renderDay(day, key) {
+	    var minDate = new DateUtil(this.props.minDate).safeClone(),
+	        maxDate = new DateUtil(this.props.maxDate).safeClone(),
+	        disabled = day.isBefore(minDate) || day.isAfter(maxDate);
+
+	    return React.createElement(Day, {
+	      key: key,
+	      day: day,
+	      date: this.state.date,
+	      onClick: this.handleDayClick.bind(this, day),
+	      selected: new DateUtil(this.props.selected),
+	      disabled: disabled });
+	  },
+
+	  days: function days(weekStart) {
+	    return weekStart.mapDaysInWeek(this.renderDay);
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { className: "datepicker" },
+	      React.createElement("div", { className: "datepicker__triangle" }),
+	      React.createElement(
+	        "div",
+	        { className: "datepicker__header" },
+	        React.createElement("a", { className: "datepicker__navigation datepicker__navigation--previous",
+	          onClick: this.decreaseMonth }),
+	        React.createElement(
+	          "span",
+	          { className: "datepicker__current-month" },
+	          this.state.date.format("MMMM YYYY")
+	        ),
+	        React.createElement("a", { className: "datepicker__navigation datepicker__navigation--next",
+	          onClick: this.increaseMonth }),
+	        React.createElement(
+	          "div",
+	          null,
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "Mo"
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "Tu"
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "We"
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "Th"
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "Fr"
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "Sa"
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "datepicker__day" },
+	            "Su"
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "datepicker__month" },
+	        this.weeks()
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Calendar;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var DateUtil = __webpack_require__(3);
+	var moment = __webpack_require__(6);
+
+	var DateInput = React.createClass({
+	  displayName: "DateInput",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      dateFormat: "YYYY-MM-DD"
+	    };
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      value: this.safeDateFormat(this.props.date)
+	    };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this.toggleFocus(this.props.focus);
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    this.toggleFocus(newProps.focus);
+
+	    this.setState({
+	      value: this.safeDateFormat(newProps.date)
+	    });
+	  },
+
+	  toggleFocus: function toggleFocus(focus) {
+	    if (focus) {
+	      this.refs.input.getDOMNode().focus();
+	    } else {
+	      this.refs.input.getDOMNode().blur();
+	    }
+	  },
+
+	  handleChange: function handleChange(event) {
+	    var date = moment(event.target.value, this.props.dateFormat, true);
+
+	    this.setState({
+	      value: event.target.value
+	    });
+
+	    if (this.isValueAValidDate()) {
+	      this.props.setSelected(new DateUtil(date));
+	    }
+	  },
+
+	  safeDateFormat: function safeDateFormat(date) {
+	    return !!date ? date.format(this.props.dateFormat) : null;
+	  },
+
+	  isValueAValidDate: function isValueAValidDate() {
+	    var date = moment(event.target.value, this.props.dateFormat, true);
+
+	    return date.isValid();
+	  },
+
+	  handleKeyDown: function handleKeyDown(event) {
+	    switch (event.key) {
+	      case "Enter":
+	        event.preventDefault();
+	        this.props.handleEnter();
+	        break;
+	    }
+	  },
+
+	  handleClick: function handleClick(event) {
+	    this.props.handleClick(event);
+	  },
+
+	  render: function render() {
+	    return React.createElement("input", {
+	      ref: "input",
+	      type: "text",
+	      value: this.state.value,
+	      name: "date",
+	      onClick: this.handleClick,
+	      onKeyDown: this.handleKeyDown,
+	      onFocus: this.props.onFocus,
+	      onChange: this.handleChange,
+	      className: "datepicker__input",
+	      placeholder: this.props.placeholderText });
+	  }
+	});
+
+	module.exports = DateInput;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_7__;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var moment = __webpack_require__(6);
+
+	var Day = React.createClass({
+	  displayName: "Day",
+
+	  handleClick: function handleClick(event) {
+	    if (this.props.disabled) {
+	      return;
+	    }this.props.onClick(event);
+	  },
+
+	  render: function render() {
+	    var classes = React.addons.classSet({
+	      datepicker__day: true,
+	      "datepicker__day--disabled": this.props.disabled,
+	      "datepicker__day--selected": this.props.day.sameDay(this.props.selected),
+	      "datepicker__day--today": this.props.day.sameDay(moment())
+	    });
+
+	    return React.createElement(
+	      "div",
+	      { className: classes, onClick: this.handleClick },
+	      this.props.day.day()
+	    );
+	  }
+	});
+
+	module.exports = Day;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! tether 0.6.5 */
+
+
+	(function(root, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory(require,exports,module);
+	  } else {
+	    root.Tether = factory();
+	  }
+	}(this, function(require,exports,module) {
+
+	(function() {
+	  var Evented, addClass, defer, deferred, extend, flush, getBounds, getClassName, getOffsetParent, getOrigin, getScrollBarSize, getScrollParent, hasClass, node, removeClass, setClassName, uniqueId, updateClasses, zeroPosCache,
+	    __hasProp = {}.hasOwnProperty,
+	    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+	    __slice = [].slice;
+
+	  if (this.Tether == null) {
+	    this.Tether = {
+	      modules: []
+	    };
+	  }
+
+	  getScrollParent = function(el) {
+	    var parent, position, scrollParent, style, _ref;
+	    position = getComputedStyle(el).position;
+	    if (position === 'fixed') {
+	      return el;
+	    }
+	    scrollParent = void 0;
+	    parent = el;
+	    while (parent = parent.parentNode) {
+	      try {
+	        style = getComputedStyle(parent);
+	      } catch (_error) {}
+	      if (style == null) {
+	        return parent;
+	      }
+	      if (/(auto|scroll)/.test(style['overflow'] + style['overflowY'] + style['overflowX'])) {
+	        if (position !== 'absolute' || ((_ref = style['position']) === 'relative' || _ref === 'absolute' || _ref === 'fixed')) {
+	          return parent;
+	        }
+	      }
+	    }
+	    return document.body;
+	  };
+
+	  uniqueId = (function() {
+	    var id;
+	    id = 0;
+	    return function() {
+	      return id++;
+	    };
+	  })();
+
+	  zeroPosCache = {};
+
+	  getOrigin = function(doc) {
+	    var id, k, node, v, _ref;
+	    node = doc._tetherZeroElement;
+	    if (node == null) {
+	      node = doc.createElement('div');
+	      node.setAttribute('data-tether-id', uniqueId());
+	      extend(node.style, {
+	        top: 0,
+	        left: 0,
+	        position: 'absolute'
+	      });
+	      doc.body.appendChild(node);
+	      doc._tetherZeroElement = node;
+	    }
+	    id = node.getAttribute('data-tether-id');
+	    if (zeroPosCache[id] == null) {
+	      zeroPosCache[id] = {};
+	      _ref = node.getBoundingClientRect();
+	      for (k in _ref) {
+	        v = _ref[k];
+	        zeroPosCache[id][k] = v;
+	      }
+	      defer(function() {
+	        return zeroPosCache[id] = void 0;
+	      });
+	    }
+	    return zeroPosCache[id];
+	  };
+
+	  node = null;
+
+	  getBounds = function(el) {
+	    var box, doc, docEl, k, origin, v, _ref;
+	    if (el === document) {
+	      doc = document;
+	      el = document.documentElement;
+	    } else {
+	      doc = el.ownerDocument;
+	    }
+	    docEl = doc.documentElement;
+	    box = {};
+	    _ref = el.getBoundingClientRect();
+	    for (k in _ref) {
+	      v = _ref[k];
+	      box[k] = v;
+	    }
+	    origin = getOrigin(doc);
+	    box.top -= origin.top;
+	    box.left -= origin.left;
+	    if (box.width == null) {
+	      box.width = document.body.scrollWidth - box.left - box.right;
+	    }
+	    if (box.height == null) {
+	      box.height = document.body.scrollHeight - box.top - box.bottom;
+	    }
+	    box.top = box.top - docEl.clientTop;
+	    box.left = box.left - docEl.clientLeft;
+	    box.right = doc.body.clientWidth - box.width - box.left;
+	    box.bottom = doc.body.clientHeight - box.height - box.top;
+	    return box;
+	  };
+
+	  getOffsetParent = function(el) {
+	    return el.offsetParent || document.documentElement;
+	  };
+
+	  getScrollBarSize = function() {
+	    var inner, outer, width, widthContained, widthScroll;
+	    inner = document.createElement('div');
+	    inner.style.width = '100%';
+	    inner.style.height = '200px';
+	    outer = document.createElement('div');
+	    extend(outer.style, {
+	      position: 'absolute',
+	      top: 0,
+	      left: 0,
+	      pointerEvents: 'none',
+	      visibility: 'hidden',
+	      width: '200px',
+	      height: '150px',
+	      overflow: 'hidden'
+	    });
+	    outer.appendChild(inner);
+	    document.body.appendChild(outer);
+	    widthContained = inner.offsetWidth;
+	    outer.style.overflow = 'scroll';
+	    widthScroll = inner.offsetWidth;
+	    if (widthContained === widthScroll) {
+	      widthScroll = outer.clientWidth;
+	    }
+	    document.body.removeChild(outer);
+	    width = widthContained - widthScroll;
+	    return {
+	      width: width,
+	      height: width
+	    };
+	  };
+
+	  extend = function(out) {
+	    var args, key, obj, val, _i, _len, _ref;
+	    if (out == null) {
+	      out = {};
+	    }
+	    args = [];
+	    Array.prototype.push.apply(args, arguments);
+	    _ref = args.slice(1);
+	    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	      obj = _ref[_i];
+	      if (obj) {
+	        for (key in obj) {
+	          if (!__hasProp.call(obj, key)) continue;
+	          val = obj[key];
+	          out[key] = val;
+	        }
+	      }
+	    }
+	    return out;
+	  };
+
+	  removeClass = function(el, name) {
+	    var className, cls, _i, _len, _ref, _results;
+	    if (el.classList != null) {
+	      _ref = name.split(' ');
+	      _results = [];
+	      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	        cls = _ref[_i];
+	        if (cls.trim()) {
+	          _results.push(el.classList.remove(cls));
+	        }
+	      }
+	      return _results;
+	    } else {
+	      className = getClassName(el).replace(new RegExp("(^| )" + (name.split(' ').join('|')) + "( |$)", 'gi'), ' ');
+	      return setClassName(el, className);
+	    }
+	  };
+
+	  addClass = function(el, name) {
+	    var cls, _i, _len, _ref, _results;
+	    if (el.classList != null) {
+	      _ref = name.split(' ');
+	      _results = [];
+	      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	        cls = _ref[_i];
+	        if (cls.trim()) {
+	          _results.push(el.classList.add(cls));
+	        }
+	      }
+	      return _results;
+	    } else {
+	      removeClass(el, name);
+	      cls = getClassName(el) + (" " + name);
+	      return setClassName(el, cls);
+	    }
+	  };
+
+	  hasClass = function(el, name) {
+	    if (el.classList != null) {
+	      return el.classList.contains(name);
+	    } else {
+	      return new RegExp("(^| )" + name + "( |$)", 'gi').test(getClassName(el));
+	    }
+	  };
+
+	  getClassName = function(el) {
+	    if (el.className instanceof SVGAnimatedString) {
+	      return el.className.baseVal;
+	    } else {
+	      return el.className;
+	    }
+	  };
+
+	  setClassName = function(el, className) {
+	    return el.setAttribute('class', className);
+	  };
+
+	  updateClasses = function(el, add, all) {
+	    var cls, _i, _j, _len, _len1, _results;
+	    for (_i = 0, _len = all.length; _i < _len; _i++) {
+	      cls = all[_i];
+	      if (__indexOf.call(add, cls) < 0) {
+	        if (hasClass(el, cls)) {
+	          removeClass(el, cls);
+	        }
+	      }
+	    }
+	    _results = [];
+	    for (_j = 0, _len1 = add.length; _j < _len1; _j++) {
+	      cls = add[_j];
+	      if (!hasClass(el, cls)) {
+	        _results.push(addClass(el, cls));
+	      } else {
+	        _results.push(void 0);
+	      }
+	    }
+	    return _results;
+	  };
+
+	  deferred = [];
+
+	  defer = function(fn) {
+	    return deferred.push(fn);
+	  };
+
+	  flush = function() {
+	    var fn, _results;
+	    _results = [];
+	    while (fn = deferred.pop()) {
+	      _results.push(fn());
+	    }
+	    return _results;
+	  };
+
+	  Evented = (function() {
+	    function Evented() {}
+
+	    Evented.prototype.on = function(event, handler, ctx, once) {
+	      var _base;
+	      if (once == null) {
+	        once = false;
+	      }
+	      if (this.bindings == null) {
+	        this.bindings = {};
+	      }
+	      if ((_base = this.bindings)[event] == null) {
+	        _base[event] = [];
+	      }
+	      return this.bindings[event].push({
+	        handler: handler,
+	        ctx: ctx,
+	        once: once
+	      });
+	    };
+
+	    Evented.prototype.once = function(event, handler, ctx) {
+	      return this.on(event, handler, ctx, true);
+	    };
+
+	    Evented.prototype.off = function(event, handler) {
+	      var i, _ref, _results;
+	      if (((_ref = this.bindings) != null ? _ref[event] : void 0) == null) {
+	        return;
+	      }
+	      if (handler == null) {
+	        return delete this.bindings[event];
+	      } else {
+	        i = 0;
+	        _results = [];
+	        while (i < this.bindings[event].length) {
+	          if (this.bindings[event][i].handler === handler) {
+	            _results.push(this.bindings[event].splice(i, 1));
+	          } else {
+	            _results.push(i++);
+	          }
+	        }
+	        return _results;
+	      }
+	    };
+
+	    Evented.prototype.trigger = function() {
+	      var args, ctx, event, handler, i, once, _ref, _ref1, _results;
+	      event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+	      if ((_ref = this.bindings) != null ? _ref[event] : void 0) {
+	        i = 0;
+	        _results = [];
+	        while (i < this.bindings[event].length) {
+	          _ref1 = this.bindings[event][i], handler = _ref1.handler, ctx = _ref1.ctx, once = _ref1.once;
+	          handler.apply(ctx != null ? ctx : this, args);
+	          if (once) {
+	            _results.push(this.bindings[event].splice(i, 1));
+	          } else {
+	            _results.push(i++);
+	          }
+	        }
+	        return _results;
+	      }
+	    };
+
+	    return Evented;
+
+	  })();
+
+	  this.Tether.Utils = {
+	    getScrollParent: getScrollParent,
+	    getBounds: getBounds,
+	    getOffsetParent: getOffsetParent,
+	    extend: extend,
+	    addClass: addClass,
+	    removeClass: removeClass,
+	    hasClass: hasClass,
+	    updateClasses: updateClasses,
+	    defer: defer,
+	    flush: flush,
+	    uniqueId: uniqueId,
+	    Evented: Evented,
+	    getScrollBarSize: getScrollBarSize
+	  };
+
+	}).call(this);
+
+	(function() {
+	  var MIRROR_LR, MIRROR_TB, OFFSET_MAP, Tether, addClass, addOffset, attachmentToOffset, autoToFixedAttachment, defer, extend, flush, getBounds, getOffsetParent, getOuterSize, getScrollBarSize, getScrollParent, getSize, now, offsetToPx, parseAttachment, parseOffset, position, removeClass, tethers, transformKey, updateClasses, within, _Tether, _ref,
+	    __slice = [].slice,
+	    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+	  if (this.Tether == null) {
+	    throw new Error("You must include the utils.js file before tether.js");
+	  }
+
+	  Tether = this.Tether;
+
+	  _ref = Tether.Utils, getScrollParent = _ref.getScrollParent, getSize = _ref.getSize, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getOffsetParent = _ref.getOffsetParent, extend = _ref.extend, addClass = _ref.addClass, removeClass = _ref.removeClass, updateClasses = _ref.updateClasses, defer = _ref.defer, flush = _ref.flush, getScrollBarSize = _ref.getScrollBarSize;
+
+	  within = function(a, b, diff) {
+	    if (diff == null) {
+	      diff = 1;
+	    }
+	    return (a + diff >= b && b >= a - diff);
+	  };
+
+	  transformKey = (function() {
+	    var el, key, _i, _len, _ref1;
+	    el = document.createElement('div');
+	    _ref1 = ['transform', 'webkitTransform', 'OTransform', 'MozTransform', 'msTransform'];
+	    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+	      key = _ref1[_i];
+	      if (el.style[key] !== void 0) {
+	        return key;
+	      }
+	    }
+	  })();
+
+	  tethers = [];
+
+	  position = function() {
+	    var tether, _i, _len;
+	    for (_i = 0, _len = tethers.length; _i < _len; _i++) {
+	      tether = tethers[_i];
+	      tether.position(false);
+	    }
+	    return flush();
+	  };
+
+	  now = function() {
+	    var _ref1;
+	    return (_ref1 = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref1 : +(new Date);
+	  };
+
+	  (function() {
+	    var event, lastCall, lastDuration, pendingTimeout, tick, _i, _len, _ref1, _results;
+	    lastCall = null;
+	    lastDuration = null;
+	    pendingTimeout = null;
+	    tick = function() {
+	      if ((lastDuration != null) && lastDuration > 16) {
+	        lastDuration = Math.min(lastDuration - 16, 250);
+	        pendingTimeout = setTimeout(tick, 250);
+	        return;
+	      }
+	      if ((lastCall != null) && (now() - lastCall) < 10) {
+	        return;
+	      }
+	      if (pendingTimeout != null) {
+	        clearTimeout(pendingTimeout);
+	        pendingTimeout = null;
+	      }
+	      lastCall = now();
+	      position();
+	      return lastDuration = now() - lastCall;
+	    };
+	    _ref1 = ['resize', 'scroll', 'touchmove'];
+	    _results = [];
+	    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+	      event = _ref1[_i];
+	      _results.push(window.addEventListener(event, tick));
+	    }
+	    return _results;
+	  })();
+
+	  MIRROR_LR = {
+	    center: 'center',
+	    left: 'right',
+	    right: 'left'
+	  };
+
+	  MIRROR_TB = {
+	    middle: 'middle',
+	    top: 'bottom',
+	    bottom: 'top'
+	  };
+
+	  OFFSET_MAP = {
+	    top: 0,
+	    left: 0,
+	    middle: '50%',
+	    center: '50%',
+	    bottom: '100%',
+	    right: '100%'
+	  };
+
+	  autoToFixedAttachment = function(attachment, relativeToAttachment) {
+	    var left, top;
+	    left = attachment.left, top = attachment.top;
+	    if (left === 'auto') {
+	      left = MIRROR_LR[relativeToAttachment.left];
+	    }
+	    if (top === 'auto') {
+	      top = MIRROR_TB[relativeToAttachment.top];
+	    }
+	    return {
+	      left: left,
+	      top: top
+	    };
+	  };
+
+	  attachmentToOffset = function(attachment) {
+	    var _ref1, _ref2;
+	    return {
+	      left: (_ref1 = OFFSET_MAP[attachment.left]) != null ? _ref1 : attachment.left,
+	      top: (_ref2 = OFFSET_MAP[attachment.top]) != null ? _ref2 : attachment.top
+	    };
+	  };
+
+	  addOffset = function() {
+	    var left, offsets, out, top, _i, _len, _ref1;
+	    offsets = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+	    out = {
+	      top: 0,
+	      left: 0
+	    };
+	    for (_i = 0, _len = offsets.length; _i < _len; _i++) {
+	      _ref1 = offsets[_i], top = _ref1.top, left = _ref1.left;
+	      if (typeof top === 'string') {
+	        top = parseFloat(top, 10);
+	      }
+	      if (typeof left === 'string') {
+	        left = parseFloat(left, 10);
+	      }
+	      out.top += top;
+	      out.left += left;
+	    }
+	    return out;
+	  };
+
+	  offsetToPx = function(offset, size) {
+	    if (typeof offset.left === 'string' && offset.left.indexOf('%') !== -1) {
+	      offset.left = parseFloat(offset.left, 10) / 100 * size.width;
+	    }
+	    if (typeof offset.top === 'string' && offset.top.indexOf('%') !== -1) {
+	      offset.top = parseFloat(offset.top, 10) / 100 * size.height;
+	    }
+	    return offset;
+	  };
+
+	  parseAttachment = parseOffset = function(value) {
+	    var left, top, _ref1;
+	    _ref1 = value.split(' '), top = _ref1[0], left = _ref1[1];
+	    return {
+	      top: top,
+	      left: left
+	    };
+	  };
+
+	  _Tether = (function() {
+	    _Tether.modules = [];
+
+	    function _Tether(options) {
+	      this.position = __bind(this.position, this);
+	      var module, _i, _len, _ref1, _ref2;
+	      tethers.push(this);
+	      this.history = [];
+	      this.setOptions(options, false);
+	      _ref1 = Tether.modules;
+	      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+	        module = _ref1[_i];
+	        if ((_ref2 = module.initialize) != null) {
+	          _ref2.call(this);
+	        }
+	      }
+	      this.position();
+	    }
+
+	    _Tether.prototype.getClass = function(key) {
+	      var _ref1, _ref2;
+	      if ((_ref1 = this.options.classes) != null ? _ref1[key] : void 0) {
+	        return this.options.classes[key];
+	      } else if (((_ref2 = this.options.classes) != null ? _ref2[key] : void 0) !== false) {
+	        if (this.options.classPrefix) {
+	          return "" + this.options.classPrefix + "-" + key;
+	        } else {
+	          return key;
+	        }
+	      } else {
+	        return '';
+	      }
+	    };
+
+	    _Tether.prototype.setOptions = function(options, position) {
+	      var defaults, key, _i, _len, _ref1, _ref2;
+	      this.options = options;
+	      if (position == null) {
+	        position = true;
+	      }
+	      defaults = {
+	        offset: '0 0',
+	        targetOffset: '0 0',
+	        targetAttachment: 'auto auto',
+	        classPrefix: 'tether'
+	      };
+	      this.options = extend(defaults, this.options);
+	      _ref1 = this.options, this.element = _ref1.element, this.target = _ref1.target, this.targetModifier = _ref1.targetModifier;
+	      if (this.target === 'viewport') {
+	        this.target = document.body;
+	        this.targetModifier = 'visible';
+	      } else if (this.target === 'scroll-handle') {
+	        this.target = document.body;
+	        this.targetModifier = 'scroll-handle';
+	      }
+	      _ref2 = ['element', 'target'];
+	      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+	        key = _ref2[_i];
+	        if (this[key] == null) {
+	          throw new Error("Tether Error: Both element and target must be defined");
+	        }
+	        if (this[key].jquery != null) {
+	          this[key] = this[key][0];
+	        } else if (typeof this[key] === 'string') {
+	          this[key] = document.querySelector(this[key]);
+	        }
+	      }
+	      addClass(this.element, this.getClass('element'));
+	      addClass(this.target, this.getClass('target'));
+	      if (!this.options.attachment) {
+	        throw new Error("Tether Error: You must provide an attachment");
+	      }
+	      this.targetAttachment = parseAttachment(this.options.targetAttachment);
+	      this.attachment = parseAttachment(this.options.attachment);
+	      this.offset = parseOffset(this.options.offset);
+	      this.targetOffset = parseOffset(this.options.targetOffset);
+	      if (this.scrollParent != null) {
+	        this.disable();
+	      }
+	      if (this.targetModifier === 'scroll-handle') {
+	        this.scrollParent = this.target;
+	      } else {
+	        this.scrollParent = getScrollParent(this.target);
+	      }
+	      if (this.options.enabled !== false) {
+	        return this.enable(position);
+	      }
+	    };
+
+	    _Tether.prototype.getTargetBounds = function() {
+	      var bounds, fitAdj, hasBottomScroll, height, out, scrollBottom, scrollPercentage, style, target;
+	      if (this.targetModifier != null) {
+	        switch (this.targetModifier) {
+	          case 'visible':
+	            if (this.target === document.body) {
+	              return {
+	                top: pageYOffset,
+	                left: pageXOffset,
+	                height: innerHeight,
+	                width: innerWidth
+	              };
+	            } else {
+	              bounds = getBounds(this.target);
+	              out = {
+	                height: bounds.height,
+	                width: bounds.width,
+	                top: bounds.top,
+	                left: bounds.left
+	              };
+	              out.height = Math.min(out.height, bounds.height - (pageYOffset - bounds.top));
+	              out.height = Math.min(out.height, bounds.height - ((bounds.top + bounds.height) - (pageYOffset + innerHeight)));
+	              out.height = Math.min(innerHeight, out.height);
+	              out.height -= 2;
+	              out.width = Math.min(out.width, bounds.width - (pageXOffset - bounds.left));
+	              out.width = Math.min(out.width, bounds.width - ((bounds.left + bounds.width) - (pageXOffset + innerWidth)));
+	              out.width = Math.min(innerWidth, out.width);
+	              out.width -= 2;
+	              if (out.top < pageYOffset) {
+	                out.top = pageYOffset;
+	              }
+	              if (out.left < pageXOffset) {
+	                out.left = pageXOffset;
+	              }
+	              return out;
+	            }
+	            break;
+	          case 'scroll-handle':
+	            target = this.target;
+	            if (target === document.body) {
+	              target = document.documentElement;
+	              bounds = {
+	                left: pageXOffset,
+	                top: pageYOffset,
+	                height: innerHeight,
+	                width: innerWidth
+	              };
+	            } else {
+	              bounds = getBounds(target);
+	            }
+	            style = getComputedStyle(target);
+	            hasBottomScroll = target.scrollWidth > target.clientWidth || 'scroll' === [style.overflow, style.overflowX] || this.target !== document.body;
+	            scrollBottom = 0;
+	            if (hasBottomScroll) {
+	              scrollBottom = 15;
+	            }
+	            height = bounds.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth) - scrollBottom;
+	            out = {
+	              width: 15,
+	              height: height * 0.975 * (height / target.scrollHeight),
+	              left: bounds.left + bounds.width - parseFloat(style.borderLeftWidth) - 15
+	            };
+	            fitAdj = 0;
+	            if (height < 408 && this.target === document.body) {
+	              fitAdj = -0.00011 * Math.pow(height, 2) - 0.00727 * height + 22.58;
+	            }
+	            if (this.target !== document.body) {
+	              out.height = Math.max(out.height, 24);
+	            }
+	            scrollPercentage = this.target.scrollTop / (target.scrollHeight - height);
+	            out.top = scrollPercentage * (height - out.height - fitAdj) + bounds.top + parseFloat(style.borderTopWidth);
+	            if (this.target === document.body) {
+	              out.height = Math.max(out.height, 24);
+	            }
+	            return out;
+	        }
+	      } else {
+	        return getBounds(this.target);
+	      }
+	    };
+
+	    _Tether.prototype.clearCache = function() {
+	      return this._cache = {};
+	    };
+
+	    _Tether.prototype.cache = function(k, getter) {
+	      if (this._cache == null) {
+	        this._cache = {};
+	      }
+	      if (this._cache[k] == null) {
+	        this._cache[k] = getter.call(this);
+	      }
+	      return this._cache[k];
+	    };
+
+	    _Tether.prototype.enable = function(position) {
+	      if (position == null) {
+	        position = true;
+	      }
+	      addClass(this.target, this.getClass('enabled'));
+	      addClass(this.element, this.getClass('enabled'));
+	      this.enabled = true;
+	      if (this.scrollParent !== document) {
+	        this.scrollParent.addEventListener('scroll', this.position);
+	      }
+	      if (position) {
+	        return this.position();
+	      }
+	    };
+
+	    _Tether.prototype.disable = function() {
+	      removeClass(this.target, this.getClass('enabled'));
+	      removeClass(this.element, this.getClass('enabled'));
+	      this.enabled = false;
+	      if (this.scrollParent != null) {
+	        return this.scrollParent.removeEventListener('scroll', this.position);
+	      }
+	    };
+
+	    _Tether.prototype.destroy = function() {
+	      var i, tether, _i, _len, _results;
+	      this.disable();
+	      _results = [];
+	      for (i = _i = 0, _len = tethers.length; _i < _len; i = ++_i) {
+	        tether = tethers[i];
+	        if (tether === this) {
+	          tethers.splice(i, 1);
+	          break;
+	        } else {
+	          _results.push(void 0);
+	        }
+	      }
+	      return _results;
+	    };
+
+	    _Tether.prototype.updateAttachClasses = function(elementAttach, targetAttach) {
+	      var add, all, side, sides, _i, _j, _len, _len1, _ref1,
+	        _this = this;
+	      if (elementAttach == null) {
+	        elementAttach = this.attachment;
+	      }
+	      if (targetAttach == null) {
+	        targetAttach = this.targetAttachment;
+	      }
+	      sides = ['left', 'top', 'bottom', 'right', 'middle', 'center'];
+	      if ((_ref1 = this._addAttachClasses) != null ? _ref1.length : void 0) {
+	        this._addAttachClasses.splice(0, this._addAttachClasses.length);
+	      }
+	      add = this._addAttachClasses != null ? this._addAttachClasses : this._addAttachClasses = [];
+	      if (elementAttach.top) {
+	        add.push("" + (this.getClass('element-attached')) + "-" + elementAttach.top);
+	      }
+	      if (elementAttach.left) {
+	        add.push("" + (this.getClass('element-attached')) + "-" + elementAttach.left);
+	      }
+	      if (targetAttach.top) {
+	        add.push("" + (this.getClass('target-attached')) + "-" + targetAttach.top);
+	      }
+	      if (targetAttach.left) {
+	        add.push("" + (this.getClass('target-attached')) + "-" + targetAttach.left);
+	      }
+	      all = [];
+	      for (_i = 0, _len = sides.length; _i < _len; _i++) {
+	        side = sides[_i];
+	        all.push("" + (this.getClass('element-attached')) + "-" + side);
+	      }
+	      for (_j = 0, _len1 = sides.length; _j < _len1; _j++) {
+	        side = sides[_j];
+	        all.push("" + (this.getClass('target-attached')) + "-" + side);
+	      }
+	      return defer(function() {
+	        if (_this._addAttachClasses == null) {
+	          return;
+	        }
+	        updateClasses(_this.element, _this._addAttachClasses, all);
+	        updateClasses(_this.target, _this._addAttachClasses, all);
+	        return _this._addAttachClasses = void 0;
+	      });
+	    };
+
+	    _Tether.prototype.position = function(flushChanges) {
+	      var elementPos, elementStyle, height, left, manualOffset, manualTargetOffset, module, next, offset, offsetBorder, offsetParent, offsetParentSize, offsetParentStyle, offsetPosition, ret, scrollLeft, scrollTop, scrollbarSize, side, targetAttachment, targetOffset, targetPos, targetSize, top, width, _i, _j, _len, _len1, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6,
+	        _this = this;
+	      if (flushChanges == null) {
+	        flushChanges = true;
+	      }
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this.clearCache();
+	      targetAttachment = autoToFixedAttachment(this.targetAttachment, this.attachment);
+	      this.updateAttachClasses(this.attachment, targetAttachment);
+	      elementPos = this.cache('element-bounds', function() {
+	        return getBounds(_this.element);
+	      });
+	      width = elementPos.width, height = elementPos.height;
+	      if (width === 0 && height === 0 && (this.lastSize != null)) {
+	        _ref1 = this.lastSize, width = _ref1.width, height = _ref1.height;
+	      } else {
+	        this.lastSize = {
+	          width: width,
+	          height: height
+	        };
+	      }
+	      targetSize = targetPos = this.cache('target-bounds', function() {
+	        return _this.getTargetBounds();
+	      });
+	      offset = offsetToPx(attachmentToOffset(this.attachment), {
+	        width: width,
+	        height: height
+	      });
+	      targetOffset = offsetToPx(attachmentToOffset(targetAttachment), targetSize);
+	      manualOffset = offsetToPx(this.offset, {
+	        width: width,
+	        height: height
+	      });
+	      manualTargetOffset = offsetToPx(this.targetOffset, targetSize);
+	      offset = addOffset(offset, manualOffset);
+	      targetOffset = addOffset(targetOffset, manualTargetOffset);
+	      left = targetPos.left + targetOffset.left - offset.left;
+	      top = targetPos.top + targetOffset.top - offset.top;
+	      _ref2 = Tether.modules;
+	      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+	        module = _ref2[_i];
+	        ret = module.position.call(this, {
+	          left: left,
+	          top: top,
+	          targetAttachment: targetAttachment,
+	          targetPos: targetPos,
+	          attachment: this.attachment,
+	          elementPos: elementPos,
+	          offset: offset,
+	          targetOffset: targetOffset,
+	          manualOffset: manualOffset,
+	          manualTargetOffset: manualTargetOffset,
+	          scrollbarSize: scrollbarSize
+	        });
+	        if ((ret == null) || typeof ret !== 'object') {
+	          continue;
+	        } else if (ret === false) {
+	          return false;
+	        } else {
+	          top = ret.top, left = ret.left;
+	        }
+	      }
+	      next = {
+	        page: {
+	          top: top,
+	          left: left
+	        },
+	        viewport: {
+	          top: top - pageYOffset,
+	          bottom: pageYOffset - top - height + innerHeight,
+	          left: left - pageXOffset,
+	          right: pageXOffset - left - width + innerWidth
+	        }
+	      };
+	      if (document.body.scrollWidth > window.innerWidth) {
+	        scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+	        next.viewport.bottom -= scrollbarSize.height;
+	      }
+	      if (document.body.scrollHeight > window.innerHeight) {
+	        scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+	        next.viewport.right -= scrollbarSize.width;
+	      }
+	      if (((_ref3 = document.body.style.position) !== '' && _ref3 !== 'static') || ((_ref4 = document.body.parentElement.style.position) !== '' && _ref4 !== 'static')) {
+	        next.page.bottom = document.body.scrollHeight - top - height;
+	        next.page.right = document.body.scrollWidth - left - width;
+	      }
+	      if (((_ref5 = this.options.optimizations) != null ? _ref5.moveElement : void 0) !== false && (this.targetModifier == null)) {
+	        offsetParent = this.cache('target-offsetparent', function() {
+	          return getOffsetParent(_this.target);
+	        });
+	        offsetPosition = this.cache('target-offsetparent-bounds', function() {
+	          return getBounds(offsetParent);
+	        });
+	        offsetParentStyle = getComputedStyle(offsetParent);
+	        elementStyle = getComputedStyle(this.element);
+	        offsetParentSize = offsetPosition;
+	        offsetBorder = {};
+	        _ref6 = ['Top', 'Left', 'Bottom', 'Right'];
+	        for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
+	          side = _ref6[_j];
+	          offsetBorder[side.toLowerCase()] = parseFloat(offsetParentStyle["border" + side + "Width"]);
+	        }
+	        offsetPosition.right = document.body.scrollWidth - offsetPosition.left - offsetParentSize.width + offsetBorder.right;
+	        offsetPosition.bottom = document.body.scrollHeight - offsetPosition.top - offsetParentSize.height + offsetBorder.bottom;
+	        if (next.page.top >= (offsetPosition.top + offsetBorder.top) && next.page.bottom >= offsetPosition.bottom) {
+	          if (next.page.left >= (offsetPosition.left + offsetBorder.left) && next.page.right >= offsetPosition.right) {
+	            scrollTop = offsetParent.scrollTop;
+	            scrollLeft = offsetParent.scrollLeft;
+	            next.offset = {
+	              top: next.page.top - offsetPosition.top + scrollTop - offsetBorder.top,
+	              left: next.page.left - offsetPosition.left + scrollLeft - offsetBorder.left
+	            };
+	          }
+	        }
+	      }
+	      this.move(next);
+	      this.history.unshift(next);
+	      if (this.history.length > 3) {
+	        this.history.pop();
+	      }
+	      if (flushChanges) {
+	        flush();
+	      }
+	      return true;
+	    };
+
+	    _Tether.prototype.move = function(position) {
+	      var css, elVal, found, key, moved, offsetParent, point, same, transcribe, type, val, write, writeCSS, _i, _len, _ref1, _ref2,
+	        _this = this;
+	      if (this.element.parentNode == null) {
+	        return;
+	      }
+	      same = {};
+	      for (type in position) {
+	        same[type] = {};
+	        for (key in position[type]) {
+	          found = false;
+	          _ref1 = this.history;
+	          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+	            point = _ref1[_i];
+	            if (!within((_ref2 = point[type]) != null ? _ref2[key] : void 0, position[type][key])) {
+	              found = true;
+	              break;
+	            }
+	          }
+	          if (!found) {
+	            same[type][key] = true;
+	          }
+	        }
+	      }
+	      css = {
+	        top: '',
+	        left: '',
+	        right: '',
+	        bottom: ''
+	      };
+	      transcribe = function(same, pos) {
+	        var xPos, yPos, _ref3;
+	        if (((_ref3 = _this.options.optimizations) != null ? _ref3.gpu : void 0) !== false) {
+	          if (same.top) {
+	            css.top = 0;
+	            yPos = pos.top;
+	          } else {
+	            css.bottom = 0;
+	            yPos = -pos.bottom;
+	          }
+	          if (same.left) {
+	            css.left = 0;
+	            xPos = pos.left;
+	          } else {
+	            css.right = 0;
+	            xPos = -pos.right;
+	          }
+	          css[transformKey] = "translateX(" + (Math.round(xPos)) + "px) translateY(" + (Math.round(yPos)) + "px)";
+	          if (transformKey !== 'msTransform') {
+	            return css[transformKey] += " translateZ(0)";
+	          }
+	        } else {
+	          if (same.top) {
+	            css.top = "" + pos.top + "px";
+	          } else {
+	            css.bottom = "" + pos.bottom + "px";
+	          }
+	          if (same.left) {
+	            return css.left = "" + pos.left + "px";
+	          } else {
+	            return css.right = "" + pos.right + "px";
+	          }
+	        }
+	      };
+	      moved = false;
+	      if ((same.page.top || same.page.bottom) && (same.page.left || same.page.right)) {
+	        css.position = 'absolute';
+	        transcribe(same.page, position.page);
+	      } else if ((same.viewport.top || same.viewport.bottom) && (same.viewport.left || same.viewport.right)) {
+	        css.position = 'fixed';
+	        transcribe(same.viewport, position.viewport);
+	      } else if ((same.offset != null) && same.offset.top && same.offset.left) {
+	        css.position = 'absolute';
+	        offsetParent = this.cache('target-offsetparent', function() {
+	          return getOffsetParent(_this.target);
+	        });
+	        if (getOffsetParent(this.element) !== offsetParent) {
+	          defer(function() {
+	            _this.element.parentNode.removeChild(_this.element);
+	            return offsetParent.appendChild(_this.element);
+	          });
+	        }
+	        transcribe(same.offset, position.offset);
+	        moved = true;
+	      } else {
+	        css.position = 'absolute';
+	        transcribe({
+	          top: true,
+	          left: true
+	        }, position.page);
+	      }
+	      if (!moved && this.element.parentNode.tagName !== 'BODY') {
+	        this.element.parentNode.removeChild(this.element);
+	        document.body.appendChild(this.element);
+	      }
+	      writeCSS = {};
+	      write = false;
+	      for (key in css) {
+	        val = css[key];
+	        elVal = this.element.style[key];
+	        if (elVal !== '' && val !== '' && (key === 'top' || key === 'left' || key === 'bottom' || key === 'right')) {
+	          elVal = parseFloat(elVal);
+	          val = parseFloat(val);
+	        }
+	        if (elVal !== val) {
+	          write = true;
+	          writeCSS[key] = css[key];
+	        }
+	      }
+	      if (write) {
+	        return defer(function() {
+	          return extend(_this.element.style, writeCSS);
+	        });
+	      }
+	    };
+
+	    return _Tether;
+
+	  })();
+
+	  Tether.position = position;
+
+	  this.Tether = extend(_Tether, Tether);
+
+	}).call(this);
+
+	(function() {
+	  var BOUNDS_FORMAT, MIRROR_ATTACH, defer, extend, getBoundingRect, getBounds, getOuterSize, getSize, updateClasses, _ref,
+	    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+	  _ref = this.Tether.Utils, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getSize = _ref.getSize, extend = _ref.extend, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+	  MIRROR_ATTACH = {
+	    left: 'right',
+	    right: 'left',
+	    top: 'bottom',
+	    bottom: 'top',
+	    middle: 'middle'
+	  };
+
+	  BOUNDS_FORMAT = ['left', 'top', 'right', 'bottom'];
+
+	  getBoundingRect = function(tether, to) {
+	    var i, pos, side, size, style, _i, _len;
+	    if (to === 'scrollParent') {
+	      to = tether.scrollParent;
+	    } else if (to === 'window') {
+	      to = [pageXOffset, pageYOffset, innerWidth + pageXOffset, innerHeight + pageYOffset];
+	    }
+	    if (to === document) {
+	      to = to.documentElement;
+	    }
+	    if (to.nodeType != null) {
+	      pos = size = getBounds(to);
+	      style = getComputedStyle(to);
+	      to = [pos.left, pos.top, size.width + pos.left, size.height + pos.top];
+	      for (i = _i = 0, _len = BOUNDS_FORMAT.length; _i < _len; i = ++_i) {
+	        side = BOUNDS_FORMAT[i];
+	        side = side[0].toUpperCase() + side.substr(1);
+	        if (side === 'Top' || side === 'Left') {
+	          to[i] += parseFloat(style["border" + side + "Width"]);
+	        } else {
+	          to[i] -= parseFloat(style["border" + side + "Width"]);
+	        }
+	      }
+	    }
+	    return to;
+	  };
+
+	  this.Tether.modules.push({
+	    position: function(_arg) {
+	      var addClasses, allClasses, attachment, bounds, changeAttachX, changeAttachY, cls, constraint, eAttachment, height, left, oob, oobClass, p, pin, pinned, pinnedClass, removeClass, side, tAttachment, targetAttachment, targetHeight, targetSize, targetWidth, to, top, width, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8,
+	        _this = this;
+	      top = _arg.top, left = _arg.left, targetAttachment = _arg.targetAttachment;
+	      if (!this.options.constraints) {
+	        return true;
+	      }
+	      removeClass = function(prefix) {
+	        var side, _i, _len, _results;
+	        _this.removeClass(prefix);
+	        _results = [];
+	        for (_i = 0, _len = BOUNDS_FORMAT.length; _i < _len; _i++) {
+	          side = BOUNDS_FORMAT[_i];
+	          _results.push(_this.removeClass("" + prefix + "-" + side));
+	        }
+	        return _results;
+	      };
+	      _ref1 = this.cache('element-bounds', function() {
+	        return getBounds(_this.element);
+	      }), height = _ref1.height, width = _ref1.width;
+	      if (width === 0 && height === 0 && (this.lastSize != null)) {
+	        _ref2 = this.lastSize, width = _ref2.width, height = _ref2.height;
+	      }
+	      targetSize = this.cache('target-bounds', function() {
+	        return _this.getTargetBounds();
+	      });
+	      targetHeight = targetSize.height;
+	      targetWidth = targetSize.width;
+	      tAttachment = {};
+	      eAttachment = {};
+	      allClasses = [this.getClass('pinned'), this.getClass('out-of-bounds')];
+	      _ref3 = this.options.constraints;
+	      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+	        constraint = _ref3[_i];
+	        if (constraint.outOfBoundsClass) {
+	          allClasses.push(constraint.outOfBoundsClass);
+	        }
+	        if (constraint.pinnedClass) {
+	          allClasses.push(constraint.pinnedClass);
+	        }
+	      }
+	      for (_j = 0, _len1 = allClasses.length; _j < _len1; _j++) {
+	        cls = allClasses[_j];
+	        _ref4 = ['left', 'top', 'right', 'bottom'];
+	        for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+	          side = _ref4[_k];
+	          allClasses.push("" + cls + "-" + side);
+	        }
+	      }
+	      addClasses = [];
+	      tAttachment = extend({}, targetAttachment);
+	      eAttachment = extend({}, this.attachment);
+	      _ref5 = this.options.constraints;
+	      for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
+	        constraint = _ref5[_l];
+	        to = constraint.to, attachment = constraint.attachment, pin = constraint.pin;
+	        if (attachment == null) {
+	          attachment = '';
+	        }
+	        if (__indexOf.call(attachment, ' ') >= 0) {
+	          _ref6 = attachment.split(' '), changeAttachY = _ref6[0], changeAttachX = _ref6[1];
+	        } else {
+	          changeAttachX = changeAttachY = attachment;
+	        }
+	        bounds = getBoundingRect(this, to);
+	        if (changeAttachY === 'target' || changeAttachY === 'both') {
+	          if (top < bounds[1] && tAttachment.top === 'top') {
+	            top += targetHeight;
+	            tAttachment.top = 'bottom';
+	          }
+	          if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+	            top -= targetHeight;
+	            tAttachment.top = 'top';
+	          }
+	        }
+	        if (changeAttachY === 'together') {
+	          if (top < bounds[1] && tAttachment.top === 'top') {
+	            if (eAttachment.top === 'bottom') {
+	              top += targetHeight;
+	              tAttachment.top = 'bottom';
+	              top += height;
+	              eAttachment.top = 'top';
+	            } else if (eAttachment.top === 'top') {
+	              top += targetHeight;
+	              tAttachment.top = 'bottom';
+	              top -= height;
+	              eAttachment.top = 'bottom';
+	            }
+	          }
+	          if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+	            if (eAttachment.top === 'top') {
+	              top -= targetHeight;
+	              tAttachment.top = 'top';
+	              top -= height;
+	              eAttachment.top = 'bottom';
+	            } else if (eAttachment.top === 'bottom') {
+	              top -= targetHeight;
+	              tAttachment.top = 'top';
+	              top += height;
+	              eAttachment.top = 'top';
+	            }
+	          }
+	          if (tAttachment.top === 'middle') {
+	            if (top + height > bounds[3] && eAttachment.top === 'top') {
+	              top -= height;
+	              eAttachment.top = 'bottom';
+	            } else if (top < bounds[1] && eAttachment.top === 'bottom') {
+	              top += height;
+	              eAttachment.top = 'top';
+	            }
+	          }
+	        }
+	        if (changeAttachX === 'target' || changeAttachX === 'both') {
+	          if (left < bounds[0] && tAttachment.left === 'left') {
+	            left += targetWidth;
+	            tAttachment.left = 'right';
+	          }
+	          if (left + width > bounds[2] && tAttachment.left === 'right') {
+	            left -= targetWidth;
+	            tAttachment.left = 'left';
+	          }
+	        }
+	        if (changeAttachX === 'together') {
+	          if (left < bounds[0] && tAttachment.left === 'left') {
+	            if (eAttachment.left === 'right') {
+	              left += targetWidth;
+	              tAttachment.left = 'right';
+	              left += width;
+	              eAttachment.left = 'left';
+	            } else if (eAttachment.left === 'left') {
+	              left += targetWidth;
+	              tAttachment.left = 'right';
+	              left -= width;
+	              eAttachment.left = 'right';
+	            }
+	          } else if (left + width > bounds[2] && tAttachment.left === 'right') {
+	            if (eAttachment.left === 'left') {
+	              left -= targetWidth;
+	              tAttachment.left = 'left';
+	              left -= width;
+	              eAttachment.left = 'right';
+	            } else if (eAttachment.left === 'right') {
+	              left -= targetWidth;
+	              tAttachment.left = 'left';
+	              left += width;
+	              eAttachment.left = 'left';
+	            }
+	          } else if (tAttachment.left === 'center') {
+	            if (left + width > bounds[2] && eAttachment.left === 'left') {
+	              left -= width;
+	              eAttachment.left = 'right';
+	            } else if (left < bounds[0] && eAttachment.left === 'right') {
+	              left += width;
+	              eAttachment.left = 'left';
+	            }
+	          }
+	        }
+	        if (changeAttachY === 'element' || changeAttachY === 'both') {
+	          if (top < bounds[1] && eAttachment.top === 'bottom') {
+	            top += height;
+	            eAttachment.top = 'top';
+	          }
+	          if (top + height > bounds[3] && eAttachment.top === 'top') {
+	            top -= height;
+	            eAttachment.top = 'bottom';
+	          }
+	        }
+	        if (changeAttachX === 'element' || changeAttachX === 'both') {
+	          if (left < bounds[0] && eAttachment.left === 'right') {
+	            left += width;
+	            eAttachment.left = 'left';
+	          }
+	          if (left + width > bounds[2] && eAttachment.left === 'left') {
+	            left -= width;
+	            eAttachment.left = 'right';
+	          }
+	        }
+	        if (typeof pin === 'string') {
+	          pin = (function() {
+	            var _len4, _m, _ref7, _results;
+	            _ref7 = pin.split(',');
+	            _results = [];
+	            for (_m = 0, _len4 = _ref7.length; _m < _len4; _m++) {
+	              p = _ref7[_m];
+	              _results.push(p.trim());
+	            }
+	            return _results;
+	          })();
+	        } else if (pin === true) {
+	          pin = ['top', 'left', 'right', 'bottom'];
+	        }
+	        pin || (pin = []);
+	        pinned = [];
+	        oob = [];
+	        if (top < bounds[1]) {
+	          if (__indexOf.call(pin, 'top') >= 0) {
+	            top = bounds[1];
+	            pinned.push('top');
+	          } else {
+	            oob.push('top');
+	          }
+	        }
+	        if (top + height > bounds[3]) {
+	          if (__indexOf.call(pin, 'bottom') >= 0) {
+	            top = bounds[3] - height;
+	            pinned.push('bottom');
+	          } else {
+	            oob.push('bottom');
+	          }
+	        }
+	        if (left < bounds[0]) {
+	          if (__indexOf.call(pin, 'left') >= 0) {
+	            left = bounds[0];
+	            pinned.push('left');
+	          } else {
+	            oob.push('left');
+	          }
+	        }
+	        if (left + width > bounds[2]) {
+	          if (__indexOf.call(pin, 'right') >= 0) {
+	            left = bounds[2] - width;
+	            pinned.push('right');
+	          } else {
+	            oob.push('right');
+	          }
+	        }
+	        if (pinned.length) {
+	          pinnedClass = (_ref7 = this.options.pinnedClass) != null ? _ref7 : this.getClass('pinned');
+	          addClasses.push(pinnedClass);
+	          for (_m = 0, _len4 = pinned.length; _m < _len4; _m++) {
+	            side = pinned[_m];
+	            addClasses.push("" + pinnedClass + "-" + side);
+	          }
+	        }
+	        if (oob.length) {
+	          oobClass = (_ref8 = this.options.outOfBoundsClass) != null ? _ref8 : this.getClass('out-of-bounds');
+	          addClasses.push(oobClass);
+	          for (_n = 0, _len5 = oob.length; _n < _len5; _n++) {
+	            side = oob[_n];
+	            addClasses.push("" + oobClass + "-" + side);
+	          }
+	        }
+	        if (__indexOf.call(pinned, 'left') >= 0 || __indexOf.call(pinned, 'right') >= 0) {
+	          eAttachment.left = tAttachment.left = false;
+	        }
+	        if (__indexOf.call(pinned, 'top') >= 0 || __indexOf.call(pinned, 'bottom') >= 0) {
+	          eAttachment.top = tAttachment.top = false;
+	        }
+	        if (tAttachment.top !== targetAttachment.top || tAttachment.left !== targetAttachment.left || eAttachment.top !== this.attachment.top || eAttachment.left !== this.attachment.left) {
+	          this.updateAttachClasses(eAttachment, tAttachment);
+	        }
+	      }
+	      defer(function() {
+	        updateClasses(_this.target, addClasses, allClasses);
+	        return updateClasses(_this.element, addClasses, allClasses);
+	      });
+	      return {
+	        top: top,
+	        left: left
+	      };
+	    }
+	  });
+
+	}).call(this);
+
+	(function() {
+	  var defer, getBounds, updateClasses, _ref;
+
+	  _ref = this.Tether.Utils, getBounds = _ref.getBounds, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+	  this.Tether.modules.push({
+	    position: function(_arg) {
+	      var abutted, addClasses, allClasses, bottom, height, left, right, side, sides, targetPos, top, width, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref1, _ref2, _ref3, _ref4, _ref5,
+	        _this = this;
+	      top = _arg.top, left = _arg.left;
+	      _ref1 = this.cache('element-bounds', function() {
+	        return getBounds(_this.element);
+	      }), height = _ref1.height, width = _ref1.width;
+	      targetPos = this.getTargetBounds();
+	      bottom = top + height;
+	      right = left + width;
+	      abutted = [];
+	      if (top <= targetPos.bottom && bottom >= targetPos.top) {
+	        _ref2 = ['left', 'right'];
+	        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+	          side = _ref2[_i];
+	          if ((_ref3 = targetPos[side]) === left || _ref3 === right) {
+	            abutted.push(side);
+	          }
+	        }
+	      }
+	      if (left <= targetPos.right && right >= targetPos.left) {
+	        _ref4 = ['top', 'bottom'];
+	        for (_j = 0, _len1 = _ref4.length; _j < _len1; _j++) {
+	          side = _ref4[_j];
+	          if ((_ref5 = targetPos[side]) === top || _ref5 === bottom) {
+	            abutted.push(side);
+	          }
+	        }
+	      }
+	      allClasses = [];
+	      addClasses = [];
+	      sides = ['left', 'top', 'right', 'bottom'];
+	      allClasses.push(this.getClass('abutted'));
+	      for (_k = 0, _len2 = sides.length; _k < _len2; _k++) {
+	        side = sides[_k];
+	        allClasses.push("" + (this.getClass('abutted')) + "-" + side);
+	      }
+	      if (abutted.length) {
+	        addClasses.push(this.getClass('abutted'));
+	      }
+	      for (_l = 0, _len3 = abutted.length; _l < _len3; _l++) {
+	        side = abutted[_l];
+	        addClasses.push("" + (this.getClass('abutted')) + "-" + side);
+	      }
+	      defer(function() {
+	        updateClasses(_this.target, addClasses, allClasses);
+	        return updateClasses(_this.element, addClasses, allClasses);
+	      });
+	      return true;
+	    }
+	  });
+
+	}).call(this);
+
+	(function() {
+	  this.Tether.modules.push({
+	    position: function(_arg) {
+	      var left, result, shift, shiftLeft, shiftTop, top, _ref;
+	      top = _arg.top, left = _arg.left;
+	      if (!this.options.shift) {
+	        return;
+	      }
+	      result = function(val) {
+	        if (typeof val === 'function') {
+	          return val.call(this, {
+	            top: top,
+	            left: left
+	          });
+	        } else {
+	          return val;
+	        }
+	      };
+	      shift = result(this.options.shift);
+	      if (typeof shift === 'string') {
+	        shift = shift.split(' ');
+	        shift[1] || (shift[1] = shift[0]);
+	        shiftTop = shift[0], shiftLeft = shift[1];
+	        shiftTop = parseFloat(shiftTop, 10);
+	        shiftLeft = parseFloat(shiftLeft, 10);
+	      } else {
+	        _ref = [shift.top, shift.left], shiftTop = _ref[0], shiftLeft = _ref[1];
+	      }
+	      top += shiftTop;
+	      left += shiftLeft;
+	      return {
+	        top: top,
+	        left: left
+	      };
+	    }
+	  });
+
+	}).call(this);
+
+	return this.Tether;
+
+	}));
+
+
+/***/ }
+/******/ ])
+});
+;

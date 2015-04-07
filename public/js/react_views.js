@@ -27,9 +27,20 @@ var Input = React.createClass({displayName: "Input",
 
 var Select = React.createClass({displayName: "Select",
 
-    makeOption: function(option, index) {
+    makeOption: function(option, index) {   
+        var data = option;
+        console.log(option);
+        var value = option["_id"] || option;
 
-        return React.createElement("option", {key: index, value: option}, option);
+        if (option["name"]) {
+            var concatName = option["name"] + " " +  
+                             option["number"] + " " +
+                             option["unit"] + " " +
+                             option["amountOfTime"];
+        }
+        var name = concatName || option;
+        console.log(name, value);
+        return React.createElement("option", {key: index, value: value, name: name}, name);
 
     },
 
@@ -37,14 +48,13 @@ var Select = React.createClass({displayName: "Select",
         var htmlID = "select-" + name + Math.random();
         var label = this.props.label || this.props.name;
 
-
         return (
             React.createElement("div", {className: "field field-select"}, 
                 React.createElement("label", {htmlFor: htmlID}, label), 
                 React.createElement("select", {htmlID: htmlID, 
                         defaultValue: this.props.defaultValue, 
                         name: this.props.name}, 
-                    this.props.options.map(this.makeOption)
+                    _.map(this.props.options, this.makeOption)
                 )
                 
             )
@@ -60,6 +70,91 @@ views.Select = Select;
 
 })(app.views);
 
+(function(views){
+
+    views.EntryForm = React.createBackboneClass({
+
+        onSubmit: function(e) {
+            e.preventDefault();
+            var entryItems = $(e.target).serializeJSON();
+            var states = _.map(entryItems, function(item) {
+                return !!item;
+            });
+            var containsFalse = _.contains(states, false);
+            if (!containsFalse) {
+                app.trigger("create:entries:collection", entryItems);
+            }
+        },
+
+        getInitialState: function() {
+          return {
+            start_date: moment(),
+            end_date: moment(),
+            new_date: null,
+            bound_date: null,
+            example5Selected: null
+          };
+        },
+
+        handleStartDateChange: function(date) {
+          this.setState({
+            start_date: date
+          });
+        },
+
+        getGoalNames: function() {
+            var collection = this.props.collection.toJSON();
+
+            var userGoals = _.filter(collection, function(goal) {
+                return app.currentUser.id === goal.user_id
+            });
+
+            return userGoals;
+
+            // var userGoals = _.filter(collection, function(goal) {
+            //     return app.currentUser.id === goal.user_id
+            // });
+
+            // var goalNames = [];
+            // _.each(userGoals, function(goal) {
+            //     var vals = _.values(goal);
+            //     vals = vals.slice(0, 4);
+            //     vals = vals.join(" ");
+            //     goalNames.push(vals);
+            // });
+            // console.log(goalNames);
+            // return goalNames;
+
+
+        },
+
+        render: function() {
+            return (
+
+                React.createElement("form", {onSubmit: this.onSubmit, className: "form form-entry"}, 
+                    React.createElement(views.Select, {label: "Goal", 
+                        options: this.getGoalNames(), 
+                        name: "name"}), 
+                    React.createElement(views.Input, {
+                        label: "Number Completed", 
+                        type: "number", 
+                        name: "number", 
+                        placeholder: "5", 
+                        required: "required"}), 
+                    React.createElement("label", null, "Date Completed"), 
+                    React.createElement(DatePicker, {selected: this.state.start_date, onChange: this.handleStartDateChange}), 
+                    React.createElement("div", {className: "text-right"}, 
+                        React.createElement("button", {className: "button button-primary"}, "Add Entry")
+                    )
+                    
+                )
+
+            );
+        }
+
+    });
+
+})(app.views);
 (function(views){
 
     views.TwitterLogin = React.createBackboneClass({
@@ -233,7 +328,9 @@ views.Select = Select;
                             className: "button button-primary", 
                             onClick: this.props.addGoal}, "+ Goal"
                         ), 
-                        React.createElement("button", {className: "button button-primary"}, "+ Entry")
+                        React.createElement("button", {className: "button button-primary", 
+                            onClick: this.props.addEntry}, "+ Entry"
+                        )
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
                         React.createElement("button", {className: "button button-secondary"}, "To Date"), 
@@ -403,7 +500,9 @@ views.Select = Select;
                             className: "button button-primary", 
                             onClick: this.props.addGoal}, "+ Goal"
                         ), 
-                        React.createElement("button", {className: "button button-primary"}, "+ Entry")
+                        React.createElement("button", {className: "button button-primary", 
+                            onClick: this.props.addEntry}, "+ Entry"
+                        )
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
                         React.createElement("button", {className: "button button-secondary"}, "To Date"), 

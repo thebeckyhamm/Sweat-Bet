@@ -27,9 +27,20 @@ var Input = React.createClass({
 
 var Select = React.createClass({
 
-    makeOption: function(option, index) {
+    makeOption: function(option, index) {   
+        var data = option;
+        console.log(option);
+        var value = option["_id"] || option;
 
-        return <option key={index} value={option}>{option}</option>;
+        if (option["name"]) {
+            var concatName = option["name"] + " " +  
+                             option["number"] + " " +
+                             option["unit"] + " " +
+                             option["amountOfTime"];
+        }
+        var name = concatName || option;
+        console.log(name, value);
+        return <option key={index} value={value} name={name}>{name}</option>;
 
     },
 
@@ -37,14 +48,13 @@ var Select = React.createClass({
         var htmlID = "select-" + name + Math.random();
         var label = this.props.label || this.props.name;
 
-
         return (
             <div className="field field-select">
                 <label htmlFor={htmlID}>{label}</label>
                 <select htmlID={htmlID}
                         defaultValue={this.props.defaultValue}
                         name={this.props.name}>
-                    {this.props.options.map(this.makeOption)}
+                    {_.map(this.props.options, this.makeOption)}
                 </select>
                 
             </div>

@@ -77,8 +77,14 @@ gulp.task("bower:assets:js", function() {
 
   // make sure backbone is last in list
   sorted = _.sortBy(files, function(path) {
+    if (path.match(/index\.js/)) {
+      return 4;
+    }
+    if (path.match(/react-datepicker\.js/)) {
+      return 4;
+    }
     if (path.match(/backbonefire\.js/)) {
-      return 2;
+      return 3;
     }
     if (path.match(/react\.backbone\.js/)) {
       return 2;
@@ -95,6 +101,18 @@ gulp.task("bower:assets:js", function() {
     .pipe(gulp.dest("./public/vendor/js"));
 });
 
+// -- CSS -- //
+
+gulp.task("bower:assets:css", function(){
+  var files;
+
+  files = bower({filter: "**/*.css"});
+
+  gulp.src(files)
+    .pipe(notifyError())
+    .pipe(concat("vendor.css"))
+    .pipe(gulp.dest("./public/vendor/css"));
+});
 
 
 // -- FONTS -- //
@@ -122,15 +140,3 @@ gulp.task("bower:assets:dev", function(){
 });
 
 
-// //================================================
-// //  BROWSERSYNC
-// //================================================
-
-
-// gulp.task('browser-sync', function() {
-//     browserSync({
-//         server: {
-//             baseDir: "./"
-//         }
-//     });
-// });
