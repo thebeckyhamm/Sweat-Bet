@@ -27,35 +27,68 @@ CollectionRouter.prototype = {
         }
         else {
 
+          
+          // at this point we have data which is an array of goals
+          // if we have an `include` (which is for associating entries to goals
+          // but could be for associating anything to anything else) then we
+          // need to get the records (entries) for each record (goal) in data
           if (this.include) {
-            // get all the ids from the records we just fetched
+            // this is the associated data
+            var fdb = this.include.db;
+            // this is the key on the assoc. data that ties each record
+            var fkey = this.include.fkey;
+            // this is what we call it when we assign the associated reocrds
+            var as = this.include.as;
+
+            // get all the (goal) ids from the records we just fetched
             var ids = data.map(function(d){
               return d._id;
             });
             
             // build the query for the include
             var qry = {}
-            qry[this.include.fkey] = { "$in": ids};
+            qry[fkey] = { "$in": ids};
+
+            // ids: [1,2,3,4]
+
+            // goals
+            // [
+            //   {_id 1, ...},
+            //   {_id 2, ...},
+            //   {_id 3, ...},
+            //   {_id 4, ...},
+            // ]
+
+            // entries
+            // [
+            //   {_id: 56, goal_id: 1 ...},
+            //   {_id: 57, goal_id: 2 ...},
+            //   {_id: 58, goal_id: 3 ...},
+            //   {_id: 59, goal_id: 4 ...},
+            // ]
+
+            // qry looks like {goal_id: {"$in" : [1,2,3,4]}}
 
             // find all the included records
-            this.include.db.find(qry, function(err, fdata){
+            fdb.find(qry, function(err, fdata){
               if(err) {
                 res.status(500).json({error: err.toString()});
               } else {
                 // add the included records to each record
                 data = data.map(function(record){
                   
-                  record[this.include.as] = fdata.filter(function(frecord){
-                    return frecord[this.include.fkey] === record._id;
-                  }.bind(this));
+                  // get assoc records (entries) for each record (goal)
+                  record[as] = fdata.filter(function(frecord){
+                    return frecord[fkey] === record._id;
+                  });
                   
                   return record;
                 
-                }.bind(this));
+                });
                 
                 res.json(data);
               }
-            }.bind(this));
+            });
           } else {
             res.json(data);
           }

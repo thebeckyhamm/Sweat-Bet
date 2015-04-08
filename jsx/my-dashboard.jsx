@@ -1,5 +1,5 @@
 (function(views){
-    var Progress = React.createBackboneClass({
+    var SingleGoalProgress = React.createBackboneClass({
         // getGoalDetail: function(goal_id, e) {
         //     e.preventDefault();
         //     app.trigger("get:goal:detail", goal_id);
@@ -15,15 +15,21 @@
                 return a + b;
             });
         },
+
+        getPercentComplete: function(currentProgress, totalGoal) {
+            var percentComplete = ((currentProgress / totalGoal) * 100).toFixed(1);
+            return percentComplete + "%";
+        },
+
         render: function() {
             var goal = this.props.model.toJSON();
             var entries = goal.entries;
 
-            var currentProgress = this.getCurrentTotal(entries);
             var totalGoal = goal.number * this.props.weeks;
-            var percentComplete = ((currentProgress / totalGoal) * 100).toFixed(1);
-            percentComplete = percentComplete + "%";
-            var unit = goal.unit;
+            var currentProgress = this.getCurrentTotal(entries);
+
+            var percentComplete = this.getPercentComplete(currentProgress, totalGoal);
+
             var goalName = goal.name + " " + 
                        goal.number + " " + 
                        goal.unit + " " + 
@@ -37,17 +43,87 @@
                     <div className="progress-container">
                         <div className="progress-bar" style={progressStyle} />
                     </div>
-                    <span>{currentProgress} {unit} out of {totalGoal} </span>
+                    <span>{currentProgress} {goal.unit} out of {totalGoal} </span>
                 </div>
             );
         }
 
     });
 
+
+var TotalProgress = React.createBackboneClass({
+
+    getCurrentTotal: function(entries) {
+        var entryNumbers = [];
+        entryNumbers = _.flatten(entries);
+
+        entryNumbers = _.map(entryNumbers, function(obj) {
+            return parseInt(obj.number);
+        });
+
+        return _.reduce(entryNumbers, function(a, b) {
+            return a + b;
+        });
+
+    },
+
+    getTotal: function(goals) {
+
+        var goalNumbers = _.map(goals, function(goal) {
+            return parseInt(goal.number);
+        });
+
+        return _.reduce(goalNumbers, function(a, b) {
+            return a + b;
+        });
+
+    },
+
+    getPercentComplete: function(currentProgress, endAmount) {
+        var percentComplete = ((currentProgress / endAmount) * 100).toFixed(1);
+        return percentComplete + "%";
+    },
+
+    render: function() {
+        var goals = this.props.collection.toJSON();
+
+        var entries = goals.map(function(goal) {
+            return goal.entries;
+        });
+
+
+        var currentProgress = this.getCurrentTotal(entries);
+
+        var totalGoals = this.getTotal(goals);
+
+        console.log("weeks", this.props.weeks);
+        var endAmount = totalGoals * this.props.weeks;
+
+        var percentComplete = this.getPercentComplete(currentProgress, endAmount);
+
+        var progressStyle = {
+            width: percentComplete 
+        }
+        return (
+            <div className="goal-progress">
+                <h3>Total Progress: {percentComplete}</h3>
+                <div className="progress-container">
+                    <div className="progress-bar" style={progressStyle} />
+                </div>
+            </div>
+        );
+    }
+
+});
+
     views.MyDash = React.createBackboneClass({
 
         getGoal: function(weeks, model, index) {
-            return <Progress key={index} model={model} weeks={weeks}/>;
+            return <SingleGoalProgress key={index} model={model} weeks={weeks}/>;
+        },
+
+        getTotal: function(weeks) {
+            return <TotalProgress collection={this.props.collection} weeks={weeks} />
         },
 
         render: function() {
@@ -69,9 +145,7 @@
                         <button className="button">Week 5</button>
                     </div>
                     <article className="all-goals">
-                        <h3>Total Progress</h3>
-                        <span className="completion-rate completion-rate-lg">45%</span>
-                        <div className="progress-bar progress-bar-lg"></div>
+                        <div>{this.getTotal(weeks)}</div>
                         <hr />
                         <h3>Individual Goals</h3>
                         <div>{this.props.collection.map(this.getGoal.bind(this, weeks))}</div>

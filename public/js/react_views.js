@@ -461,7 +461,7 @@ views.Select = Select;
 
 })(app.views);
 (function(views){
-    var Progress = React.createBackboneClass({
+    var SingleGoalProgress = React.createBackboneClass({
         // getGoalDetail: function(goal_id, e) {
         //     e.preventDefault();
         //     app.trigger("get:goal:detail", goal_id);
@@ -477,15 +477,21 @@ views.Select = Select;
                 return a + b;
             });
         },
+
+        getPercentComplete: function(currentProgress, totalGoal) {
+            var percentComplete = ((currentProgress / totalGoal) * 100).toFixed(1);
+            return percentComplete + "%";
+        },
+
         render: function() {
             var goal = this.props.model.toJSON();
             var entries = goal.entries;
 
-            var currentProgress = this.getCurrentTotal(entries);
             var totalGoal = goal.number * this.props.weeks;
-            var percentComplete = ((currentProgress / totalGoal) * 100).toFixed(1);
-            percentComplete = percentComplete + "%";
-            var unit = goal.unit;
+            var currentProgress = this.getCurrentTotal(entries);
+
+            var percentComplete = this.getPercentComplete(currentProgress, totalGoal);
+
             var goalName = goal.name + " " + 
                        goal.number + " " + 
                        goal.unit + " " + 
@@ -499,17 +505,87 @@ views.Select = Select;
                     React.createElement("div", {className: "progress-container"}, 
                         React.createElement("div", {className: "progress-bar", style: progressStyle})
                     ), 
-                    React.createElement("span", null, currentProgress, " ", unit, " out of ", totalGoal, " ")
+                    React.createElement("span", null, currentProgress, " ", goal.unit, " out of ", totalGoal, " ")
                 )
             );
         }
 
     });
 
+
+var TotalProgress = React.createBackboneClass({
+
+    getCurrentTotal: function(entries) {
+        var entryNumbers = [];
+        entryNumbers = _.flatten(entries);
+
+        entryNumbers = _.map(entryNumbers, function(obj) {
+            return parseInt(obj.number);
+        });
+
+        return _.reduce(entryNumbers, function(a, b) {
+            return a + b;
+        });
+
+    },
+
+    getTotal: function(goals) {
+
+        var goalNumbers = _.map(goals, function(goal) {
+            return parseInt(goal.number);
+        });
+
+        return _.reduce(goalNumbers, function(a, b) {
+            return a + b;
+        });
+
+    },
+
+    getPercentComplete: function(currentProgress, endAmount) {
+        var percentComplete = ((currentProgress / endAmount) * 100).toFixed(1);
+        return percentComplete + "%";
+    },
+
+    render: function() {
+        var goals = this.props.collection.toJSON();
+
+        var entries = goals.map(function(goal) {
+            return goal.entries;
+        });
+
+
+        var currentProgress = this.getCurrentTotal(entries);
+
+        var totalGoals = this.getTotal(goals);
+
+        console.log("weeks", this.props.weeks);
+        var endAmount = totalGoals * this.props.weeks;
+
+        var percentComplete = this.getPercentComplete(currentProgress, endAmount);
+
+        var progressStyle = {
+            width: percentComplete 
+        }
+        return (
+            React.createElement("div", {className: "goal-progress"}, 
+                React.createElement("h3", null, "Total Progress: ", percentComplete), 
+                React.createElement("div", {className: "progress-container"}, 
+                    React.createElement("div", {className: "progress-bar", style: progressStyle})
+                )
+            )
+        );
+    }
+
+});
+
     views.MyDash = React.createBackboneClass({
 
         getGoal: function(weeks, model, index) {
-            return React.createElement(Progress, {key: index, model: model, weeks: weeks});
+            return React.createElement(SingleGoalProgress, {key: index, model: model, weeks: weeks});
+        },
+
+        getTotal: function(weeks) {
+            return React.createElement(TotalProgress, {collection: this.props.collection, weeks: weeks})
         },
 
         render: function() {
@@ -531,9 +607,7 @@ views.Select = Select;
                         React.createElement("button", {className: "button"}, "Week 5")
                     ), 
                     React.createElement("article", {className: "all-goals"}, 
-                        React.createElement("h3", null, "Total Progress"), 
-                        React.createElement("span", {className: "completion-rate completion-rate-lg"}, "45%"), 
-                        React.createElement("div", {className: "progress-bar progress-bar-lg"}), 
+                        React.createElement("div", null, this.getTotal(weeks)), 
                         React.createElement("hr", null), 
                         React.createElement("h3", null, "Individual Goals"), 
                         React.createElement("div", null, this.props.collection.map(this.getGoal.bind(this, weeks)))
