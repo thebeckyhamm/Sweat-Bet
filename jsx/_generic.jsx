@@ -36,7 +36,7 @@ var Select = React.createClass({
             var concatName = option["name"] + " " +  
                              option["number"] + " " +
                              option["unit"] + " " +
-                             option["amountOfTime"];
+                             "per week";
         }
         var name = concatName || option;
         //console.log(name, value);

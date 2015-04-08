@@ -18,6 +18,10 @@ app.Router = Backbone.Router.extend({
 
         app.teams.fetch();
 
+        app.users = new app.models.Users();
+
+        app.users.fetch();
+
         app.goals = new app.models.Goals(null, {
             user: app.currentUser
         });
@@ -26,7 +30,9 @@ app.Router = Backbone.Router.extend({
         React.render(
             React.createElement(app.views.Header, {
                 model: app.currentUser,
-                goToGoals: this.showMyDash.bind(this)
+                goToGoals: this.showMyDash.bind(this),
+                goToTeamDashboard: this.showMain.bind(this)
+
             }),
             document.querySelector(".header")
         );
@@ -35,6 +41,13 @@ app.Router = Backbone.Router.extend({
             React.createElement(app.views.LandingPage),
             document.querySelector(".main-wrapper")
         );
+
+
+        this.listenTo(app, "fetch:users:collection", function(goalInfo) {
+            app.users.fetch().done(function(){
+                this.showMain();
+            }.bind(this)); 
+        });
 
 
 
@@ -165,8 +178,8 @@ app.Router = Backbone.Router.extend({
         this.navigate("main-dashboard");
         React.render(
             React.createElement(app.views.MainDash, {
-                model: app.currentUser,
-                getTeamName: this.getTeamName.bind(this),
+                collection: app.users,
+                getTeam: this.getTeam,
                 addGoal: this.showGoalForm.bind(this),
                 addEntry: this.showEntryForm.bind(this)
             }),

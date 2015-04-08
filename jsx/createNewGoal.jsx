@@ -22,6 +22,7 @@
             return (
 
                 <form onSubmit={this.onSubmit} className="goal-form">
+                    <p>Set up your weekly goal.</p>
                     <views.Input 
                         label="Goal Name" 
                         type="text" 
@@ -35,13 +36,9 @@
                         placeholder="5"
                         required="required" />  
                     <views.Select label="Unit" 
-                                options={this.units} 
-                                name="unit"
-                                defaultValue="times" />
-                    <views.Select label="Time Interval" 
-                                options={this.time}
-                                name="amountOfTime"
-                                defaultValue="per week" />
+                        options={this.units} 
+                        name="unit"
+                        defaultValue="times" />
                     <div className="text-right"><button className="button button-primary">Add Goal</button></div>
                     
                 </form>

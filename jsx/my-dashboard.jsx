@@ -51,7 +51,7 @@
             var goalName = goal.name + " " + 
                        goal.number + " " + 
                        goal.unit + " " + 
-                       goal.amountOfTime;
+                       "per week";
 
             var weekLine = {
                 marginLeft: weeksComplete 
@@ -102,6 +102,7 @@ var TotalProgress = React.createBackboneClass({
 
     getPercentComplete: function(progress, end) {
         var percentComplete = ((progress / end) * 100).toFixed(1);
+
         return percentComplete + "%";
     },
 
@@ -112,7 +113,7 @@ var TotalProgress = React.createBackboneClass({
         var entries = goals.map(function(goal) {
             return goal.entries;
         });
-        
+
         var existingEntries = _.filter(entries, function(entry) {
             return entry.length;
         });
@@ -134,7 +135,6 @@ var TotalProgress = React.createBackboneClass({
         else {
             var currentProgress = this.getCurrentTotal(entries);
             var percentComplete = this.getPercentComplete(currentProgress, endAmount);
-
             var progressStyle = {
                 width: percentComplete 
             }  
