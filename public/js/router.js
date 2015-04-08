@@ -135,6 +135,16 @@ app.Router = Backbone.Router.extend({
             newEntry.save(null, {
                 success: function() {
                     this.showMyDash();
+
+                    var goal = new app.models.Goal({
+                        _id: newEntry.get("goal_id")
+                    });
+
+                    goal.fetch().done(function(){
+                        var entries_sum = goal.get("entries_sum") || 0;
+                        entries_sum += parseInt(newEntry.get("number"));
+                        goal.save("entries_sum", entries_sum);
+                    });
                 }.bind(this)  
             });
         });

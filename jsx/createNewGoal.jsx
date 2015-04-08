@@ -13,7 +13,7 @@
             });
             var containsFalse = _.contains(states, false);
             if (!containsFalse) {
-                //app.trigger("add:goal", goalItems);   
+                console.log(goalItems);
                 app.trigger("create:goals:collection", goalItems);
             }
         },

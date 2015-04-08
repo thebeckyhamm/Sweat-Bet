@@ -25,22 +25,34 @@
             var goal = this.props.model.toJSON();
             var entries = goal.entries;
 
-            var totalWeeks = this.props.team.weeks;
-
+            // get the end of the competition number
             var totalGoal = goal.number * this.props.team.weeks;
-            var currentProgress = this.getCurrentTotal(entries);
 
-            var percentComplete = this.getPercentComplete(currentProgress, totalGoal);
+            // if the entries object is empty
+            if (_.isEmpty(entries)) {
+                var currentProgress = 0;
+                var percentComplete = "0%";
+                var progressStyle = {
+                    width: percentComplete 
+                }    
+            }
+            else {
+                var currentProgress = this.getCurrentTotal(entries);
+                var percentComplete = this.getPercentComplete(currentProgress, totalGoal);
+                var progressStyle = {
+                    width: percentComplete 
+                }  
+            }
+
+            // calculate the marker for how far along we are in the competition
+            var totalWeeks = this.props.team.weeks;
             var weeksComplete = this.getPercentComplete(this.props.week, totalWeeks);
 
             var goalName = goal.name + " " + 
                        goal.number + " " + 
                        goal.unit + " " + 
                        goal.amountOfTime;
-                       
-            var progressStyle = {
-                width: percentComplete 
-            }
+
             var weekLine = {
                 marginLeft: weeksComplete 
             }
@@ -95,22 +107,40 @@ var TotalProgress = React.createBackboneClass({
 
     render: function() {
         var goals = this.props.collection.toJSON();
+
+
         var entries = goals.map(function(goal) {
             return goal.entries;
         });
+        
+        var existingEntries = _.filter(entries, function(entry) {
+            return entry.length;
+        });
 
-        var currentProgress = this.getCurrentTotal(entries);
         var totalGoals = this.getTotal(goals);
-
         var totalWeeks = this.props.team.weeks;
-        var endAmount = totalGoals * totalWeeks;
 
-        var percentComplete = this.getPercentComplete(currentProgress, endAmount);
+        var endAmount = totalGoals * totalWeeks;
         var weeksComplete = this.getPercentComplete(this.props.week, totalWeeks);
 
-        var progressStyle = {
-            width: percentComplete 
+
+        if (_.isEmpty(existingEntries)) {
+          var currentProgress = 0;
+          var percentComplete = "0%";
+          var progressStyle = {
+              width: percentComplete 
+          }    
         }
+        else {
+            var currentProgress = this.getCurrentTotal(entries);
+            var percentComplete = this.getPercentComplete(currentProgress, endAmount);
+
+            var progressStyle = {
+                width: percentComplete 
+            }  
+        }
+
+
         var weekLine = {
             marginLeft: weeksComplete 
         }
