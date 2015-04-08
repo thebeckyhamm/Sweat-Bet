@@ -633,9 +633,9 @@ views.Select = Select;
 
 var TotalProgress = React.createBackboneClass({
 
-    getCurrentTotal: function(entries) {
+    getCurrentTotal: function(existingEntries) {
         var entryNumbers = [];
-        entryNumbers = _.flatten(entries);
+        entryNumbers = _.flatten(existingEntries);
 
         entryNumbers = _.map(entryNumbers, function(obj) {
             return parseInt(obj.number);
@@ -674,7 +674,7 @@ var TotalProgress = React.createBackboneClass({
         });
 
         var existingEntries = _.filter(entries, function(entry) {
-            return entry.length;
+            return !_.isEmpty(entry);
         });
 
         var totalGoals = this.getTotal(goals);
@@ -692,7 +692,7 @@ var TotalProgress = React.createBackboneClass({
           }    
         }
         else {
-            var currentProgress = this.getCurrentTotal(entries);
+            var currentProgress = this.getCurrentTotal(existingEntries);
             var percentComplete = this.getPercentComplete(currentProgress, endAmount);
             var progressStyle = {
                 width: percentComplete 
