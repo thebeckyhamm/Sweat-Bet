@@ -171,7 +171,7 @@ app.Router = Backbone.Router.extend({
                 collection: app.goals,
                 addGoal: this.showGoalForm.bind(this),
                 addEntry: this.showEntryForm.bind(this),
-                getWeeks: this.getNumWeeks
+                getTeam: this.getTeam
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -247,12 +247,10 @@ app.Router = Backbone.Router.extend({
         });
     },
 
-    getNumWeeks: function() {
+    getTeam: function() {
         var teamId = app.currentUser.get("team_id");
         var team = app.teams.get(teamId);
-        var weeks = team.get("weeks");
-        return weeks;
-
+        return team;
     },
 
     getGoalNames: function() {

@@ -25,7 +25,7 @@
             var goal = this.props.model.toJSON();
             var entries = goal.entries;
 
-            var totalGoal = goal.number * this.props.weeks;
+            var totalGoal = goal.number * this.props.team.weeks;
             var currentProgress = this.getCurrentTotal(entries);
 
             var percentComplete = this.getPercentComplete(currentProgress, totalGoal);
@@ -96,8 +96,8 @@ var TotalProgress = React.createBackboneClass({
 
         var totalGoals = this.getTotal(goals);
 
-        console.log("weeks", this.props.weeks);
-        var endAmount = totalGoals * this.props.weeks;
+        var totalWeeks = this.props.team.weeks;
+        var endAmount = totalGoals * totalWeeks;
 
         var percentComplete = this.getPercentComplete(currentProgress, endAmount);
 
@@ -118,16 +118,31 @@ var TotalProgress = React.createBackboneClass({
 
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(weeks, model, index) {
-            return <SingleGoalProgress key={index} model={model} weeks={weeks}/>;
+        getGoal: function(team, model, index) {
+            return <SingleGoalProgress key={index} model={model} team={team}/>;
         },
 
-        getTotal: function(weeks) {
-            return <TotalProgress collection={this.props.collection} weeks={weeks} />
+        getTotal: function(team) {
+            return <TotalProgress collection={this.props.collection} team={team} />
+        },
+
+        getCurrentWeek: function() {
+
         },
 
         render: function() {
-            var weeks = this.props.getWeeks();
+            var team = this.props.getTeam();
+            team = team.toJSON();
+
+            var start_date = moment(team.start_date);
+            var now = moment();
+
+            var daysFromStart = now.diff(start_date, 'days');
+
+            var currentWeek = Math.ceil(daysFromStart / 7);
+
+
+
             return (
                 <section className="main">
                     <header className="header-main">
@@ -142,13 +157,13 @@ var TotalProgress = React.createBackboneClass({
                     </header>
                     <div className="results-toggle">
                         <button className="button button-secondary">To Date</button>
-                        <button className="button">Week 5</button>
+                        <button className="button">Week {currentWeek}</button>
                     </div>
                     <article className="all-goals">
-                        <div>{this.getTotal(weeks)}</div>
+                        <div>{this.getTotal(team)}</div>
                         <hr />
                         <h3>Individual Goals</h3>
-                        <div>{this.props.collection.map(this.getGoal.bind(this, weeks))}</div>
+                        <div>{this.props.collection.map(this.getGoal.bind(this, team))}</div>
                     </article>
                 </section>
             );
