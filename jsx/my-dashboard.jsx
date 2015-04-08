@@ -175,7 +175,7 @@ var TotalProgress = React.createBackboneClass({
         },
 
         goalButton: function(daysFromStart) {
-            if (daysFromStart <= 0) {
+            if (daysFromStart < 0) {
                 return (
                     <button 
                         className="button button-primary"
@@ -183,8 +183,15 @@ var TotalProgress = React.createBackboneClass({
                     </button>
                 )
             }
-            else {
-                return;
+        },
+
+        entryButton: function(daysFromStart) {
+            if (daysFromStart >= 0) {
+                return (
+                    <button className="button button-primary"
+                        onClick={this.props.addEntry}>+ Entry
+                    </button>
+                )
             }
         },
 
@@ -206,9 +213,7 @@ var TotalProgress = React.createBackboneClass({
                     <header className="header-main">
                         <h2>My Goals</h2>
                         {this.goalButton(daysFromStart)}
-                        <button className="button button-primary"
-                            onClick={this.props.addEntry}>+ Entry
-                        </button>
+                        {this.entryButton(daysFromStart)}
                     </header>
                     <div className="results-toggle">
                         <button className="button button-secondary">To Date</button>

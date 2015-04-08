@@ -530,6 +530,16 @@ views.Select = Select;
             }
         },
 
+        entryButton: function(daysFromStart) {
+            if (daysFromStart >= 0) {
+                return (
+                    React.createElement("button", {className: "button button-primary", 
+                        onClick: this.props.addEntry}, "+ Entry"
+                    )
+                )
+            }
+        },
+
         render: function() {
             var team = this.props.getTeam();
             team = team.toJSON();
@@ -537,11 +547,11 @@ views.Select = Select;
             var start_date = moment(team.start_date);
             var now = moment();
 
+            var end_date = moment(team.start_date).add((team.weeks * 7), "days").calendar();
+
             var daysFromStart = now.diff(start_date, 'days');
-            console.log(daysFromStart);
 
             var currentWeek = Math.ceil(daysFromStart / 7);
-
             var totalPot = team.number * this.props.collection.length;
 
             return (
@@ -549,9 +559,7 @@ views.Select = Select;
                     React.createElement("header", {className: "header-main"}, 
                         React.createElement("h2", null, team.name), 
                         this.goalButton(daysFromStart), 
-                        React.createElement("button", {className: "button button-primary", 
-                            onClick: this.props.addEntry}, "+ Entry"
-                        )
+                        this.entryButton(daysFromStart)
                     ), 
                     React.createElement("span", null, "Total Pot: $", totalPot), 
 
@@ -750,7 +758,7 @@ var TotalProgress = React.createBackboneClass({
         },
 
         goalButton: function(daysFromStart) {
-            if (daysFromStart <= 0) {
+            if (daysFromStart < 0) {
                 return (
                     React.createElement("button", {
                         className: "button button-primary", 
@@ -758,8 +766,15 @@ var TotalProgress = React.createBackboneClass({
                     )
                 )
             }
-            else {
-                return;
+        },
+
+        entryButton: function(daysFromStart) {
+            if (daysFromStart >= 0) {
+                return (
+                    React.createElement("button", {className: "button button-primary", 
+                        onClick: this.props.addEntry}, "+ Entry"
+                    )
+                )
             }
         },
 
@@ -781,9 +796,7 @@ var TotalProgress = React.createBackboneClass({
                     React.createElement("header", {className: "header-main"}, 
                         React.createElement("h2", null, "My Goals"), 
                         this.goalButton(daysFromStart), 
-                        React.createElement("button", {className: "button button-primary", 
-                            onClick: this.props.addEntry}, "+ Entry"
-                        )
+                        this.entryButton(daysFromStart)
                     ), 
                     React.createElement("div", {className: "results-toggle"}, 
                         React.createElement("button", {className: "button button-secondary"}, "To Date"), 
