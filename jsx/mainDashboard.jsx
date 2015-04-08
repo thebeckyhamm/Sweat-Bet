@@ -89,6 +89,20 @@
                     week={currentWeek} />
         },
 
+        goalButton: function(daysFromStart) {
+            if (daysFromStart <= 0) {
+                return (
+                    <button 
+                        className="button button-primary"
+                        onClick={this.props.addGoal}>+ Goal
+                    </button>
+                )
+            }
+            else {
+                return;
+            }
+        },
+
         render: function() {
             var team = this.props.getTeam();
             team = team.toJSON();
@@ -97,21 +111,23 @@
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
+            console.log(daysFromStart);
 
             var currentWeek = Math.ceil(daysFromStart / 7);
+
+            var totalPot = team.number * this.props.collection.length;
 
             return (
                 <section className="main">
                     <header className="header-main">
                         <h2>{team.name}</h2>
-                        <button 
-                            className="button button-primary"
-                            onClick={this.props.addGoal}>+ Goal
-                        </button>
+                        {this.goalButton(daysFromStart)}
                         <button className="button button-primary"
                             onClick={this.props.addEntry}>+ Entry
                         </button>
                     </header>
+                    <span>Total Pot: ${totalPot}</span>
+
                     <div className="results-toggle">
                         <button className="button button-secondary">To Date</button>
                         <button className="button">Week {currentWeek}</button>

@@ -174,6 +174,20 @@ var TotalProgress = React.createBackboneClass({
                     week={currentWeek} />
         },
 
+        goalButton: function(daysFromStart) {
+            if (daysFromStart <= 0) {
+                return (
+                    <button 
+                        className="button button-primary"
+                        onClick={this.props.addGoal}>+ Goal
+                    </button>
+                )
+            }
+            else {
+                return;
+            }
+        },
+
         render: function() {
             var team = this.props.getTeam();
             team = team.toJSON();
@@ -191,10 +205,7 @@ var TotalProgress = React.createBackboneClass({
                 <section className="main">
                     <header className="header-main">
                         <h2>My Goals</h2>
-                        <button 
-                            className="button button-primary"
-                            onClick={this.props.addGoal}>+ Goal
-                        </button>
+                        {this.goalButton(daysFromStart)}
                         <button className="button button-primary"
                             onClick={this.props.addEntry}>+ Entry
                         </button>
