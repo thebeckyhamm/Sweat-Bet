@@ -327,10 +327,13 @@ views.Select = Select;
     views.Header = React.createClass({displayName: "Header", 
         goToGoals: function() {
             app.trigger("fetch:goals:collection");
+            this.setState({activeMenu: ""});
         },
 
         goToTeamDashboard: function() {
             app.trigger("fetch:users:collection");
+            this.setState({activeMenu: ""});
+
         },
 
         getInitialState: function() {

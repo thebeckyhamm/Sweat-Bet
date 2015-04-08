@@ -28,10 +28,13 @@
     views.Header = React.createClass({ 
         goToGoals: function() {
             app.trigger("fetch:goals:collection");
+            this.setState({activeMenu: ""});
         },
 
         goToTeamDashboard: function() {
             app.trigger("fetch:users:collection");
+            this.setState({activeMenu: ""});
+
         },
 
         getInitialState: function() {

@@ -36,6 +36,7 @@ app = {
                 console.log("user exists", data);
                 app.currentUser.set(data);
                 app.currentUser.save({
+                    name: twitterProf.name,
                     twitter_profile: twitterProf
                 });
               } 
