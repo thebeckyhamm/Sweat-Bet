@@ -1,11 +1,12 @@
 .menu-wrapper {
-    display: none;
-    @include bp($kid-bear) {
-        display: block;
-    }
-    &.active {
-        display: block;
-    }
+    display: block;
+    // display: none;
+    // @include bp($kid-bear) {
+    //     display: block;
+    // }
+    // &.active {
+    //     display: block;
+    // }
 }
 
 .main-menu {

@@ -189,6 +189,7 @@ app.Router = Backbone.Router.extend({
                 model: app.currentUser,
                 goToGoals: this.showMyDash.bind(this),
                 goToTeamDashboard: this.showMain.bind(this),
+                setActiveMenu: this.setActiveMenu
             }),
             document.querySelector(".header")
         );

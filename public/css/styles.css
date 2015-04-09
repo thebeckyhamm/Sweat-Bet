@@ -453,12 +453,7 @@ ul li.entry-lg {
   padding: .25rem; }
 
 .menu-wrapper {
-  display: none; }
-  @media all and (min-width: 30em) {
-    .menu-wrapper {
-      display: block; } }
-  .menu-wrapper.active {
-    display: block; }
+  display: block; }
 
 .main-menu ul {
   background-color: #1EB848;

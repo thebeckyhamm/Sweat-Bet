@@ -370,17 +370,17 @@ views.Select = Select;
                 React.createElement("div", {className: "main-menu"}, 
                     React.createElement("ul", null, 
                         React.createElement("li", null, 
-                            React.createElement("a", {href: "#", onClick: this.props.goToTeamDashboard}, "Team Dashboard")
+                            React.createElement("a", {href: "#", onClick: this.goToTeamDashboard}, "Team Dashboard")
                         ), 
                         React.createElement("li", null, 
-                            React.createElement("a", {href: "#", onClick: this.props.goToGoals}, "My Goals")
+                            React.createElement("a", {href: "#", onClick: this.goToGoals}, "My Goals")
                         ), 
                         React.createElement("li", null, 
                             React.createElement("a", {href: "#"}, "My Profile")
                         ), 
                         React.createElement("li", {className: "entry-lg"}, 
-                            this.goalButton(this.props.daysFromStart), 
-                            this.entryButton(this.props.daysFromStart)
+                            this.goalButton(daysFromStart), 
+                            this.entryButton(daysFromStart)
                         )
 
                     )
@@ -393,10 +393,11 @@ views.Select = Select;
     });
 
     views.Header = React.createClass({displayName: "Header", 
+        // setActiveMenu: function() {
+        //     alert("yup");
+        // },
 
         showMenuButton: function() {
-            console.log("attributes", app.currentUser.attributes);
-            console.log(!_.isEmpty( app.currentUser.attributes ));
             if (!_.isEmpty( app.currentUser.attributes )) {
               return React.createElement("div", {className: "button button-menu", onClick: this.setActiveMenu}, "Menu")
             }

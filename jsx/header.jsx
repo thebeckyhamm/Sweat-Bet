@@ -69,17 +69,17 @@
                 <div className="main-menu">
                     <ul>
                         <li>
-                            <a href="#" onClick={this.props.goToTeamDashboard}>Team Dashboard</a>
+                            <a href="#" onClick={this.goToTeamDashboard}>Team Dashboard</a>
                         </li>
                         <li>
-                            <a href="#" onClick={this.props.goToGoals}>My Goals</a>
+                            <a href="#" onClick={this.goToGoals}>My Goals</a>
                         </li>
                         <li>
                             <a href="#">My Profile</a>
                         </li>
                         <li className="entry-lg">
-                            {this.goalButton(this.props.daysFromStart)}
-                            {this.entryButton(this.props.daysFromStart)}
+                            {this.goalButton(daysFromStart)}
+                            {this.entryButton(daysFromStart)}
                         </li>
 
                     </ul>
@@ -92,10 +92,11 @@
     });
 
     views.Header = React.createClass({ 
+        // setActiveMenu: function() {
+        //     alert("yup");
+        // },
 
         showMenuButton: function() {
-            console.log("attributes", app.currentUser.attributes);
-            console.log(!_.isEmpty( app.currentUser.attributes ));
             if (!_.isEmpty( app.currentUser.attributes )) {
               return <div className="button button-menu" onClick={this.setActiveMenu}>Menu</div>
             }
@@ -114,7 +115,7 @@
                         <h1 className="logo">SweatBet</h1>
                         <div className="header-admin">
                             <views.LogInOut model={this.props.model} />
-                        </div>
+                        </div>  
                     </div>
                 </div>
 
