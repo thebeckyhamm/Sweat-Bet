@@ -17,17 +17,7 @@ app.Router = Backbone.Router.extend({
         app.teams = new app.models.Teams();
 
         app.teams.fetch().done(function() {
-            if (app.currentUser) {
-                var team = app.currentUser.get("team_id");   
-            }
-            React.render(
-                React.createElement(app.views.Header, {
-                    model: app.currentUser,
-                    goToGoals: this.showMyDash.bind(this),
-                    goToTeamDashboard: this.showMain.bind(this),
-                }),
-                document.querySelector(".header")
-            );
+            this.showHeader();
         }.bind(this));
 
         app.users = new app.models.Users();
@@ -67,6 +57,7 @@ app.Router = Backbone.Router.extend({
         });
 
         this.listenTo(app, "sign:out", function(){
+            this.showHeader();
             this.showLandingPage();
         });
 
@@ -78,6 +69,7 @@ app.Router = Backbone.Router.extend({
         //------ --------------- ------//
 
         this.listenTo(app, "teams:fetched", function() {
+            this.showHeader();
             // check if user has a team id
             if (app.currentUser.get("team_id")) {
                 var team = app.currentUser.get("team_id");
@@ -188,6 +180,17 @@ app.Router = Backbone.Router.extend({
         React.render(
             React.createElement(app.views.LandingPage),
             document.querySelector(".main-wrapper")
+        );
+    },
+
+    showHeader: function() {
+        React.render(
+            React.createElement(app.views.Header, {
+                model: app.currentUser,
+                goToGoals: this.showMyDash.bind(this),
+                goToTeamDashboard: this.showMain.bind(this),
+            }),
+            document.querySelector(".header")
         );
     },
 

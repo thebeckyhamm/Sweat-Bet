@@ -5,13 +5,10 @@
         render: function() {
             return (
                 <section className="main">
-                    <header className="header-main">
-                        <h2>Name TBD</h2>
-                    </header>
                     <article>
-                        <h3>Beat your friends</h3>
-                        <h3>Get in shape</h3>
-                        <h3>Win $$</h3>
+                        <h2>Beat your friends</h2>
+                        <h2>Get in shape</h2>
+                        <h2>Win $$</h2>
                     </article>
                 </section> 
             );

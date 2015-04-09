@@ -394,18 +394,24 @@ views.Select = Select;
 
     views.Header = React.createClass({displayName: "Header", 
 
-
-
-
-
-
+        showMenuButton: function() {
+            console.log("attributes", app.currentUser.attributes);
+            console.log(!_.isEmpty( app.currentUser.attributes ));
+            if (!_.isEmpty( app.currentUser.attributes )) {
+              return React.createElement("div", {className: "button button-menu", onClick: this.setActiveMenu}, "Menu")
+            }
+            else {
+                return;
+            }
+        },
 
         render: function() {
+            console.log("fromt header", app.currentUser);
 
             return (
                 React.createElement("div", {className: "header-wrapper"}, 
                     React.createElement("div", {className: "header-bar"}, 
-                        React.createElement("div", {className: "button button-menu", onClick: this.setActiveMenu}, "Menu"), 
+                        this.showMenuButton(), 
                         React.createElement("h1", {className: "logo"}, "SweatBet"), 
                         React.createElement("div", {className: "header-admin"}, 
                             React.createElement(views.LogInOut, {model: this.props.model})
@@ -453,13 +459,10 @@ views.Select = Select;
         render: function() {
             return (
                 React.createElement("section", {className: "main"}, 
-                    React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, "Name TBD")
-                    ), 
                     React.createElement("article", null, 
-                        React.createElement("h3", null, "Beat your friends"), 
-                        React.createElement("h3", null, "Get in shape"), 
-                        React.createElement("h3", null, "Win $$")
+                        React.createElement("h2", null, "Beat your friends"), 
+                        React.createElement("h2", null, "Get in shape"), 
+                        React.createElement("h2", null, "Win $$")
                     )
                 ) 
             );

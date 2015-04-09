@@ -93,18 +93,24 @@
 
     views.Header = React.createClass({ 
 
-
-
-
-
-
+        showMenuButton: function() {
+            console.log("attributes", app.currentUser.attributes);
+            console.log(!_.isEmpty( app.currentUser.attributes ));
+            if (!_.isEmpty( app.currentUser.attributes )) {
+              return <div className="button button-menu" onClick={this.setActiveMenu}>Menu</div>
+            }
+            else {
+                return;
+            }
+        },
 
         render: function() {
+            console.log("fromt header", app.currentUser);
 
             return (
                 <div className="header-wrapper">
                     <div className="header-bar">
-                        <div className="button button-menu" onClick={this.setActiveMenu}>Menu</div>
+                        {this.showMenuButton()}
                         <h1 className="logo">SweatBet</h1>
                         <div className="header-admin">
                             <views.LogInOut model={this.props.model} />
