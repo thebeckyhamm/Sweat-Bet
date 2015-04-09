@@ -45,11 +45,12 @@
                         options={this.getGoalNames()} 
                         name="goal_id" />
                     <views.Input 
-                        label="Number Completed" 
+                        label="Completed (#)" 
                         type="number" 
                         name="number"
                         placeholder="5"
                         required="required" />
+                    <div className="field">
                     <label>Date Completed</label> 
                     <DatePicker 
                         selected={this.state.start_date} 
@@ -57,6 +58,7 @@
                         placeholderText="Click to select a date" 
                         maxDate={moment()}
                         weekStart="0" />  
+                    </div>
                     <div className="text-right">
                         <button className="button button-primary">Add Entry</button>
                     </div>

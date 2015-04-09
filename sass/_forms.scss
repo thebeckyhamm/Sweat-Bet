@@ -1,0 +1,78 @@
+form {
+    background-color: $dark-gray;
+    margin: 1rem auto;
+    padding: 1rem;
+    width: 95%;
+    @include bp($kid-bear) {
+        width: 75%;
+    }
+    .button {
+        font-family: $heading-font;
+        font-size: 1.5rem;
+    }
+}
+
+.field {
+    margin-bottom: .5rem;
+    @include bp($kid-bear) {
+        align-items: center;
+        display: flex;  
+    }
+}
+
+.field label {
+    color: white;
+    display: block;
+    font-size: 1.3rem;
+    padding-right: .5rem;
+    width: 100%;
+    @include bp($kid-bear) {
+        display: inline-block;
+        text-align: right;
+        width: 50%;
+    }
+}
+
+.field input, .field select {
+    background-color: $gray;
+    border: none;
+    border-bottom: 2px solid $green;
+    color: white;
+    display: inline-block;
+    font-size: 1rem;
+    height: 2.5rem;
+    padding: .5em;
+    width: 100%;
+    @include bp($kid-bear) {
+        float: right;
+        width: 75%;
+    }
+}
+
+.field select {
+    color: white;
+    -webkit-appearance: none;
+    border-radius: 0;
+    position: relative;
+}
+
+.field ::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, .5);
+}
+
+.tether-target, .field > div {
+    width: 100%;
+    input {
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
+    }
+    input:focus {
+        border-color: $green;
+        box-shadow: none;
+        outline: inherit;
+    }
+    @include bp($kid-bear) {
+        width: 75%;
+    }
+}

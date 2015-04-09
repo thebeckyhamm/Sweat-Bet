@@ -117,18 +117,20 @@ views.Select = Select;
                         options: this.getGoalNames(), 
                         name: "goal_id"}), 
                     React.createElement(views.Input, {
-                        label: "Number Completed", 
+                        label: "Completed (#)", 
                         type: "number", 
                         name: "number", 
                         placeholder: "5", 
                         required: "required"}), 
+                    React.createElement("div", {className: "field"}, 
                     React.createElement("label", null, "Date Completed"), 
                     React.createElement(DatePicker, {
                         selected: this.state.start_date, 
                         onChange: this.handleStartDateChange, 
                         placeholderText: "Click to select a date", 
                         maxDate: moment(), 
-                        weekStart: "0"}), 
+                        weekStart: "0"})
+                    ), 
                     React.createElement("div", {className: "text-right"}, 
                         React.createElement("button", {className: "button button-primary"}, "Add Entry")
                     )

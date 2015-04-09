@@ -335,6 +335,9 @@ td, th {
   .order-1 {
     order: 10; } }
 
+.text-right {
+  text-align: right; }
+
 @font-face {
   font-family: 'clearSansMedium';
   src: url('../fonts/ClearSans-Medium-webfont.eot');
@@ -590,6 +593,75 @@ li.entry-lg {
   @media all and (min-width: 30em) {
     .all-goals {
       width: 60%; } }
+
+form {
+  background-color: #2E3234;
+  margin: 1rem auto;
+  padding: 1rem;
+  width: 95%; }
+  @media all and (min-width: 30em) {
+    form {
+      width: 75%; } }
+  form .button {
+    font-family: "League Gothic", Helvetica, Arial, sans-serif;
+    font-size: 1.5rem; }
+
+.field {
+  margin-bottom: .5rem; }
+  @media all and (min-width: 30em) {
+    .field {
+      align-items: center;
+      display: flex; } }
+
+.field label {
+  color: white;
+  display: block;
+  font-size: 1.3rem;
+  padding-right: .5rem;
+  width: 100%; }
+  @media all and (min-width: 30em) {
+    .field label {
+      display: inline-block;
+      text-align: right;
+      width: 50%; } }
+
+.field input, .field select {
+  background-color: #949EA9;
+  border: none;
+  border-bottom: 2px solid #1EB848;
+  color: white;
+  display: inline-block;
+  font-size: 1rem;
+  height: 2.5rem;
+  padding: .5em;
+  width: 100%; }
+  @media all and (min-width: 30em) {
+    .field input, .field select {
+      float: right;
+      width: 75%; } }
+
+.field select {
+  color: white;
+  -webkit-appearance: none;
+  border-radius: 0;
+  position: relative; }
+
+.field ::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.5); }
+
+.tether-target, .field > div {
+  width: 100%; }
+  .tether-target input, .field > div input {
+    border-radius: 0;
+    box-shadow: none;
+    width: 100%; }
+  .tether-target input:focus, .field > div input:focus {
+    border-color: #1EB848;
+    box-shadow: none;
+    outline: inherit; }
+  @media all and (min-width: 30em) {
+    .tether-target, .field > div {
+      width: 75%; } }
 
 *, *:after, *:before {
   box-sizing: border-box; }
