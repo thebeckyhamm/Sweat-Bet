@@ -21,3 +21,10 @@
 .text-right {
     text-align: right;
 }
+
+hr {
+    background-color: $gray;
+    border: none;
+    height: 1px;
+    margin: 1rem 0;
+}

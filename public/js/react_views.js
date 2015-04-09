@@ -460,10 +460,10 @@ views.Select = Select;
         render: function() {
             return (
                 React.createElement("section", {className: "main"}, 
-                    React.createElement("article", null, 
-                        React.createElement("h2", null, "Beat your friends"), 
-                        React.createElement("h2", null, "Get in shape"), 
-                        React.createElement("h2", null, "Win $$")
+                    React.createElement("article", {className: "landing-page"}, 
+                        React.createElement("h2", null, "Beat your friends."), 
+                        React.createElement("h2", null, "Get in shape."), 
+                        React.createElement("h2", null, "Win $$.")
                     )
                 ) 
             );
@@ -706,7 +706,7 @@ views.Select = Select;
             }
             return (
                 React.createElement("div", {className: "goal-progress", key: this.props.key}, 
-                    React.createElement("h4", null, goalName, " - ", percentComplete), 
+                    React.createElement("h4", null, goalName), 
                     React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
                         React.createElement("div", {className: "progress-bar", style: progressStyle}), 
                         React.createElement("div", {className: "progress-week", style: weekLine})

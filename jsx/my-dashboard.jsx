@@ -58,7 +58,7 @@
             }
             return (
                 <div className="goal-progress" key={this.props.key}>
-                    <h4>{goalName} - {percentComplete}</h4>
+                    <h4>{goalName}</h4>
                     <div className="progress-container" data-percent={percentComplete}>
                         <div className="progress-bar" style={progressStyle} />
                         <div className="progress-week" style={weekLine} />

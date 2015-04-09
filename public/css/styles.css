@@ -338,6 +338,12 @@ td, th {
 .text-right {
   text-align: right; }
 
+hr {
+  background-color: #949EA9;
+  border: none;
+  height: 1px;
+  margin: 1rem 0; }
+
 @font-face {
   font-family: 'clearSansMedium';
   src: url('../fonts/ClearSans-Medium-webfont.eot');
@@ -515,6 +521,15 @@ ul li.entry-lg {
   padding: .25em .5em;
   text-align: center; }
 
+.landing-page {
+  background-color: #F7C41F;
+  padding: 2rem;
+  margin: 2rem auto;
+  width: 50%; }
+  .landing-page h2 {
+    font-size: 3rem;
+    margin: 0; }
+
 .goal-progress {
   margin-bottom: 1em; }
 
@@ -557,7 +572,8 @@ ul li.entry-lg {
   width: 1px; }
 
 .dashboard {
-  margin: 1rem; }
+  margin: 1rem auto;
+  max-width: 900px; }
   .dashboard > * {
     margin: .5rem; }
 
@@ -568,7 +584,8 @@ ul li.entry-lg {
   justify-content: space-between; }
   @media all and (min-width: 30em) {
     .header-meta {
-      display: block; } }
+      display: block;
+      width: 30%; } }
 
 .team-data > * {
   margin-bottom: 1rem; }
@@ -590,7 +607,7 @@ ul li.entry-lg {
   padding: 1rem; }
   @media all and (min-width: 30em) {
     .all-goals {
-      width: 60%; } }
+      width: 70%; } }
   .all-goals h3 {
     font-family: "clearSans", Helvetica, Arial, sans-serif;
     margin: 0; }
