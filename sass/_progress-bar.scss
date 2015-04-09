@@ -1,19 +1,45 @@
+.all-goals {
+    margin: 1em .5em;
+}
+
+.goal-name {
+    font-family: $body-font;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
 .progress-container {
-    background-color: $dark-blue;
-    height: 2em;
+    background-color: $dark-gray;
+    font-size: 1.5em;
+    height: 1.5em;
+    line-height: 1;
+    margin-bottom: 1rem;
     position: relative;
     width: 100%;
+    &:before {
+        content: attr(data-percent);
+          padding: 0.25em;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 2em;
+          font-family: $heading-font;
+          color: white;
+    }
 }
 
 .progress-bar {
-    background-color: $light-blue;
+    background-color: $green;
     height: 100%;
+    width: 0%;
+
 }
 
 .progress-week {
-    background-color: red;
+    background-color: $rosy;
     height: 100%;
     position: absolute;
     top: 0;
-    width: 2px;
+    width: 1px;
 }
+

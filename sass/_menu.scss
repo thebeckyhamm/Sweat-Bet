@@ -10,7 +10,7 @@
 
 .main-menu {
     ul {
-        background-color: $dark-blue;
+        background-color: $green;
         align-items: center;
         margin: 0;
         padding: 0;
@@ -31,13 +31,14 @@
         color: white;
         display: inline-block;
         font-family: $heading-font;
+        font-size: 1.7rem;
         line-height: 1;
         padding: 1em .5em;
         text-decoration: none;
         text-transform: uppercase;
         width: 100%;
         &:hover {
-            background-color: darken($dark-blue, 10%);
+            background-color: darken($green, 10%);
         }
     }
     .button {

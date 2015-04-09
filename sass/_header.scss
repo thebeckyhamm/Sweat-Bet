@@ -1,12 +1,14 @@
 .header-bar {
-    background-color: $light-blue;
+    background-color: $dark-gray;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: .5rem;
     .button {
-        background-color: $med-blue;
-        border-color: $med-blue;
+        background-color: $faktor;
+        border-color: $faktor;
+        color: $dark-gray;
     }
 }
 

@@ -59,7 +59,7 @@
                 <div className="header-wrapper">
                     <div className="header-bar">
                         <div className="button button-menu" onClick={this.setActiveMenu}>Menu</div>
-                        <h1 className="logo">Final Project</h1>
+                        <h1 className="logo">SweatBet</h1>
                         <div className="header-admin">
                             <views.LogInOut model={this.props.model} />
                         </div>

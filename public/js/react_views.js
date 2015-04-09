@@ -147,7 +147,7 @@ views.Select = Select;
         render: function() {
             return (
                 React.createElement("button", {
-                    className: "button button-secondary", 
+                    className: "button", 
                     onClick: app.twitterLogin.bind(app)}, "Sign In / Up"
                 )  
             );     
@@ -161,7 +161,7 @@ views.Select = Select;
         render: function() {
             return (
                 React.createElement("button", {
-                    className: "button button-secondary", 
+                    className: "button", 
                     onClick: app.logout.bind(app)}, "Sign Out"
                 )  
             )
@@ -358,7 +358,7 @@ views.Select = Select;
                 React.createElement("div", {className: "header-wrapper"}, 
                     React.createElement("div", {className: "header-bar"}, 
                         React.createElement("div", {className: "button button-menu", onClick: this.setActiveMenu}, "Menu"), 
-                        React.createElement("h1", {className: "logo"}, "Final Project"), 
+                        React.createElement("h1", {className: "logo"}, "SweatBet"), 
                         React.createElement("div", {className: "header-admin"}, 
                             React.createElement(views.LogInOut, {model: this.props.model})
                         )
@@ -469,6 +469,7 @@ views.Select = Select;
         },
 
         render: function() {
+            var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
             var user = this.props.model.toJSON();
 
             // use in parentheses beside user name
@@ -488,16 +489,17 @@ views.Select = Select;
             };
 
             var weeksStyle = {
-                marginLeft: weeksComplete 
+                marginLeft: weeksComplete
             };
 
 
             return (
                   React.createElement("div", {className: "goal-progress"}, 
-                      React.createElement("h3", null, user.name, "  ", percentComplete, " along (", goalsCount, " goals)"), 
-                      React.createElement("div", {className: "progress-container"}, 
-                          React.createElement("div", {className: "progress-bar", style: percentStyle}), 
-                          React.createElement("div", {className: "progress-week", style: weeksStyle})
+                        React.createElement("h3", {className: "goal-name"}, user.name, " (", goalsCount, " goals)"), 
+                        React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
+                                React.createElement("div", {className: "progress-bar", style: percentStyle}), 
+                          
+                            React.createElement("div", {className: "progress-week", style: weeksStyle})
                       )
                   )  
             );
@@ -557,15 +559,19 @@ views.Select = Select;
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, team.name), 
-                        this.goalButton(daysFromStart), 
-                        this.entryButton(daysFromStart)
-                    ), 
-                    React.createElement("span", null, "Total Pot: $", totalPot), 
+                        React.createElement("h2", null, "Week ", currentWeek), 
+                        React.createElement("div", {className: "header-meta"}, 
+                            React.createElement("div", null, 
+                                React.createElement("div", null, team.name), 
+                                React.createElement("div", null, "Total Pot: $", totalPot)
+                            ), 
 
-                    React.createElement("div", {className: "results-toggle"}, 
-                        React.createElement("button", {className: "button button-secondary"}, "To Date"), 
-                        React.createElement("button", {className: "button"}, "Week ", currentWeek)
+                            React.createElement("div", null, 
+                                this.goalButton(daysFromStart), 
+                                this.entryButton(daysFromStart)
+                            )
+                        )
+                       
                     ), 
                     React.createElement("article", {className: "all-goals"}, 
                         React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek)))

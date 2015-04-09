@@ -42,6 +42,7 @@
         },
 
         render: function() {
+            var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
             var user = this.props.model.toJSON();
 
             // use in parentheses beside user name
@@ -61,16 +62,17 @@
             };
 
             var weeksStyle = {
-                marginLeft: weeksComplete 
+                marginLeft: weeksComplete
             };
 
 
             return (
                   <div className="goal-progress">
-                      <h3>{user.name}  {percentComplete} along ({goalsCount} goals)</h3>
-                      <div className="progress-container">
-                          <div className="progress-bar" style={percentStyle} />
-                          <div className="progress-week" style={weeksStyle}  />
+                        <h3 className="goal-name">{user.name} ({goalsCount} goals)</h3>
+                        <div className="progress-container" data-percent={percentComplete}>
+                                <div className="progress-bar" style={percentStyle} />
+                          
+                            <div className="progress-week" style={weeksStyle}  />
                       </div>
                   </div>  
             );
@@ -130,16 +132,20 @@
             return (
                 <section className="main">
                     <header className="header-main">
-                        <h2>{team.name}</h2>
-                        {this.goalButton(daysFromStart)}
-                        {this.entryButton(daysFromStart)}
-                    </header>
-                    <span>Total Pot: ${totalPot}</span>
+                        <h2>Week {currentWeek}</h2>
+                        <div className="header-meta">
+                            <div>
+                                <div>{team.name}</div>
+                                <div>Total Pot: ${totalPot}</div>
+                            </div>
 
-                    <div className="results-toggle">
-                        <button className="button button-secondary">To Date</button>
-                        <button className="button">Week {currentWeek}</button>
-                    </div>
+                            <div>
+                                {this.goalButton(daysFromStart)}
+                                {this.entryButton(daysFromStart)}
+                            </div>
+                        </div>
+                       
+                    </header>
                     <article className="all-goals">
                         <div>{this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek))}</div>
 

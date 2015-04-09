@@ -5,7 +5,7 @@
         render: function() {
             return (
                 <button 
-                    className="button button-secondary" 
+                    className="button" 
                     onClick={app.twitterLogin.bind(app)}>Sign In / Up
                 </button>  
             );     
@@ -19,7 +19,7 @@
         render: function() {
             return (
                 <button 
-                    className="button button-secondary" 
+                    className="button" 
                     onClick={app.logout.bind(app)}>Sign Out
                 </button>  
             )

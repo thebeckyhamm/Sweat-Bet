@@ -15,9 +15,10 @@
 }
 
 body {
-    background-color: #f0f0f0;
+    background: linear-gradient(0deg, rgba($light-gray,0.8), rgba($light-gray,0.8)), url("../images/concrete.jpg");
+
     font-family: $body-font;
-    min-height: 500px;
+    min-height: 100vh;
 }
 
 
