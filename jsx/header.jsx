@@ -103,7 +103,9 @@
                     <div className={menuClass}>
                         <Menu goToGoals={this.goToGoals} 
                               goToTeamDashboard={this.goToTeamDashboard}
-                              daysFromStart={daysFromStart} />
+                              daysFromStart={daysFromStart}
+                              addEntry={this.props.addEntry} 
+                              addGoal={this.props.addGoal} />
                     </div>
                 </div>
 

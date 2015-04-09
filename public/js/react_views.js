@@ -402,7 +402,9 @@ views.Select = Select;
                     React.createElement("div", {className: menuClass}, 
                         React.createElement(Menu, {goToGoals: this.goToGoals, 
                               goToTeamDashboard: this.goToTeamDashboard, 
-                              daysFromStart: daysFromStart})
+                              daysFromStart: daysFromStart, 
+                              addEntry: this.props.addEntry, 
+                              addGoal: this.props.addGoal})
                     )
                 )
 
