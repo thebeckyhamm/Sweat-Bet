@@ -22,7 +22,7 @@
         display: inline-block;
         list-style: none;
         text-align: center;
-        width: 33.3%;
+        width: 33.33%;
         @include bp($kid-bear) {
             width: 25%;
         }
@@ -33,7 +33,7 @@
         font-family: $heading-font;
         font-size: 1.5rem;
         line-height: 1;
-        padding: .25em;
+        padding: .5em;
         text-decoration: none;
         text-transform: uppercase;
         vertical-align: middle;
@@ -56,9 +56,4 @@
         width: auto;
     }
 
-    .first-to-last {
-        @include bp($kid-bear) {
-            order: 8; 
-        }
-    }
 }

@@ -132,11 +132,15 @@
             return (
                 <section className="main">
                     <header className="header-main">
-                        <h2>Week {currentWeek}</h2>
+                        <h2>Team Dashboard</h2>
                     </header>
                     <div className="flex dashboard">
                         <div className="header-meta order-1">
                             <div className="team-data">
+                                <div className="week">
+                                    <span className="label">Week:</span>
+                                    <span>{currentWeek}</span>
+                                </div>
                                 <div className="team-name">
                                     <span className="label">Team Name:</span>
                                     <span>{team.name}</span>

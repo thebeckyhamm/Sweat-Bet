@@ -1,8 +1,15 @@
-
+.goal-progress {
+  margin-bottom: 1em;
+}
 .goal-name {
     font-family: $body-font;
     font-size: 1.2rem;
     margin: 0;
+}
+
+.goal-info {
+  color: $gray;
+  font-size: .9rem;
 }
 
 .progress-container {
@@ -10,7 +17,6 @@
     font-size: 1.5em;
     height: 1.5em;
     line-height: 1;
-    margin-bottom: 1rem;
     position: relative;
     width: 100%;
     &:before {

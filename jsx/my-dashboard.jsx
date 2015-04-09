@@ -59,12 +59,12 @@
             return (
                 <div className="goal-progress" key={this.props.key}>
                     <h4>{goalName} - {percentComplete}</h4>
-                    <div className="progress-container">
+                    <div className="progress-container" data-percent={percentComplete}>
                         <div className="progress-bar" style={progressStyle} />
                         <div className="progress-week" style={weekLine} />
 
                     </div>
-                    <span>{currentProgress} {goal.unit} out of {totalGoal} </span>
+                    <span className="goal-info">{currentProgress} {goal.unit} completed out of {totalGoal} </span>
                 </div>
             );
         }
@@ -146,8 +146,8 @@ var TotalProgress = React.createBackboneClass({
         }
         return (
             <div className="goal-progress">
-                <h3>Total Progress: {percentComplete}</h3>
-                <div className="progress-container">
+                <h3>Total Progress</h3>
+                <div className="progress-container" data-percent={percentComplete}>
                     <div className="progress-bar" style={progressStyle} />
                     <div className="progress-week" style={weekLine} />
                 </div>
@@ -208,23 +208,39 @@ var TotalProgress = React.createBackboneClass({
 
 
 
+
             return (
                 <section className="main">
                     <header className="header-main">
                         <h2>My Goals</h2>
-                        {this.goalButton(daysFromStart)}
-                        {this.entryButton(daysFromStart)}
                     </header>
-                    <div className="results-toggle">
-                        <button className="button button-secondary">To Date</button>
-                        <button className="button">Week {currentWeek}</button>
+                    <div className="flex dashboard">
+                        <div className="header-meta order-1">
+                            <div className="team-data">
+                                <div className="week">
+                                    <span className="label">Week:</span>
+                                    <span>{currentWeek}</span>
+                                </div>
+                                <div className="team-name">
+                                    <span className="label">Team Name:</span>
+                                    <span>{team.name}</span>
+                                </div>
+
+                            </div>
+                            <div className="button-toggle-sm">  
+                                {this.goalButton(daysFromStart)}
+                                {this.entryButton(daysFromStart)}
+                            </div>
+
+                        </div>
+                        <article className="all-goals">
+                            <div>{this.getTotal(team, currentWeek)}</div>
+                            <hr />
+                            <h3>Individual Goals</h3>
+                            <div>{this.props.collection.map(this.getGoal.bind(this, team, currentWeek))}</div>
+                        </article>
+
                     </div>
-                    <article className="all-goals">
-                        <div>{this.getTotal(team, currentWeek)}</div>
-                        <hr />
-                        <h3>Individual Goals</h3>
-                        <div>{this.props.collection.map(this.getGoal.bind(this, team, currentWeek))}</div>
-                    </article>
                 </section>
             );
         }

@@ -50,7 +50,7 @@ $primary-color: $rosy;
     }
 }
 
-li.entry-lg {
+ul li.entry-lg {
     display: none;
     @include bp($kid-bear) {
         display: inline-block;

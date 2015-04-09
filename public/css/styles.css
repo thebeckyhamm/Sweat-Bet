@@ -417,10 +417,10 @@ h1 {
   margin: 0 .5rem;
   width: calc(50% - 1rem); }
 
-li.entry-lg {
+ul li.entry-lg {
   display: none; }
   @media all and (min-width: 30em) {
-    li.entry-lg {
+    ul li.entry-lg {
       display: inline-block; } }
 
 @media all and (min-width: 30em) {
@@ -472,7 +472,7 @@ li.entry-lg {
   display: inline-block;
   list-style: none;
   text-align: center;
-  width: 33.3%; }
+  width: 33.33%; }
   @media all and (min-width: 30em) {
     .main-menu li {
       width: 25%; } }
@@ -482,7 +482,7 @@ li.entry-lg {
   font-family: "League Gothic", Helvetica, Arial, sans-serif;
   font-size: 1.5rem;
   line-height: 1;
-  padding: .25em;
+  padding: .5em;
   text-decoration: none;
   text-transform: uppercase;
   vertical-align: middle;
@@ -501,9 +501,6 @@ li.entry-lg {
   padding: .3em;
   text-transform: capitalize;
   width: auto; }
-@media all and (min-width: 30em) {
-  .main-menu .first-to-last {
-    order: 8; } }
 
 .list {
   margin: 0;
@@ -523,17 +520,23 @@ li.entry-lg {
   padding: .25em .5em;
   text-align: center; }
 
+.goal-progress {
+  margin-bottom: 1em; }
+
 .goal-name {
   font-family: "clearSans", Helvetica, Arial, sans-serif;
   font-size: 1.2rem;
   margin: 0; }
+
+.goal-info {
+  color: #949EA9;
+  font-size: .9rem; }
 
 .progress-container {
   background-color: #2E3234;
   font-size: 1.5em;
   height: 1.5em;
   line-height: 1;
-  margin-bottom: 1rem;
   position: relative;
   width: 100%; }
   .progress-container:before {
@@ -578,9 +581,9 @@ li.entry-lg {
   margin-bottom: 0; }
 
 @media all and (min-width: 30em) {
-  .team-name, .pot {
+  .team-name, .pot, .week {
     font-size: 1.2rem; } }
-.team-name .label, .pot .label {
+.team-name .label, .pot .label, .week .label {
   color: #949EA9;
   display: block;
   font-size: 1rem;
@@ -593,6 +596,11 @@ li.entry-lg {
   @media all and (min-width: 30em) {
     .all-goals {
       width: 60%; } }
+  .all-goals h3 {
+    font-family: "clearSans", Helvetica, Arial, sans-serif;
+    margin: 0; }
+  .all-goals h4 {
+    margin-bottom: 0; }
 
 form {
   background-color: #2E3234;

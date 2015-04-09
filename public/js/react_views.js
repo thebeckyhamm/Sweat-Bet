@@ -601,11 +601,15 @@ views.Select = Select;
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, "Week ", currentWeek)
+                        React.createElement("h2", null, "Team Dashboard")
                     ), 
                     React.createElement("div", {className: "flex dashboard"}, 
                         React.createElement("div", {className: "header-meta order-1"}, 
                             React.createElement("div", {className: "team-data"}, 
+                                React.createElement("div", {className: "week"}, 
+                                    React.createElement("span", {className: "label"}, "Week:"), 
+                                    React.createElement("span", null, currentWeek)
+                                ), 
                                 React.createElement("div", {className: "team-name"}, 
                                     React.createElement("span", {className: "label"}, "Team Name:"), 
                                     React.createElement("span", null, team.name)
@@ -696,12 +700,12 @@ views.Select = Select;
             return (
                 React.createElement("div", {className: "goal-progress", key: this.props.key}, 
                     React.createElement("h4", null, goalName, " - ", percentComplete), 
-                    React.createElement("div", {className: "progress-container"}, 
+                    React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
                         React.createElement("div", {className: "progress-bar", style: progressStyle}), 
                         React.createElement("div", {className: "progress-week", style: weekLine})
 
                     ), 
-                    React.createElement("span", null, currentProgress, " ", goal.unit, " out of ", totalGoal, " ")
+                    React.createElement("span", {className: "goal-info"}, currentProgress, " ", goal.unit, " completed out of ", totalGoal, " ")
                 )
             );
         }
@@ -783,8 +787,8 @@ var TotalProgress = React.createBackboneClass({
         }
         return (
             React.createElement("div", {className: "goal-progress"}, 
-                React.createElement("h3", null, "Total Progress: ", percentComplete), 
-                React.createElement("div", {className: "progress-container"}, 
+                React.createElement("h3", null, "Total Progress"), 
+                React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
                     React.createElement("div", {className: "progress-bar", style: progressStyle}), 
                     React.createElement("div", {className: "progress-week", style: weekLine})
                 )
@@ -845,22 +849,38 @@ var TotalProgress = React.createBackboneClass({
 
 
 
+
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, "My Goals"), 
-                        this.goalButton(daysFromStart), 
-                        this.entryButton(daysFromStart)
+                        React.createElement("h2", null, "My Goals")
                     ), 
-                    React.createElement("div", {className: "results-toggle"}, 
-                        React.createElement("button", {className: "button button-secondary"}, "To Date"), 
-                        React.createElement("button", {className: "button"}, "Week ", currentWeek)
-                    ), 
-                    React.createElement("article", {className: "all-goals"}, 
-                        React.createElement("div", null, this.getTotal(team, currentWeek)), 
-                        React.createElement("hr", null), 
-                        React.createElement("h3", null, "Individual Goals"), 
-                        React.createElement("div", null, this.props.collection.map(this.getGoal.bind(this, team, currentWeek)))
+                    React.createElement("div", {className: "flex dashboard"}, 
+                        React.createElement("div", {className: "header-meta order-1"}, 
+                            React.createElement("div", {className: "team-data"}, 
+                                React.createElement("div", {className: "week"}, 
+                                    React.createElement("span", {className: "label"}, "Week:"), 
+                                    React.createElement("span", null, currentWeek)
+                                ), 
+                                React.createElement("div", {className: "team-name"}, 
+                                    React.createElement("span", {className: "label"}, "Team Name:"), 
+                                    React.createElement("span", null, team.name)
+                                )
+
+                            ), 
+                            React.createElement("div", {className: "button-toggle-sm"}, 
+                                this.goalButton(daysFromStart), 
+                                this.entryButton(daysFromStart)
+                            )
+
+                        ), 
+                        React.createElement("article", {className: "all-goals"}, 
+                            React.createElement("div", null, this.getTotal(team, currentWeek)), 
+                            React.createElement("hr", null), 
+                            React.createElement("h3", null, "Individual Goals"), 
+                            React.createElement("div", null, this.props.collection.map(this.getGoal.bind(this, team, currentWeek)))
+                        )
+
                     )
                 )
             );
