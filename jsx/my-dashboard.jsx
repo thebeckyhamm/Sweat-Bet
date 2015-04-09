@@ -94,9 +94,11 @@ var TotalProgress = React.createBackboneClass({
             return parseInt(goal.number);
         });
 
-        return _.reduce(goalNumbers, function(a, b) {
+        var total = _.reduce(goalNumbers, function(a, b) {
             return a + b;
         });
+
+        return total;
 
     },
 
@@ -104,6 +106,67 @@ var TotalProgress = React.createBackboneClass({
         var percentComplete = ((progress / end) * 100).toFixed(1);
 
         return percentComplete + "%";
+
+    },
+
+    addMessage: function(weeksComplete, percentComplete) {
+        var weeks = weeksComplete.slice(0, weeksComplete.length-1);
+        var percent = percentComplete.slice(0, percentComplete.length-1);
+
+        var diff = percent - weeks;
+
+        if (diff < -15) {
+
+            var msgs = [
+                "Did you forget to add some entries?",
+                "Sleep in again?",
+                "Get back in that saddle!",
+                "Money is no object, right?",
+                ""
+
+            ]
+            var rand = Math.floor(Math.random() * (3 - 0));
+            var msg = msgs[rand];
+
+            if (!(msg === "")) {
+                return <h4 className="progress-message"><span>{msg}</span></h4>;
+            }
+
+
+        }
+
+        else if (diff < -5 ) {
+
+            var msgs = [
+                "Getting behind! Step it up!",
+                "Sweating yet?",
+                ""
+            ]
+            var rand = Math.floor(Math.random() * (3 - 0));
+            var msg = msgs[rand];
+
+            if (!(msg === "")) {
+                return <h4 className="progress-message"><span>{msg}</span></h4>;
+            }
+        }
+
+        if (diff > 5) {
+            var msgs = [
+                "Kickin' butt and takin' names!",
+                "Get it!",
+                "Show me the money",
+                "",
+                ""
+
+            ]
+            var rand = Math.floor(Math.random() * (3 - 0));
+            var msg = msgs[rand];
+
+            if (!(msg === "")) {
+                return <h4 className="progress-message"><span>{msg}</span></h4>;
+            }
+
+        }
     },
 
     render: function() {
@@ -140,12 +203,17 @@ var TotalProgress = React.createBackboneClass({
             }  
         }
 
-
         var weekLine = {
             marginLeft: weeksComplete 
         }
+
+        var message = this.addMessage(weeksComplete, percentComplete);
+
+
         return (
+
             <div className="goal-progress">
+                {message}
                 <h3>Total Progress</h3>
                 <div className="progress-container" data-percent={percentComplete}>
                     <div className="progress-bar" style={progressStyle} />
@@ -205,7 +273,6 @@ var TotalProgress = React.createBackboneClass({
             var daysFromStart = now.diff(start_date, 'days');
 
             var currentWeek = Math.ceil(daysFromStart / 7);
-
 
 
 

@@ -529,6 +529,8 @@ ul li.entry-lg {
   .landing-page h2 {
     font-size: 3rem;
     margin: 0; }
+  .landing-page img {
+    width: 50px; }
 
 .goal-progress {
   margin-bottom: 1em; }
@@ -569,7 +571,19 @@ ul li.entry-lg {
   height: 100%;
   position: absolute;
   top: 0;
-  width: 1px; }
+  width: 2px; }
+
+.progress-message {
+  margin-top: 0; }
+  .progress-message span {
+    background-color: #CCF390;
+    color: #2E3234;
+    display: block;
+    font-size: 1.3em;
+    margin-bottom: 1rem;
+    padding: .5rem;
+    text-align: center;
+    width: 100%; }
 
 .dashboard {
   margin: 1rem auto;

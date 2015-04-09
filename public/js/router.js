@@ -57,7 +57,11 @@ app.Router = Backbone.Router.extend({
         });
 
         this.listenTo(app, "sign:out", function(){
+            this.navigate("/");
             this.showHeader();
+            React.unmountComponentAtNode(
+                document.querySelector(".nav")
+            );
             this.showLandingPage();
         });
 

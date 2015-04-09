@@ -9,6 +9,7 @@
                         <h2>Beat your friends.</h2>
                         <h2>Get in shape.</h2>
                         <h2>Win $$.</h2>
+                        <img src="images/svg/flexions.svg" />
                     </article>
                 </section> 
             );

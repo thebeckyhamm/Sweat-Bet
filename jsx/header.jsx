@@ -52,6 +52,10 @@
             }
         },
 
+        componentDidMount: function() {
+
+        },
+
         render: function() {
             var team = this.props.team;
             team = team.toJSON();
@@ -106,7 +110,6 @@
         },
 
         render: function() {
-            console.log("fromt header", app.currentUser);
 
             return (
                 <div className="header-wrapper">

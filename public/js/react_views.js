@@ -353,6 +353,10 @@ views.Select = Select;
             }
         },
 
+        componentDidMount: function() {
+
+        },
+
         render: function() {
             var team = this.props.team;
             team = team.toJSON();
@@ -407,7 +411,6 @@ views.Select = Select;
         },
 
         render: function() {
-            console.log("fromt header", app.currentUser);
 
             return (
                 React.createElement("div", {className: "header-wrapper"}, 
@@ -463,7 +466,8 @@ views.Select = Select;
                     React.createElement("article", {className: "landing-page"}, 
                         React.createElement("h2", null, "Beat your friends."), 
                         React.createElement("h2", null, "Get in shape."), 
-                        React.createElement("h2", null, "Win $$.")
+                        React.createElement("h2", null, "Win $$."), 
+                        React.createElement("img", {src: "images/svg/flexions.svg"})
                     )
                 ) 
             );
@@ -742,9 +746,11 @@ var TotalProgress = React.createBackboneClass({
             return parseInt(goal.number);
         });
 
-        return _.reduce(goalNumbers, function(a, b) {
+        var total = _.reduce(goalNumbers, function(a, b) {
             return a + b;
         });
+
+        return total;
 
     },
 
@@ -752,6 +758,67 @@ var TotalProgress = React.createBackboneClass({
         var percentComplete = ((progress / end) * 100).toFixed(1);
 
         return percentComplete + "%";
+
+    },
+
+    addMessage: function(weeksComplete, percentComplete) {
+        var weeks = weeksComplete.slice(0, weeksComplete.length-1);
+        var percent = percentComplete.slice(0, percentComplete.length-1);
+
+        var diff = percent - weeks;
+
+        if (diff < -15) {
+
+            var msgs = [
+                "Did you forget to add some entries?",
+                "Sleep in again?",
+                "Get back in that saddle!",
+                "Money is no object, right?",
+                ""
+
+            ]
+            var rand = Math.floor(Math.random() * (3 - 0));
+            var msg = msgs[rand];
+
+            if (!(msg === "")) {
+                return React.createElement("h4", {className: "progress-message"}, React.createElement("span", null, msg));
+            }
+
+
+        }
+
+        else if (diff < -5 ) {
+
+            var msgs = [
+                "Getting behind! Step it up!",
+                "Sweating yet?",
+                ""
+            ]
+            var rand = Math.floor(Math.random() * (3 - 0));
+            var msg = msgs[rand];
+
+            if (!(msg === "")) {
+                return React.createElement("h4", {className: "progress-message"}, React.createElement("span", null, msg));
+            }
+        }
+
+        if (diff > 5) {
+            var msgs = [
+                "Kickin' butt and takin' names!",
+                "Get it!",
+                "Show me the money",
+                "",
+                ""
+
+            ]
+            var rand = Math.floor(Math.random() * (3 - 0));
+            var msg = msgs[rand];
+
+            if (!(msg === "")) {
+                return React.createElement("h4", {className: "progress-message"}, React.createElement("span", null, msg));
+            }
+
+        }
     },
 
     render: function() {
@@ -788,12 +855,17 @@ var TotalProgress = React.createBackboneClass({
             }  
         }
 
-
         var weekLine = {
             marginLeft: weeksComplete 
         }
+
+        var message = this.addMessage(weeksComplete, percentComplete);
+
+
         return (
+
             React.createElement("div", {className: "goal-progress"}, 
+                message, 
                 React.createElement("h3", null, "Total Progress"), 
                 React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
                     React.createElement("div", {className: "progress-bar", style: progressStyle}), 
@@ -853,7 +925,6 @@ var TotalProgress = React.createBackboneClass({
             var daysFromStart = now.diff(start_date, 'days');
 
             var currentWeek = Math.ceil(daysFromStart / 7);
-
 
 
 
