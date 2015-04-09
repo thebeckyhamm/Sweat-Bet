@@ -229,10 +229,10 @@ views.Select = Select;
                         name: "number", 
                         placeholder: "5", 
                         required: "required"}), 
-                    React.createElement(views.Select, {label: "Unit", 
+                    React.createElement(views.Select, {label: "Unit (per week)", 
                         options: this.units, 
                         name: "unit", 
-                        defaultValue: "times"}), 
+                        defaultValue: "days"}), 
                     React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Add Goal"))
                     
                 )
@@ -301,7 +301,33 @@ views.Select = Select;
 })(app.views);
 (function(views){
 
-    var Menu = React.createClass({displayName: "Menu",
+    views.Menu = React.createClass({displayName: "Menu",
+        getInitialState: function() {
+           return {
+                activeMenu: ''
+           };
+         },
+
+         setActiveMenu: function(e) {
+             e.preventDefault();
+             if (this.state.activeMenu !== "active") {
+                 this.setState({activeMenu: "active"});
+             }
+             else {
+                 this.setState({activeMenu: ""});
+             }
+         },
+
+        goToGoals: function() {
+            app.trigger("fetch:goals:collection");
+            this.setState({activeMenu: ""});
+        },
+
+        goToTeamDashboard: function() {
+            app.trigger("fetch:users:collection");
+            this.setState({activeMenu: ""});
+
+        },
 
         goalButton: function(daysFromStart) {
             if (daysFromStart <= 0) {
@@ -328,7 +354,19 @@ views.Select = Select;
         },
 
         render: function() {
+            var team = this.props.team;
+            team = team.toJSON();
+
+            var start_date = moment(team.start_date);
+            var now = moment();
+
+            var daysFromStart = now.diff(start_date, 'days');
+
+            var menuClass = "menu-wrapper " + this.state.activeMenu;
+
             return (
+                React.createElement("div", {className: menuClass}, 
+
                 React.createElement("div", {className: "main-menu"}, 
                     React.createElement("ul", null, 
                         React.createElement("li", null, 
@@ -347,6 +385,8 @@ views.Select = Select;
 
                     )
                 )
+                )
+
             )
         }
 
@@ -354,43 +394,13 @@ views.Select = Select;
 
     views.Header = React.createClass({displayName: "Header", 
 
-        goToGoals: function() {
-            app.trigger("fetch:goals:collection");
-            this.setState({activeMenu: ""});
-        },
 
-        goToTeamDashboard: function() {
-            app.trigger("fetch:users:collection");
-            this.setState({activeMenu: ""});
 
-        },
 
-        getInitialState: function() {
-           return {
-                activeMenu: ''
-           };
-         },
 
-        setActiveMenu: function(e) {
-            e.preventDefault();
-            if (this.state.activeMenu !== "active") {
-                this.setState({activeMenu: "active"});
-            }
-            else {
-                this.setState({activeMenu: ""});
-            }
-        },
+
 
         render: function() {
-            var team = this.props.team;
-            team = team.toJSON();
-
-            var start_date = moment(team.start_date);
-            var now = moment();
-
-            var daysFromStart = now.diff(start_date, 'days');
-
-            var menuClass = "menu-wrapper " + this.state.activeMenu;
 
             return (
                 React.createElement("div", {className: "header-wrapper"}, 
@@ -400,13 +410,6 @@ views.Select = Select;
                         React.createElement("div", {className: "header-admin"}, 
                             React.createElement(views.LogInOut, {model: this.props.model})
                         )
-                    ), 
-                    React.createElement("div", {className: menuClass}, 
-                        React.createElement(Menu, {goToGoals: this.goToGoals, 
-                              goToTeamDashboard: this.goToTeamDashboard, 
-                              daysFromStart: daysFromStart, 
-                              addEntry: this.props.addEntry, 
-                              addGoal: this.props.addGoal})
                     )
                 )
 

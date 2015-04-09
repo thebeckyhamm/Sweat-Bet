@@ -1,6 +1,32 @@
 (function(views){
 
-    var Menu = React.createClass({
+    views.Menu = React.createClass({
+        getInitialState: function() {
+           return {
+                activeMenu: ''
+           };
+         },
+
+         setActiveMenu: function(e) {
+             e.preventDefault();
+             if (this.state.activeMenu !== "active") {
+                 this.setState({activeMenu: "active"});
+             }
+             else {
+                 this.setState({activeMenu: ""});
+             }
+         },
+
+        goToGoals: function() {
+            app.trigger("fetch:goals:collection");
+            this.setState({activeMenu: ""});
+        },
+
+        goToTeamDashboard: function() {
+            app.trigger("fetch:users:collection");
+            this.setState({activeMenu: ""});
+
+        },
 
         goalButton: function(daysFromStart) {
             if (daysFromStart <= 0) {
@@ -27,7 +53,19 @@
         },
 
         render: function() {
+            var team = this.props.team;
+            team = team.toJSON();
+
+            var start_date = moment(team.start_date);
+            var now = moment();
+
+            var daysFromStart = now.diff(start_date, 'days');
+
+            var menuClass = "menu-wrapper " + this.state.activeMenu;
+
             return (
+                <div className={menuClass}>
+
                 <div className="main-menu">
                     <ul>
                         <li>
@@ -46,6 +84,8 @@
 
                     </ul>
                 </div>
+                </div>
+
             )
         }
 
@@ -53,43 +93,13 @@
 
     views.Header = React.createClass({ 
 
-        goToGoals: function() {
-            app.trigger("fetch:goals:collection");
-            this.setState({activeMenu: ""});
-        },
 
-        goToTeamDashboard: function() {
-            app.trigger("fetch:users:collection");
-            this.setState({activeMenu: ""});
 
-        },
 
-        getInitialState: function() {
-           return {
-                activeMenu: ''
-           };
-         },
 
-        setActiveMenu: function(e) {
-            e.preventDefault();
-            if (this.state.activeMenu !== "active") {
-                this.setState({activeMenu: "active"});
-            }
-            else {
-                this.setState({activeMenu: ""});
-            }
-        },
+
 
         render: function() {
-            var team = this.props.team;
-            team = team.toJSON();
-
-            var start_date = moment(team.start_date);
-            var now = moment();
-
-            var daysFromStart = now.diff(start_date, 'days');
-
-            var menuClass = "menu-wrapper " + this.state.activeMenu;
 
             return (
                 <div className="header-wrapper">
@@ -99,13 +109,6 @@
                         <div className="header-admin">
                             <views.LogInOut model={this.props.model} />
                         </div>
-                    </div>
-                    <div className={menuClass}>
-                        <Menu goToGoals={this.goToGoals} 
-                              goToTeamDashboard={this.goToTeamDashboard}
-                              daysFromStart={daysFromStart}
-                              addEntry={this.props.addEntry} 
-                              addGoal={this.props.addGoal} />
                     </div>
                 </div>
 

@@ -17,15 +17,14 @@ app.Router = Backbone.Router.extend({
         app.teams = new app.models.Teams();
 
         app.teams.fetch().done(function() {
-            var team = app.currentUser.get("team_id");
+            if (app.currentUser) {
+                var team = app.currentUser.get("team_id");   
+            }
             React.render(
                 React.createElement(app.views.Header, {
                     model: app.currentUser,
                     goToGoals: this.showMyDash.bind(this),
                     goToTeamDashboard: this.showMain.bind(this),
-                    team: app.teams.get(team),
-                    addGoal: this.showGoalForm.bind(this),
-                    addEntry: this.showEntryForm.bind(this)
                 }),
                 document.querySelector(".header")
             );
@@ -81,8 +80,19 @@ app.Router = Backbone.Router.extend({
         this.listenTo(app, "teams:fetched", function() {
             // check if user has a team id
             if (app.currentUser.get("team_id")) {
+                var team = app.currentUser.get("team_id");
                 console.log("User has a team");
                 // if so, show them their main dashboard
+                React.render(
+                    React.createElement(app.views.Menu, {
+                        model: app.currentUser,
+                        team: app.teams.get(team),
+                        addGoal: this.showGoalForm.bind(this),
+                        addEntry: this.showEntryForm.bind(this)
+                    }),
+                    document.querySelector(".nav")
+                );
+
                 this.showMain();
             }
             else {

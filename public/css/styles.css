@@ -604,6 +604,7 @@ ul li.entry-lg {
 
 form {
   background-color: #2E3234;
+  color: white;
   margin: 1rem auto;
   padding: 1rem;
   width: 95%; }
@@ -613,6 +614,9 @@ form {
   form .button {
     font-family: "League Gothic", Helvetica, Arial, sans-serif;
     font-size: 1.5rem; }
+  form p {
+    font-size: 1.3rem;
+    margin-top: 0; }
 
 .field {
   margin-bottom: .5rem; }

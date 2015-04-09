@@ -35,10 +35,10 @@
                         name="number"
                         placeholder="5"
                         required="required" />  
-                    <views.Select label="Unit" 
+                    <views.Select label="Unit (per week)" 
                         options={this.units} 
                         name="unit"
-                        defaultValue="times" />
+                        defaultValue="days" />
                     <div className="text-right"><button className="button button-primary">Add Goal</button></div>
                     
                 </form>

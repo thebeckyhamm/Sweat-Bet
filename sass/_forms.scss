@@ -1,5 +1,6 @@
 form {
     background-color: $dark-gray;
+    color: white;
     margin: 1rem auto;
     padding: 1rem;
     width: 95%;
@@ -9,6 +10,10 @@ form {
     .button {
         font-family: $heading-font;
         font-size: 1.5rem;
+    }
+    p {
+        font-size: 1.3rem;
+        margin-top: 0;
     }
 }
 
