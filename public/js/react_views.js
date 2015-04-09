@@ -305,9 +305,6 @@ views.Select = Select;
             return (
                 React.createElement("div", {className: "main-menu"}, 
                     React.createElement("ul", null, 
-                        React.createElement("li", {className: "first-to-last"}, 
-                            React.createElement("a", {href: "#", className: "button"}, "+ Entry")
-                        ), 
                         React.createElement("li", null, 
                             React.createElement("a", {href: "#", onClick: this.props.goToTeamDashboard}, "Team Dashboard")
                         ), 
@@ -316,7 +313,11 @@ views.Select = Select;
                         ), 
                         React.createElement("li", null, 
                             React.createElement("a", {href: "#"}, "My Profile")
+                        ), 
+                        React.createElement("li", {className: "entry-lg"}, 
+                            React.createElement("a", {href: "#", className: "button"}, "+ Entry")
                         )
+
                     )
                 )
             )
@@ -559,24 +560,30 @@ views.Select = Select;
             return (
                 React.createElement("section", {className: "main"}, 
                     React.createElement("header", {className: "header-main"}, 
-                        React.createElement("h2", null, "Week ", currentWeek), 
-                        React.createElement("div", {className: "header-meta"}, 
-                            React.createElement("div", null, 
-                                React.createElement("div", null, team.name), 
-                                React.createElement("div", null, "Total Pot: $", totalPot)
+                        React.createElement("h2", null, "Week ", currentWeek)
+                    ), 
+                    React.createElement("div", {className: "flex dashboard"}, 
+                        React.createElement("div", {className: "header-meta order-1"}, 
+                            React.createElement("div", {className: "team-data"}, 
+                                React.createElement("div", {className: "team-name"}, 
+                                    React.createElement("span", {className: "label"}, "Team Name:"), 
+                                    React.createElement("span", null, team.name)
+                                ), 
+                                React.createElement("div", {className: "pot"}, 
+                                    React.createElement("span", {className: "label"}, "Total Pot:"), 
+                                    React.createElement("span", null, "$", totalPot)
+                                )
                             ), 
 
-                            React.createElement("div", null, 
+                            React.createElement("div", {className: "button-toggle-sm"}, 
                                 this.goalButton(daysFromStart), 
                                 this.entryButton(daysFromStart)
                             )
+                        ), 
+
+                        React.createElement("article", {className: "all-goals"}, 
+                            React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek)))
                         )
-                       
-                    ), 
-                    React.createElement("article", {className: "all-goals"}, 
-                        React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek)))
-
-
                     )
                 )
             );

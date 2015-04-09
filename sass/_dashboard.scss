@@ -1,0 +1,53 @@
+.dashboard {
+    margin: 1rem;
+    > * {
+        margin: .5rem;
+    }
+    
+}
+
+.header-meta {
+    background-color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    @include bp($kid-bear) {
+        display: block;
+    }
+    
+
+}
+
+.team-data {
+    > * {
+        margin-bottom: 1rem;
+    }
+    > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+
+
+.team-name, .pot {
+    @include bp($kid-bear) {
+        font-size: 1.2rem;
+    }
+    .label {
+        color: $gray;
+        display: block;
+        font-size: 1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+
+
+
+.all-goals {
+    background-color: white;
+    padding: 1rem;
+    @include bp($kid-bear) {
+        width: 60%;
+    }
+}

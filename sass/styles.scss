@@ -1,5 +1,6 @@
 @import "_normalize";
 @import "_variables"; 
+@import "_helpers"; 
 @import "_typography";
 @import "_buttons";
 @import "_header";
@@ -7,6 +8,7 @@
 @import "_lists";
 @import "_main-layout";
 @import "_progress-bar";
+@import "_dashboard";
 
 
 
@@ -15,8 +17,7 @@
 }
 
 body {
-    background: linear-gradient(0deg, rgba($light-gray,0.8), rgba($light-gray,0.8)), url("../images/concrete.jpg");
-
+    background-color: $light-gray;
     font-family: $body-font;
     min-height: 100vh;
 }

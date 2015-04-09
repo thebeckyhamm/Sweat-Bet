@@ -22,7 +22,7 @@
         display: inline-block;
         list-style: none;
         text-align: center;
-        width: 50%;
+        width: 33.3%;
         @include bp($kid-bear) {
             width: 25%;
         }
@@ -31,19 +31,24 @@
         color: white;
         display: inline-block;
         font-family: $heading-font;
-        font-size: 1.7rem;
+        font-size: 1.5rem;
         line-height: 1;
-        padding: 1em .5em;
+        padding: .25em;
         text-decoration: none;
         text-transform: uppercase;
+        vertical-align: middle;
         width: 100%;
         &:hover {
             background-color: darken($green, 10%);
         }
+        @include bp($kid-bear) {
+            font-size: 1.7rem;
+            padding: .6em .5em;
+        }
     }
     .button {
         border-color: white;
-        padding: .5em;
+        padding: .3em;
         text-transform: capitalize;
         width: auto;
     }

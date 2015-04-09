@@ -133,24 +133,30 @@
                 <section className="main">
                     <header className="header-main">
                         <h2>Week {currentWeek}</h2>
-                        <div className="header-meta">
-                            <div>
-                                <div>{team.name}</div>
-                                <div>Total Pot: ${totalPot}</div>
+                    </header>
+                    <div className="flex dashboard">
+                        <div className="header-meta order-1">
+                            <div className="team-data">
+                                <div className="team-name">
+                                    <span className="label">Team Name:</span>
+                                    <span>{team.name}</span>
+                                </div>
+                                <div className="pot">
+                                    <span className="label">Total Pot:</span>
+                                    <span>${totalPot}</span>
+                                </div>
                             </div>
 
-                            <div>
+                            <div className="button-toggle-sm">  
                                 {this.goalButton(daysFromStart)}
                                 {this.entryButton(daysFromStart)}
                             </div>
                         </div>
-                       
-                    </header>
-                    <article className="all-goals">
-                        <div>{this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek))}</div>
 
-
-                    </article>
+                        <article className="all-goals">
+                            <div>{this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek))}</div>
+                        </article>
+                    </div>
                 </section>
             );
         }

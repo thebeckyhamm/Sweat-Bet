@@ -6,9 +6,6 @@
             return (
                 <div className="main-menu">
                     <ul>
-                        <li className="first-to-last">
-                            <a href="#" className="button">+ Entry</a>
-                        </li>
                         <li>
                             <a href="#" onClick={this.props.goToTeamDashboard}>Team Dashboard</a>
                         </li>
@@ -18,6 +15,10 @@
                         <li>
                             <a href="#">My Profile</a>
                         </li>
+                        <li className="entry-lg">
+                            <a href="#" className="button">+ Entry</a>
+                        </li>
+
                     </ul>
                 </div>
             )

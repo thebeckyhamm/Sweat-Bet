@@ -320,6 +320,21 @@ table {
 td, th {
   padding: 0; }
 
+.lg-only {
+  display: none; }
+  @media all and (min-width: 30em) {
+    .lg-only {
+      display: block; } }
+
+@media all and (min-width: 30em) {
+  .flex {
+    display: flex;
+    align-items: stretch; } }
+
+@media all and (min-width: 30em) {
+  .order-1 {
+    order: 10; } }
+
 @font-face {
   font-family: 'clearSansMedium';
   src: url('../fonts/ClearSans-Medium-webfont.eot');
@@ -399,6 +414,16 @@ h1 {
   margin: 0 .5rem;
   width: calc(50% - 1rem); }
 
+li.entry-lg {
+  display: none; }
+  @media all and (min-width: 30em) {
+    li.entry-lg {
+      display: inline-block; } }
+
+@media all and (min-width: 30em) {
+  .button-toggle-sm {
+    display: none; } }
+
 .header-bar {
   background-color: #2E3234;
   color: white;
@@ -444,7 +469,7 @@ h1 {
   display: inline-block;
   list-style: none;
   text-align: center;
-  width: 50%; }
+  width: 33.3%; }
   @media all and (min-width: 30em) {
     .main-menu li {
       width: 25%; } }
@@ -452,17 +477,22 @@ h1 {
   color: white;
   display: inline-block;
   font-family: "League Gothic", Helvetica, Arial, sans-serif;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   line-height: 1;
-  padding: 1em .5em;
+  padding: .25em;
   text-decoration: none;
   text-transform: uppercase;
+  vertical-align: middle;
   width: 100%; }
   .main-menu a:hover {
     background-color: #178c37; }
+  @media all and (min-width: 30em) {
+    .main-menu a {
+      font-size: 1.7rem;
+      padding: .6em .5em; } }
 .main-menu .button {
   border-color: white;
-  padding: .5em;
+  padding: .3em;
   text-transform: capitalize;
   width: auto; }
 @media all and (min-width: 30em) {
@@ -480,25 +510,12 @@ h1 {
     width: 100%; }
 
 .header-main h2 {
-  background-color: #E3E8EE;
+  background-color: #F7C41F;
   font-size: 1.7rem;
   letter-spacing: 0;
   margin: 0;
   padding: .25em .5em;
   text-align: center; }
-
-.header-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .25em .5em; }
-
-.results-toggle .button {
-  margin: .25rem;
-  width: calc(50% - .5em); }
-
-.all-goals {
-  margin: 1em .5em; }
 
 .goal-name {
   font-family: "clearSans", Helvetica, Arial, sans-serif;
@@ -535,10 +552,46 @@ h1 {
   top: 0;
   width: 1px; }
 
+.dashboard {
+  margin: 1rem; }
+  .dashboard > * {
+    margin: .5rem; }
+
+.header-meta {
+  background-color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between; }
+  @media all and (min-width: 30em) {
+    .header-meta {
+      display: block; } }
+
+.team-data > * {
+  margin-bottom: 1rem; }
+.team-data > *:last-child {
+  margin-bottom: 0; }
+
+@media all and (min-width: 30em) {
+  .team-name, .pot {
+    font-size: 1.2rem; } }
+.team-name .label, .pot .label {
+  color: #949EA9;
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase; }
+
+.all-goals {
+  background-color: white;
+  padding: 1rem; }
+  @media all and (min-width: 30em) {
+    .all-goals {
+      width: 60%; } }
+
 *, *:after, *:before {
   box-sizing: border-box; }
 
 body {
-  background: linear-gradient(0deg, rgba(227, 232, 238, 0.8), rgba(227, 232, 238, 0.8)), url("../images/concrete.jpg");
+  background-color: #E3E8EE;
   font-family: "clearSans", Helvetica, Arial, sans-serif;
   min-height: 100vh; }

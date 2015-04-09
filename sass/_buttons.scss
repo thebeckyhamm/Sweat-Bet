@@ -49,3 +49,16 @@ $primary-color: $rosy;
         width: calc(50% - 1rem);
     }
 }
+
+li.entry-lg {
+    display: none;
+    @include bp($kid-bear) {
+        display: inline-block;
+    }
+}
+
+.button-toggle-sm {
+    @include bp($kid-bear) {
+        display: none;
+    }
+}

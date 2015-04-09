@@ -1,0 +1,19 @@
+.lg-only {
+    display: none;
+    @include bp($kid-bear) {
+        display: block;
+    }
+}
+
+.flex {
+    @include bp($kid-bear) {
+        display: flex;
+        align-items: stretch;
+    }
+}
+
+.order-1 {
+    @include bp($kid-bear) {
+        order: 10;
+    }
+}
