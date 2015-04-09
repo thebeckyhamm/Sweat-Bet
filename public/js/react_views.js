@@ -301,6 +301,30 @@ views.Select = Select;
 
     var Menu = React.createClass({displayName: "Menu",
 
+        goalButton: function(daysFromStart) {
+            if (daysFromStart <= 0) {
+                return (
+                    React.createElement("button", {
+                        className: "button", 
+                        onClick: this.props.addGoal}, "+ Goal"
+                    )
+                )
+            }
+            else {
+                return;
+            }
+        },
+
+        entryButton: function(daysFromStart) {
+            if (daysFromStart >= 0) {
+                return (
+                    React.createElement("button", {className: "button", 
+                        onClick: this.props.addEntry}, "+ Entry"
+                    )
+                )
+            }
+        },
+
         render: function() {
             return (
                 React.createElement("div", {className: "main-menu"}, 
@@ -315,7 +339,8 @@ views.Select = Select;
                             React.createElement("a", {href: "#"}, "My Profile")
                         ), 
                         React.createElement("li", {className: "entry-lg"}, 
-                            React.createElement("a", {href: "#", className: "button"}, "+ Entry")
+                            this.goalButton(this.props.daysFromStart), 
+                            this.entryButton(this.props.daysFromStart)
                         )
 
                     )
@@ -326,6 +351,7 @@ views.Select = Select;
     });
 
     views.Header = React.createClass({displayName: "Header", 
+
         goToGoals: function() {
             app.trigger("fetch:goals:collection");
             this.setState({activeMenu: ""});
@@ -354,7 +380,16 @@ views.Select = Select;
         },
 
         render: function() {
-                var menuClass = "menu-wrapper " + this.state.activeMenu;
+            var team = this.props.team;
+            team = team.toJSON();
+
+            var start_date = moment(team.start_date);
+            var now = moment();
+
+            var daysFromStart = now.diff(start_date, 'days');
+
+            var menuClass = "menu-wrapper " + this.state.activeMenu;
+
             return (
                 React.createElement("div", {className: "header-wrapper"}, 
                     React.createElement("div", {className: "header-bar"}, 
@@ -365,7 +400,9 @@ views.Select = Select;
                         )
                     ), 
                     React.createElement("div", {className: menuClass}, 
-                        React.createElement(Menu, {goToGoals: this.goToGoals, goToTeamDashboard: this.goToTeamDashboard})
+                        React.createElement(Menu, {goToGoals: this.goToGoals, 
+                              goToTeamDashboard: this.goToTeamDashboard, 
+                              daysFromStart: daysFromStart})
                     )
                 )
 

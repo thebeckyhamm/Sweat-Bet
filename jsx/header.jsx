@@ -2,6 +2,30 @@
 
     var Menu = React.createClass({
 
+        goalButton: function(daysFromStart) {
+            if (daysFromStart <= 0) {
+                return (
+                    <button 
+                        className="button"
+                        onClick={this.props.addGoal}>+ Goal
+                    </button>
+                )
+            }
+            else {
+                return;
+            }
+        },
+
+        entryButton: function(daysFromStart) {
+            if (daysFromStart >= 0) {
+                return (
+                    <button className="button"
+                        onClick={this.props.addEntry}>+ Entry
+                    </button>
+                )
+            }
+        },
+
         render: function() {
             return (
                 <div className="main-menu">
@@ -16,7 +40,8 @@
                             <a href="#">My Profile</a>
                         </li>
                         <li className="entry-lg">
-                            <a href="#" className="button">+ Entry</a>
+                            {this.goalButton(this.props.daysFromStart)}
+                            {this.entryButton(this.props.daysFromStart)}
                         </li>
 
                     </ul>
@@ -27,6 +52,7 @@
     });
 
     views.Header = React.createClass({ 
+
         goToGoals: function() {
             app.trigger("fetch:goals:collection");
             this.setState({activeMenu: ""});
@@ -55,7 +81,16 @@
         },
 
         render: function() {
-                var menuClass = "menu-wrapper " + this.state.activeMenu;
+            var team = this.props.team;
+            team = team.toJSON();
+
+            var start_date = moment(team.start_date);
+            var now = moment();
+
+            var daysFromStart = now.diff(start_date, 'days');
+
+            var menuClass = "menu-wrapper " + this.state.activeMenu;
+
             return (
                 <div className="header-wrapper">
                     <div className="header-bar">
@@ -66,7 +101,9 @@
                         </div>
                     </div>
                     <div className={menuClass}>
-                        <Menu goToGoals={this.goToGoals} goToTeamDashboard={this.goToTeamDashboard} />
+                        <Menu goToGoals={this.goToGoals} 
+                              goToTeamDashboard={this.goToTeamDashboard}
+                              daysFromStart={daysFromStart} />
                     </div>
                 </div>
 

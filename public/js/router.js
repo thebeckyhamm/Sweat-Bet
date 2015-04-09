@@ -16,7 +16,20 @@ app.Router = Backbone.Router.extend({
         // create teams
         app.teams = new app.models.Teams();
 
-        app.teams.fetch();
+        app.teams.fetch().done(function() {
+            var team = app.currentUser.get("team_id");
+            React.render(
+                React.createElement(app.views.Header, {
+                    model: app.currentUser,
+                    goToGoals: this.showMyDash.bind(this),
+                    goToTeamDashboard: this.showMain.bind(this),
+                    team: app.teams.get(team),
+                    addGoal: this.showGoalForm.bind(this),
+                    addEntry: this.showEntryForm.bind(this)
+                }),
+                document.querySelector(".header")
+            );
+        }.bind(this));
 
         app.users = new app.models.Users();
 
@@ -27,15 +40,7 @@ app.Router = Backbone.Router.extend({
         });
 
         // render header and landing page
-        React.render(
-            React.createElement(app.views.Header, {
-                model: app.currentUser,
-                goToGoals: this.showMyDash.bind(this),
-                goToTeamDashboard: this.showMain.bind(this)
 
-            }),
-            document.querySelector(".header")
-        );
 
         React.render(
             React.createElement(app.views.LandingPage),

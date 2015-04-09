@@ -492,6 +492,9 @@ li.entry-lg {
       padding: .6em .5em; } }
 .main-menu .button {
   border-color: white;
+  color: white;
+  font-family: "League Gothic", Helvetica, Arial, sans-serif;
+  font-size: 1.7rem;
   padding: .3em;
   text-transform: capitalize;
   width: auto; }
