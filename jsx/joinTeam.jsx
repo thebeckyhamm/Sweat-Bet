@@ -13,7 +13,7 @@
 
         render: function() {
             return (
-                <div>
+                <div className="main">
                     <h4>Choose the team you'd like to join.</h4>  
                     <ul className="list list-buttons">{this.props.collection.map(this.getTeam)}</ul>
                 </div>

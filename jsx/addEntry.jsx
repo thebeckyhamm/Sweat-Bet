@@ -39,31 +39,31 @@
 
         render: function() {
             return (
-
-                <form onSubmit={this.onSubmit} className="form form-entry">
-                    <views.Select label="Goal" 
-                        options={this.getGoalNames()} 
-                        name="goal_id" />
-                    <views.Input 
-                        label="Completed (#)" 
-                        type="number" 
-                        name="number"
-                        placeholder="5"
-                        required="required" />
-                    <div className="field">
-                    <label>Date Completed</label> 
-                    <DatePicker 
-                        selected={this.state.start_date} 
-                        onChange={this.handleStartDateChange}         
-                        placeholderText="Click to select a date" 
-                        maxDate={moment()}
-                        weekStart="0" />  
-                    </div>
-                    <div className="text-right">
-                        <button className="button button-primary">Add Entry</button>
-                    </div>
-                </form>
-
+                <div className="main">
+                    <form onSubmit={this.onSubmit} className="form form-entry">
+                        <views.Select label="Goal" 
+                            options={this.getGoalNames()} 
+                            name="goal_id" />
+                        <views.Input 
+                            label="Completed (#)" 
+                            type="number" 
+                            name="number"
+                            placeholder="5"
+                            required="required" />
+                        <div className="field">
+                        <label>Date Completed</label> 
+                        <DatePicker 
+                            selected={this.state.start_date} 
+                            onChange={this.handleStartDateChange}         
+                            placeholderText="Click to select a date" 
+                            maxDate={moment()}
+                            weekStart="0" />  
+                        </div>
+                        <div className="text-right">
+                            <button className="button button-primary">Add Entry</button>
+                        </div>
+                    </form>
+                </div>
             );
         }
 

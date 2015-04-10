@@ -1,5 +1,12 @@
 (function(views){
 
+    var AddYourGoals = React.createClass({
+        render: function() {
+            return <h1>You don't have any goals yet.<br/> Add some goals!</h1>;
+        }
+
+    });
+
     var UserProgress = React.createBackboneClass({
 
         getCurrentTotal: function(user) {
@@ -41,6 +48,10 @@
             return percentComplete + "%";
         },
 
+        getCorrectPage: function(goalsCount, user) {
+
+        },
+
         render: function() {
             var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
             var user = this.props.model.toJSON();
@@ -54,6 +65,11 @@
 
             var percentComplete = this.getPercentComplete(currentTotal, competitionTotal);
 
+            if (percentComplete === "NaN%") {
+                percentComplete = "0%";
+            }
+
+            var getCorrect = this.getCorrectPage(goalsCount, user);
 
             var weeksComplete = this.getPercentComplete(this.props.week, this.props.team.weeks);
 
@@ -65,8 +81,13 @@
                 marginLeft: weeksComplete
             };
 
+            var currentUser = app.currentUser.get("_id");
+            if (goalsCount === 0 && (currentUser === user._id)) {
+                return <AddYourGoals />;
+            }
 
-            return (
+            else {
+                return (
                   <div className="goal-progress">
                         <h3 className="goal-name">{user.name} ({goalsCount} goals)</h3>
                         <div className="progress-container" data-percent={percentComplete}>
@@ -75,13 +96,14 @@
                             <div className="progress-week" style={weeksStyle}  />
                       </div>
                   </div>  
-            );
+                );
 
+            }
         }
 
     });
 
-    views.MainDash = React.createBackboneClass({
+    var DataPane = React.createBackboneClass({
 
         getUserProgress: function(team, currentWeek, model, index) {
             return <UserProgress 
@@ -90,6 +112,21 @@
                     team={team} 
                     week={currentWeek} />
         },
+
+        render: function() {
+
+            return (
+                <article className="all-goals">
+                    <div>{this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek))}</div>
+                </article>
+            );
+            
+        }
+
+    });
+
+
+    views.MainDash = React.createBackboneClass({
 
         goalButton: function(daysFromStart) {
             if (daysFromStart <= 0) {
@@ -129,14 +166,20 @@
             var currentWeek = Math.ceil(daysFromStart / 7);
             var totalPot = team.number * this.props.collection.length;
 
+            var profile = app.currentUser.get("twitter_profile");
+
             return (
-                <section className="main">
+                <section>
                     <header className="header-main">
                         <h2>Team Dashboard</h2>
                     </header>
-                    <div className="flex dashboard">
+                    <div className="flex dashboard main">
                         <div className="header-meta order-1">
                             <div className="team-data">
+                                <div className="greeting">
+                                    <span className="greeting-name">Howdy,<br /> {app.currentUser.get("name")}!</span>
+                                    <img src={profile.profile_image_url} />
+                                </div>
                                 <div className="week">
                                     <span className="label">Week:</span>
                                     <span>{currentWeek}</span>
@@ -156,10 +199,8 @@
                                 {this.entryButton(daysFromStart)}
                             </div>
                         </div>
+                        <DataPane collection={this.props.collection} team={team} currentWeek={currentWeek} />
 
-                        <article className="all-goals">
-                            <div>{this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek))}</div>
-                        </article>
                     </div>
                 </section>
             );

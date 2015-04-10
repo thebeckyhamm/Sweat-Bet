@@ -8,7 +8,9 @@ app.Router = Backbone.Router.extend({
         "main-dashboard"   : "showMain",
         "add-a-goal"       : "showGoalForm",
         "my-dashboard"     : "showMyDash",
-        "add-an-entry"     : "showEntryForm"
+        "add-an-entry"     : "showEntryForm",
+        "profile"          : "showProfile"
+
     },
 
     initialize: function() {
@@ -174,18 +176,19 @@ app.Router = Backbone.Router.extend({
                 }.bind(this)  
             });
         });
+
+
+        //------ --------------- ------//
+        //------ Profile         ------//
+        //------ --------------- ------//
+
+        this.listenTo(app, "show:profile", function() {
+            this.showProfile();
+        });
+
     },
 
 
-
-
-    showLandingPage: function() {
-        this.navigate("/");
-        React.render(
-            React.createElement(app.views.LandingPage),
-            document.querySelector(".main-wrapper")
-        );
-    },
 
     showHeader: function() {
         React.render(
@@ -198,6 +201,25 @@ app.Router = Backbone.Router.extend({
             document.querySelector(".header")
         );
     },
+
+    showLandingPage: function() {
+        this.navigate("/");
+        React.render(
+            React.createElement(app.views.LandingPage),
+            document.querySelector(".main-wrapper")
+        );
+    },
+
+    showProfile: function() {
+        this.navigate("profile");
+        React.render(
+            React.createElement(app.views.MyProfile, {
+                model: app.currentUser
+            }),
+            document.querySelector(".main-wrapper")
+        );
+    },
+
 
     showMain: function() {
         this.navigate("main-dashboard");

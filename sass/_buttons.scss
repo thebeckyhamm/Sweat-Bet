@@ -23,9 +23,8 @@ $primary-color: $rosy;
     border-radius: 3px;
     color: white;
     &:hover {
-        background-color: transparent;
-        color: $primary-color;
-    }
+        background-color: darken($primary-color, 10%);
+        }
 }
 
 
@@ -38,8 +37,8 @@ $primary-color: $rosy;
     }
 }
 
-.button-large {
-    
+.button-lg {
+    padding: 1em;
 }
 
 

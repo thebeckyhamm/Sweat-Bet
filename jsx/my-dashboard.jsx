@@ -274,15 +274,21 @@ var TotalProgress = React.createBackboneClass({
 
             var currentWeek = Math.ceil(daysFromStart / 7);
 
+            var profile = app.currentUser.get("twitter_profile");
 
 
             return (
-                <section className="main">
+                <section>
                     <header className="header-main">
                         <h2>My Goals</h2>
                     </header>
-                    <div className="flex dashboard">
+                    <div className="flex dashboard main">
                         <div className="header-meta order-1">
+                            <div className="greeting">
+                                <span className="greeting-name">Howdy,<br /> {app.currentUser.get("name")}!</span>
+                                <img src={profile.profile_image_url} />
+                            </div>
+
                             <div className="team-data">
                                 <div className="week">
                                     <span className="label">Week:</span>

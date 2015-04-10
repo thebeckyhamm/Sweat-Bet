@@ -111,31 +111,31 @@ views.Select = Select;
 
         render: function() {
             return (
-
-                React.createElement("form", {onSubmit: this.onSubmit, className: "form form-entry"}, 
-                    React.createElement(views.Select, {label: "Goal", 
-                        options: this.getGoalNames(), 
-                        name: "goal_id"}), 
-                    React.createElement(views.Input, {
-                        label: "Completed (#)", 
-                        type: "number", 
-                        name: "number", 
-                        placeholder: "5", 
-                        required: "required"}), 
-                    React.createElement("div", {className: "field"}, 
-                    React.createElement("label", null, "Date Completed"), 
-                    React.createElement(DatePicker, {
-                        selected: this.state.start_date, 
-                        onChange: this.handleStartDateChange, 
-                        placeholderText: "Click to select a date", 
-                        maxDate: moment(), 
-                        weekStart: "0"})
-                    ), 
-                    React.createElement("div", {className: "text-right"}, 
-                        React.createElement("button", {className: "button button-primary"}, "Add Entry")
+                React.createElement("div", {className: "main"}, 
+                    React.createElement("form", {onSubmit: this.onSubmit, className: "form form-entry"}, 
+                        React.createElement(views.Select, {label: "Goal", 
+                            options: this.getGoalNames(), 
+                            name: "goal_id"}), 
+                        React.createElement(views.Input, {
+                            label: "Completed (#)", 
+                            type: "number", 
+                            name: "number", 
+                            placeholder: "5", 
+                            required: "required"}), 
+                        React.createElement("div", {className: "field"}, 
+                        React.createElement("label", null, "Date Completed"), 
+                        React.createElement(DatePicker, {
+                            selected: this.state.start_date, 
+                            onChange: this.handleStartDateChange, 
+                            placeholderText: "Click to select a date", 
+                            maxDate: moment(), 
+                            weekStart: "0"})
+                        ), 
+                        React.createElement("div", {className: "text-right"}, 
+                            React.createElement("button", {className: "button button-primary"}, "Add Entry")
+                        )
                     )
                 )
-
             );
         }
 
@@ -214,27 +214,28 @@ views.Select = Select;
 
         render: function() {
             return (
-
-                React.createElement("form", {onSubmit: this.onSubmit, className: "goal-form"}, 
-                    React.createElement("p", null, "Set up your weekly goal."), 
-                    React.createElement(views.Input, {
-                        label: "Goal Name", 
-                        type: "text", 
-                        name: "name", 
-                        placeholder: "ex: Run", 
-                        required: "required"}), 
-                    React.createElement(views.Input, {
-                        label: "Number", 
-                        type: "number", 
-                        name: "number", 
-                        placeholder: "5", 
-                        required: "required"}), 
-                    React.createElement(views.Select, {label: "Unit (per week)", 
-                        options: this.units, 
-                        name: "unit", 
-                        defaultValue: "days"}), 
-                    React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Add Goal"))
-                    
+                React.createElement("div", null, 
+                    React.createElement("form", {onSubmit: this.onSubmit, className: "goal-form"}, 
+                        React.createElement("p", null, "Set up your weekly goal."), 
+                        React.createElement(views.Input, {
+                            label: "Goal Name", 
+                            type: "text", 
+                            name: "name", 
+                            placeholder: "ex: Run", 
+                            required: "required"}), 
+                        React.createElement(views.Input, {
+                            label: "Number", 
+                            type: "number", 
+                            name: "number", 
+                            placeholder: "5", 
+                            required: "required"}), 
+                        React.createElement(views.Select, {label: "Unit (per week)", 
+                            options: this.units, 
+                            name: "unit", 
+                            defaultValue: "days"}), 
+                        React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Add Goal"))
+                        
+                    )
                 )
 
             );
@@ -261,34 +262,59 @@ views.Select = Select;
             }
         },
 
+        getInitialState: function() {
+          return {
+            start_date: null
+          };
+        },
+
+        handleStartDateChange: function(date) {
+            this.setState({
+                start_date: date
+            });
+        },
+
         render: function() {
             return (
-
-                React.createElement("form", {onSubmit: this.onSubmit, className: "form create-team-form"}, 
-                    React.createElement(views.Input, {
-                        label: "Team Name", 
-                        type: "text", 
-                        name: "name", 
-                        placeholder: "ex: Eat My Dust", 
-                        required: "required"}), 
-                    React.createElement(views.Input, {
-                        label: "Bet per Person (in $)", 
-                        type: "number", 
-                        name: "number", 
-                        placeholder: "ex: 25.00", 
-                        required: "required"}), 
-                    React.createElement(views.Select, {
-                        label: "# of Weeks for Competition", 
-                        options: this.weeks, 
-                        name: "weeks", 
-                        defaultValue: "12"}), 
-                    React.createElement(views.Input, {
-                        label: "Start Date (please enter as 'MM/DD/YYYY')", 
-                        type: "text", 
-                        name: "start_date", 
-                        placeholder: "ex: 11/14/2015", 
-                        required: "required"}), 
-                    React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Create Team"))
+                React.createElement("div", {class: "main create-team"}, 
+                    React.createElement("div", {className: "create-team-form"}, 
+                        React.createElement("form", {onSubmit: this.onSubmit, className: "form"}, 
+                            React.createElement("h2", null, "Create your team"), 
+                            React.createElement(views.Input, {
+                                label: "Team Name", 
+                                type: "text", 
+                                name: "name", 
+                                placeholder: "ex: Eat My Dust", 
+                                required: "required"}), 
+                            React.createElement(views.Input, {
+                                label: "Bet per Person (in $)", 
+                                type: "number", 
+                                name: "number", 
+                                placeholder: "ex: 25.00", 
+                                required: "required"}), 
+                            React.createElement(views.Select, {
+                                label: "Length of Competition (in weeks)", 
+                                options: this.weeks, 
+                                name: "weeks", 
+                                defaultValue: "12"}), 
+                            React.createElement("div", {className: "field"}, 
+                                React.createElement("label", null, "Date Completed"), 
+                                React.createElement(DatePicker, {
+                                    selected: this.state.start_date, 
+                                    onChange: this.handleStartDateChange, 
+                                    placeholderText: "Click to select a date", 
+                                    weekStart: "0"})
+                                ), 
+                            React.createElement("div", {className: "text-right"}, React.createElement("button", {className: "button button-primary"}, "Create Team"))
+                        )
+                    ), 
+                    React.createElement("div", {className: "create-team-sidebar"}, 
+                        React.createElement("h4", null, "Need a team name?"), 
+                        React.createElement("p", null, "Use ", React.createElement("a", {href: "http://www.wordlab.com/gen/team-name-generator.php"}, "this team name generator"), " for ideas."), 
+                        React.createElement("br", null), 
+                        React.createElement("h4", null, "How long should the competition be?"), 
+                        React.createElement("p", null, "We recommend your competition be at least 12 weeks in order for people to actually see changes in their lifestyle/body/etc.")
+                    )
                 )
 
             );
@@ -318,19 +344,26 @@ views.Select = Select;
              }
          },
 
-        goToGoals: function() {
+        goToGoals: function(e) {
+            e.preventDefault();
             app.trigger("fetch:goals:collection");
             this.setState({activeMenu: ""});
         },
 
-        goToTeamDashboard: function() {
+        goToTeamDashboard: function(e) {
+            e.preventDefault();
             app.trigger("fetch:users:collection");
             this.setState({activeMenu: ""});
+        },
 
+        goToProfile: function(e) {
+            e.preventDefault();
+            app.trigger("show:profile");
+            this.setState({activeMenu: ""});
         },
 
         goalButton: function(daysFromStart) {
-            if (daysFromStart <= 0) {
+            if (daysFromStart < 0) {
                 return (
                     React.createElement("button", {
                         className: "button", 
@@ -361,7 +394,7 @@ views.Select = Select;
             var team = this.props.team;
             team = team.toJSON();
 
-            var start_date = moment(team.start_date);
+            var start_date = moment(team.datepicker);
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
@@ -380,7 +413,7 @@ views.Select = Select;
                             React.createElement("a", {href: "#", onClick: this.goToGoals}, "My Goals")
                         ), 
                         React.createElement("li", null, 
-                            React.createElement("a", {href: "#"}, "My Profile")
+                            React.createElement("a", {href: "#", onClick: this.goToProfile}, "My Profile")
                         ), 
                         React.createElement("li", {className: "entry-lg"}, 
                             this.goalButton(daysFromStart), 
@@ -444,7 +477,7 @@ views.Select = Select;
 
         render: function() {
             return (
-                React.createElement("div", null, 
+                React.createElement("div", {className: "main"}, 
                     React.createElement("h4", null, "Choose the team you'd like to join."), 
                     React.createElement("ul", {className: "list list-buttons"}, this.props.collection.map(this.getTeam))
                 )
@@ -479,6 +512,13 @@ views.Select = Select;
 
 })(app.views);
 (function(views){
+
+    var AddYourGoals = React.createClass({displayName: "AddYourGoals",
+        render: function() {
+            return React.createElement("h1", null, "You don't have any goals yet.", React.createElement("br", null), " Add some goals!");
+        }
+
+    });
 
     var UserProgress = React.createBackboneClass({
 
@@ -521,6 +561,10 @@ views.Select = Select;
             return percentComplete + "%";
         },
 
+        getCorrectPage: function(goalsCount, user) {
+
+        },
+
         render: function() {
             var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
             var user = this.props.model.toJSON();
@@ -534,6 +578,11 @@ views.Select = Select;
 
             var percentComplete = this.getPercentComplete(currentTotal, competitionTotal);
 
+            if (percentComplete === "NaN%") {
+                percentComplete = "0%";
+            }
+
+            var getCorrect = this.getCorrectPage(goalsCount, user);
 
             var weeksComplete = this.getPercentComplete(this.props.week, this.props.team.weeks);
 
@@ -545,8 +594,13 @@ views.Select = Select;
                 marginLeft: weeksComplete
             };
 
+            var currentUser = app.currentUser.get("_id");
+            if (goalsCount === 0 && (currentUser === user._id)) {
+                return React.createElement(AddYourGoals, null);
+            }
 
-            return (
+            else {
+                return (
                   React.createElement("div", {className: "goal-progress"}, 
                         React.createElement("h3", {className: "goal-name"}, user.name, " (", goalsCount, " goals)"), 
                         React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
@@ -555,13 +609,14 @@ views.Select = Select;
                             React.createElement("div", {className: "progress-week", style: weeksStyle})
                       )
                   )  
-            );
+                );
 
+            }
         }
 
     });
 
-    views.MainDash = React.createBackboneClass({
+    var DataPane = React.createBackboneClass({
 
         getUserProgress: function(team, currentWeek, model, index) {
             return React.createElement(UserProgress, {
@@ -570,6 +625,21 @@ views.Select = Select;
                     team: team, 
                     week: currentWeek})
         },
+
+        render: function() {
+
+            return (
+                React.createElement("article", {className: "all-goals"}, 
+                    React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek)))
+                )
+            );
+            
+        }
+
+    });
+
+
+    views.MainDash = React.createBackboneClass({
 
         goalButton: function(daysFromStart) {
             if (daysFromStart <= 0) {
@@ -609,14 +679,20 @@ views.Select = Select;
             var currentWeek = Math.ceil(daysFromStart / 7);
             var totalPot = team.number * this.props.collection.length;
 
+            var profile = app.currentUser.get("twitter_profile");
+
             return (
-                React.createElement("section", {className: "main"}, 
+                React.createElement("section", null, 
                     React.createElement("header", {className: "header-main"}, 
                         React.createElement("h2", null, "Team Dashboard")
                     ), 
-                    React.createElement("div", {className: "flex dashboard"}, 
+                    React.createElement("div", {className: "flex dashboard main"}, 
                         React.createElement("div", {className: "header-meta order-1"}, 
                             React.createElement("div", {className: "team-data"}, 
+                                React.createElement("div", {className: "greeting"}, 
+                                    React.createElement("span", {className: "greeting-name"}, "Howdy,", React.createElement("br", null), " ", app.currentUser.get("name"), "!"), 
+                                    React.createElement("img", {src: profile.profile_image_url})
+                                ), 
                                 React.createElement("div", {className: "week"}, 
                                     React.createElement("span", {className: "label"}, "Week:"), 
                                     React.createElement("span", null, currentWeek)
@@ -636,10 +712,8 @@ views.Select = Select;
                                 this.entryButton(daysFromStart)
                             )
                         ), 
+                        React.createElement(DataPane, {collection: this.props.collection, team: team, currentWeek: currentWeek})
 
-                        React.createElement("article", {className: "all-goals"}, 
-                            React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, team, currentWeek)))
-                        )
                     )
                 )
             );
@@ -926,15 +1000,21 @@ var TotalProgress = React.createBackboneClass({
 
             var currentWeek = Math.ceil(daysFromStart / 7);
 
+            var profile = app.currentUser.get("twitter_profile");
 
 
             return (
-                React.createElement("section", {className: "main"}, 
+                React.createElement("section", null, 
                     React.createElement("header", {className: "header-main"}, 
                         React.createElement("h2", null, "My Goals")
                     ), 
-                    React.createElement("div", {className: "flex dashboard"}, 
+                    React.createElement("div", {className: "flex dashboard main"}, 
                         React.createElement("div", {className: "header-meta order-1"}, 
+                            React.createElement("div", {className: "greeting"}, 
+                                React.createElement("span", {className: "greeting-name"}, "Howdy,", React.createElement("br", null), " ", app.currentUser.get("name"), "!"), 
+                                React.createElement("img", {src: profile.profile_image_url})
+                            ), 
+
                             React.createElement("div", {className: "team-data"}, 
                                 React.createElement("div", {className: "week"}, 
                                     React.createElement("span", {className: "label"}, "Week:"), 
@@ -971,15 +1051,43 @@ var TotalProgress = React.createBackboneClass({
 })(app.views);
 (function(views){
 
+    views.MyProfile = React.createBackboneClass({
+
+        render: function() {
+            var profile = this.props.model.get("twitter_profile");
+            console.log(profile);
+            return (
+                React.createElement("div", {className: "main"}, 
+                React.createElement("div", {className: "profile"}, 
+                    React.createElement("h2", null, "My Profile"), 
+                    React.createElement("span", {className: "label"}, "Name:"), 
+                    React.createElement("span", null, this.props.model.get("name")), 
+                    React.createElement("br", null), 
+                    React.createElement("span", {className: "label"}, "Photo:"), 
+                    React.createElement("span", null, React.createElement("img", {src: profile.profile_image_url}))
+                )
+                )
+            );
+        }
+    });
+
+
+
+})(app.views);
+(function(views){
+
     views.JoinOrCreateTeam = React.createBackboneClass({
 
         render: function() {
             return (
-                React.createElement("div", null, 
-                    React.createElement("h2", null, "Hi ", this.props.model.get("name"), "! ", React.createElement("br", null), "Welcome to the app!"), 
-                    React.createElement("div", {className: "buttons-toggle"}, 
-                        React.createElement("button", {className: "button button-primary", onClick: this.props.onJoinSelect}, "Join a Team"), 
-                        React.createElement("button", {className: "button button-primary", onClick: this.props.onCreateNew}, "Create New Team ")
+                React.createElement("div", {className: "main"}, 
+                    React.createElement("div", {className: "onboarding"}, 
+                        React.createElement("h2", null, "Hi, ", this.props.model.get("name"), "! ", React.createElement("br", null), "Welcome to SweatBet!"), 
+                        React.createElement("br", null), 
+                        React.createElement("div", {className: "buttons-toggle"}, 
+                            React.createElement("button", {className: "button button-primary button-lg", onClick: this.props.onJoinSelect}, "Join a Team"), 
+                            React.createElement("button", {className: "button button-primary button-lg", onClick: this.props.onCreateNew}, "Create New Team ")
+                        )
                     )
                 )
   

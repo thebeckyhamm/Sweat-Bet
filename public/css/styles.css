@@ -344,6 +344,23 @@ hr {
   height: 1px;
   margin: 1rem 0; }
 
+.grid:after {
+  content: "";
+  clear: both;
+  display: table; }
+
+[class*="col-"] {
+  margin: .5rem;
+  width: calc(100% - 1rem); }
+
+@media all and (min-width: 30em) {
+  [class*="col-"] {
+    float: left; }
+  .col-70 {
+    width: calc(70% - 1rem); }
+  .col-30 {
+    width: calc(30% - 1rem); } }
+
 @font-face {
   font-family: 'clearSansMedium';
   src: url('../fonts/ClearSans-Medium-webfont.eot');
@@ -383,6 +400,7 @@ hr {
 
 h1, h2, h3 {
   font-family: "League Gothic", Helvetica, Arial, sans-serif;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 1px; }
 
@@ -409,8 +427,7 @@ h1 {
   border-radius: 3px;
   color: white; }
   .button-primary:hover {
-    background-color: transparent;
-    color: #FF003D; }
+    background-color: #cc0031; }
 
 .button-secondary {
   background-color: #F7C41F;
@@ -418,6 +435,9 @@ h1 {
   .button-secondary:hover {
     background-color: transparent;
     color: #F7C41F; }
+
+.button-lg {
+  padding: 1em; }
 
 .buttons-toggle .button {
   margin: 0 .5rem;
@@ -513,6 +533,13 @@ ul li.entry-lg {
   .list-buttons li .button {
     width: 100%; }
 
+.main-wrapper {
+  min-height: 74vh; }
+
+.main {
+  margin: 2rem auto;
+  max-width: 1000px; }
+
 .header-main h2 {
   background-color: #F7C41F;
   font-size: 1.7rem;
@@ -521,16 +548,50 @@ ul li.entry-lg {
   padding: .25em .5em;
   text-align: center; }
 
-.landing-page {
+.landing-page, .profile, .onboarding {
   background-color: #F7C41F;
   padding: 2rem;
-  margin: 2rem auto;
-  width: 50%; }
-  .landing-page h2 {
+  margin: 0 auto;
+  width: 75%; }
+  .landing-page h2, .profile h2, .onboarding h2 {
     font-size: 3rem;
     margin: 0; }
-  .landing-page img {
+  .landing-page img, .profile img, .onboarding img {
     width: 50px; }
+
+.profile .label {
+  color: white; }
+
+@media all and (min-width: 45em) {
+  .greeting {
+    display: flex; } }
+.greeting img {
+  border-radius: 50%;
+  display: block;
+  vertical-align: text-top; }
+.greeting .greeting-name {
+  font-size: 1.3rem;
+  display: inline-block;
+  line-height: 1;
+  margin-bottom: .5rem; }
+  @media all and (min-width: 45em) {
+    .greeting .greeting-name {
+      margin-left: 1rem;
+      order: 2; } }
+.greeting:after {
+  content: "";
+  clear: both;
+  display: table; }
+
+.module {
+  background-color: white;
+  padding: 1rem; }
+
+footer {
+  background-color: #2E3234;
+  color: white;
+  margin: 0 auto;
+  padding: 1rem; }
 
 .goal-progress {
   margin-bottom: 1em; }
@@ -609,12 +670,6 @@ ul li.entry-lg {
 @media all and (min-width: 30em) {
   .team-name, .pot, .week {
     font-size: 1.2rem; } }
-.team-name .label, .pot .label, .week .label {
-  color: #949EA9;
-  display: block;
-  font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase; }
 
 .all-goals {
   background-color: white;
@@ -628,10 +683,17 @@ ul li.entry-lg {
   .all-goals h4 {
     margin-bottom: 0; }
 
+.label {
+  color: #949EA9;
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase; }
+
 form {
   background-color: #2E3234;
   color: white;
-  margin: 1rem auto;
+  margin: 0 auto;
   padding: 1rem;
   width: 95%; }
   @media all and (min-width: 30em) {
@@ -700,6 +762,33 @@ form {
   @media all and (min-width: 30em) {
     .tether-target, .field > div {
       width: 75%; } }
+
+.create-team {
+  max-width: 900px; }
+
+.create-team-form {
+  margin: .5rem; }
+  @media all and (min-width: 30em) {
+    .create-team-form {
+      float: left;
+      width: calc(70% - 1rem); } }
+  .create-team-form .form {
+    margin: 0;
+    width: 100%; }
+  .create-team-form h2 {
+    font-size: 2.3rem;
+    margin: 0; }
+
+.create-team-sidebar {
+  background-color: white;
+  padding: 1rem;
+  margin: .5rem; }
+  @media all and (min-width: 30em) {
+    .create-team-sidebar {
+      float: left;
+      width: calc(30% - 1rem); } }
+  .create-team-sidebar h4 {
+    margin: 0; }
 
 *, *:after, *:before {
   box-sizing: border-box; }

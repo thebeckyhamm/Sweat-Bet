@@ -20,28 +20,29 @@
 
         render: function() {
             return (
-
-                <form onSubmit={this.onSubmit} className="goal-form">
-                    <p>Set up your weekly goal.</p>
-                    <views.Input 
-                        label="Goal Name" 
-                        type="text" 
-                        name="name"
-                        placeholder="ex: Run"
-                        required="required" />
-                    <views.Input 
-                        label="Number" 
-                        type="number" 
-                        name="number"
-                        placeholder="5"
-                        required="required" />  
-                    <views.Select label="Unit (per week)" 
-                        options={this.units} 
-                        name="unit"
-                        defaultValue="days" />
-                    <div className="text-right"><button className="button button-primary">Add Goal</button></div>
-                    
-                </form>
+                <div>
+                    <form onSubmit={this.onSubmit} className="goal-form">
+                        <p>Set up your weekly goal.</p>
+                        <views.Input 
+                            label="Goal Name" 
+                            type="text" 
+                            name="name"
+                            placeholder="ex: Run"
+                            required="required" />
+                        <views.Input 
+                            label="Number" 
+                            type="number" 
+                            name="number"
+                            placeholder="5"
+                            required="required" />  
+                        <views.Select label="Unit (per week)" 
+                            options={this.units} 
+                            name="unit"
+                            defaultValue="days" />
+                        <div className="text-right"><button className="button button-primary">Add Goal</button></div>
+                        
+                    </form>
+                </div>
 
             );
         }

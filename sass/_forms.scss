@@ -1,7 +1,7 @@
 form {
     background-color: $dark-gray;
     color: white;
-    margin: 1rem auto;
+    margin: 0 auto;
     padding: 1rem;
     width: 95%;
     @include bp($kid-bear) {

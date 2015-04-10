@@ -35,13 +35,6 @@
     @include bp($kid-bear) {
         font-size: 1.2rem;
     }
-    .label {
-        color: $gray;
-        display: block;
-        font-size: 1rem;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
 }
 
 
@@ -59,4 +52,12 @@
     h4 {
         margin-bottom: 0;
     }
+}
+
+.label {
+    color: $gray;
+    display: block;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
 }

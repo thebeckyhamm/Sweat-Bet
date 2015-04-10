@@ -15,6 +15,7 @@ $heading-font: "League Gothic", Helvetica, Arial, sans-serif;
 $body-font: "clearSans", Helvetica, Arial, sans-serif;
 
 $kid-bear: 30em;
+$mama-bear: 45em;
 
 @mixin bp($width) {
     @media all and (min-width: $width) {

@@ -1,5 +1,10 @@
 .main-wrapper {
-    //padding: 1rem;
+    min-height: 74vh;
+}
+
+.main {
+    margin: 2rem auto;
+    max-width: 1000px;
 }
 
 .header-main {
@@ -13,11 +18,11 @@
     }
 }
 
-.landing-page {
+.landing-page, .profile, .onboarding {
     background-color: $faktor;
     padding: 2rem;
-    margin: 2rem auto;
-    width: 50%;
+    margin: 0 auto;
+    width: 75%;
     h2 {
         font-size: 3rem;
         margin: 0;
@@ -25,4 +30,51 @@
     img {
         width: 50px;
     }
+}
+
+.profile .label {
+    color: white;
+}
+
+.greeting {
+    @include bp($mama-bear) {
+        display: flex;
+    }   
+    img {
+        border-radius: 50%;
+        display: block;
+        vertical-align: text-top;
+
+    }
+    .greeting-name {
+        font-size: 1.3rem;
+        display: inline-block;
+        line-height: 1;
+        margin-bottom: .5rem;
+        @include bp($mama-bear) {
+            margin-left: 1rem;
+            order: 2;
+
+        }
+
+    }
+    &:after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+    
+}
+
+.module {
+    background-color: white;
+    padding: 1rem;
+}
+
+footer {
+    background-color: $dark-gray;
+    color: white;
+    margin: 0 auto;
+    padding: 1rem;
+
 }

@@ -17,19 +17,26 @@
              }
          },
 
-        goToGoals: function() {
+        goToGoals: function(e) {
+            e.preventDefault();
             app.trigger("fetch:goals:collection");
             this.setState({activeMenu: ""});
         },
 
-        goToTeamDashboard: function() {
+        goToTeamDashboard: function(e) {
+            e.preventDefault();
             app.trigger("fetch:users:collection");
             this.setState({activeMenu: ""});
+        },
 
+        goToProfile: function(e) {
+            e.preventDefault();
+            app.trigger("show:profile");
+            this.setState({activeMenu: ""});
         },
 
         goalButton: function(daysFromStart) {
-            if (daysFromStart <= 0) {
+            if (daysFromStart < 0) {
                 return (
                     <button 
                         className="button"
@@ -60,7 +67,7 @@
             var team = this.props.team;
             team = team.toJSON();
 
-            var start_date = moment(team.start_date);
+            var start_date = moment(team.datepicker);
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
@@ -79,7 +86,7 @@
                             <a href="#" onClick={this.goToGoals}>My Goals</a>
                         </li>
                         <li>
-                            <a href="#">My Profile</a>
+                            <a href="#" onClick={this.goToProfile}>My Profile</a>
                         </li>
                         <li className="entry-lg">
                             {this.goalButton(daysFromStart)}

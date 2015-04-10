@@ -1,0 +1,35 @@
+.create-team {
+    max-width: 900px;
+}
+
+.create-team-form {
+    margin: .5rem;
+    @include bp($kid-bear) {
+        float: left;
+        width: calc(70% - 1rem);
+        
+    }
+    .form {
+        margin: 0;
+        width: 100%;
+    }
+    h2 {
+        font-size: 2.3rem;
+        margin: 0;
+    }
+
+}
+
+.create-team-sidebar {
+    background-color: white;
+    padding: 1rem;
+    margin: .5rem;
+    @include bp($kid-bear) {
+        float: left;
+        width: calc(30% - 1rem);
+        
+    }
+    h4 {
+        margin: 0;
+    }
+}
