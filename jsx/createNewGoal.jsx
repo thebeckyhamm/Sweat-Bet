@@ -22,7 +22,7 @@
             return (
                 <div className="main">
                     <form onSubmit={this.onSubmit} className="form goal-form">
-                        <p>Set up your weekly goal.</p>
+                        <h2>Set up your weekly goal.</h2>
                         <views.Input 
                             label="Goal Name" 
                             type="text" 

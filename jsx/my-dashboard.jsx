@@ -267,12 +267,16 @@ var TotalProgress = React.createBackboneClass({
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.start_date);
+            var start_date = moment(team.datepicker);
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
 
             var currentWeek = Math.ceil(daysFromStart / 7);
+            if (currentWeek === 0) {
+                currentWeek = "Competition starts " + start_date.fromNow(); 
+            }
+
 
             var profile = app.currentUser.get("twitter_profile");
 
@@ -284,12 +288,13 @@ var TotalProgress = React.createBackboneClass({
                     </header>
                     <div className="flex dashboard main">
                         <div className="header-meta order-1">
-                            <div className="greeting">
-                                <span className="greeting-name">Howdy,<br /> {app.currentUser.get("name")}!</span>
-                                <img src={profile.profile_image_url} />
-                            </div>
-
                             <div className="team-data">
+                                <div className="greeting">
+                                    <span className="greeting-name">Howdy,<br /> {app.currentUser.get("name")}!</span>
+                                    <br />
+                                    <img src={profile.profile_image_url} />
+                                </div>
+
                                 <div className="week">
                                     <span className="label">Week:</span>
                                     <span>{currentWeek}</span>
@@ -298,8 +303,8 @@ var TotalProgress = React.createBackboneClass({
                                     <span className="label">Team Name:</span>
                                     <span>{team.name}</span>
                                 </div>
-
                             </div>
+
                             <div className="button-toggle-sm">  
                                 {this.goalButton(daysFromStart)}
                                 {this.entryButton(daysFromStart)}

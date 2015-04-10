@@ -216,7 +216,7 @@ views.Select = Select;
             return (
                 React.createElement("div", {className: "main"}, 
                     React.createElement("form", {onSubmit: this.onSubmit, className: "form goal-form"}, 
-                        React.createElement("p", null, "Set up your weekly goal."), 
+                        React.createElement("h2", null, "Set up your weekly goal."), 
                         React.createElement(views.Input, {
                             label: "Goal Name", 
                             type: "text", 
@@ -639,7 +639,9 @@ views.Select = Select;
 
             return (
                 React.createElement("article", {className: "all-goals"}, 
-                    React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek)))
+                    React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek))), 
+                    React.createElement("div", {className: "image"}, React.createElement("img", {src: "images/svg/cape1.svg"}))
+
                 )
             );
             
@@ -678,7 +680,7 @@ views.Select = Select;
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.start_date);
+            var start_date = moment(team.datepicker);
             var now = moment();
 
             var end_date = moment(team.start_date).add((team.weeks * 7), "days").calendar();
@@ -686,6 +688,10 @@ views.Select = Select;
             var daysFromStart = now.diff(start_date, 'days');
 
             var currentWeek = Math.ceil(daysFromStart / 7);
+
+            if (currentWeek === 0) {
+                currentWeek = "Competition starts " + start_date.fromNow(); 
+            }
             var totalPot = team.number * this.props.collection.length;
 
             var profile = app.currentUser.get("twitter_profile");
@@ -722,6 +728,7 @@ views.Select = Select;
                             )
                         ), 
                         React.createElement(DataPane, {collection: this.props.collection, team: team, currentWeek: currentWeek})
+
 
                     )
                 )
@@ -1002,12 +1009,16 @@ var TotalProgress = React.createBackboneClass({
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.start_date);
+            var start_date = moment(team.datepicker);
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
 
             var currentWeek = Math.ceil(daysFromStart / 7);
+            if (currentWeek === 0) {
+                currentWeek = "Competition starts " + start_date.fromNow(); 
+            }
+
 
             var profile = app.currentUser.get("twitter_profile");
 
@@ -1019,12 +1030,13 @@ var TotalProgress = React.createBackboneClass({
                     ), 
                     React.createElement("div", {className: "flex dashboard main"}, 
                         React.createElement("div", {className: "header-meta order-1"}, 
-                            React.createElement("div", {className: "greeting"}, 
-                                React.createElement("span", {className: "greeting-name"}, "Howdy,", React.createElement("br", null), " ", app.currentUser.get("name"), "!"), 
-                                React.createElement("img", {src: profile.profile_image_url})
-                            ), 
-
                             React.createElement("div", {className: "team-data"}, 
+                                React.createElement("div", {className: "greeting"}, 
+                                    React.createElement("span", {className: "greeting-name"}, "Howdy,", React.createElement("br", null), " ", app.currentUser.get("name"), "!"), 
+                                    React.createElement("br", null), 
+                                    React.createElement("img", {src: profile.profile_image_url})
+                                ), 
+
                                 React.createElement("div", {className: "week"}, 
                                     React.createElement("span", {className: "label"}, "Week:"), 
                                     React.createElement("span", null, currentWeek)
@@ -1033,8 +1045,8 @@ var TotalProgress = React.createBackboneClass({
                                     React.createElement("span", {className: "label"}, "Team Name:"), 
                                     React.createElement("span", null, team.name)
                                 )
-
                             ), 
+
                             React.createElement("div", {className: "button-toggle-sm"}, 
                                 this.goalButton(daysFromStart), 
                                 this.entryButton(daysFromStart)

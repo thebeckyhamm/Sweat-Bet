@@ -127,6 +127,8 @@
             return (
                 <article className="all-goals">
                     <div>{this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek))}</div>
+                    <div className="image"><img src="images/svg/cape1.svg" /></div>
+
                 </article>
             );
             
@@ -165,7 +167,7 @@
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.start_date);
+            var start_date = moment(team.datepicker);
             var now = moment();
 
             var end_date = moment(team.start_date).add((team.weeks * 7), "days").calendar();
@@ -173,6 +175,10 @@
             var daysFromStart = now.diff(start_date, 'days');
 
             var currentWeek = Math.ceil(daysFromStart / 7);
+
+            if (currentWeek === 0) {
+                currentWeek = "Competition starts " + start_date.fromNow(); 
+            }
             var totalPot = team.number * this.props.collection.length;
 
             var profile = app.currentUser.get("twitter_profile");
@@ -209,6 +215,7 @@
                             </div>
                         </div>
                         <DataPane collection={this.props.collection} team={team} currentWeek={currentWeek} />
+
 
                     </div>
                 </section>

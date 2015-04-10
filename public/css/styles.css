@@ -602,6 +602,7 @@ footer {
 .goal-name {
   font-family: "clearSans", Helvetica, Arial, sans-serif;
   font-size: 1.2rem;
+  letter-spacing: 0;
   margin: 0; }
 
 .goal-info {
@@ -685,6 +686,9 @@ footer {
     margin: 0; }
   .all-goals h4 {
     margin-bottom: 0; }
+  .all-goals .image {
+    margin: 0 auto;
+    width: 150px; }
 
 .label {
   color: #949EA9;
@@ -708,6 +712,8 @@ form {
   form p {
     font-size: 1.3rem;
     margin-top: 0; }
+  form h2 {
+    font-size: 3rem; }
 
 .field {
   margin-bottom: .5rem; }
