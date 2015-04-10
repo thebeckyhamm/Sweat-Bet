@@ -30,7 +30,7 @@
 
         render: function() {
             return (
-                <div class="main create-team">
+                <div className="main create-team clearfix">
                     <div className="create-team-form">
                         <form onSubmit={this.onSubmit} className="form">
                             <h2>Create your team</h2>
@@ -52,7 +52,7 @@
                                 name="weeks"
                                 defaultValue="12" />
                             <div className="field">
-                                <label>Date Completed</label> 
+                                <label>Start Date</label> 
                                 <DatePicker 
                                     selected={this.state.start_date} 
                                     onChange={this.handleStartDateChange}         

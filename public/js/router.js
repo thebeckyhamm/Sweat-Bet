@@ -103,10 +103,6 @@ app.Router = Backbone.Router.extend({
 
         this.listenTo(app, "add:team", function(teamInfo) {
 
-            var startDate = teamInfo.start_date;
-            var realDate = new Date(startDate).toString();
-            teamInfo.start_date = realDate;
-
             var newTeam = app.teams.add(teamInfo);
             newTeam.save(null, 
                 {success: function(model) {
@@ -202,6 +198,20 @@ app.Router = Backbone.Router.extend({
         );
     },
 
+    showMenu: function() {
+        var team = app.currentUser.get("team_id");
+
+        React.render(
+            React.createElement(app.views.Menu, {
+                model: app.currentUser,
+                team: app.teams.get(team),
+                addGoal: this.showGoalForm.bind(this),
+                addEntry: this.showEntryForm.bind(this)
+            }),
+            document.querySelector(".nav")
+        );
+    },
+
     showLandingPage: function() {
         this.navigate("/");
         React.render(
@@ -252,7 +262,8 @@ app.Router = Backbone.Router.extend({
         React.render(
             React.createElement(app.views.JoinTeam, {
                 collection: app.teams,
-                onTeamSelect: this.addUserToTeam.bind(this)
+                onTeamSelect: this.addUserToTeam.bind(this),
+                onCreateNew: this.showNewTeamForm.bind(this)
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -302,6 +313,7 @@ app.Router = Backbone.Router.extend({
         app.currentUser.save({team_id: model.id},
             {
                 success: function() {
+                    this.showMenu();
                     this.showMain();
                 }.bind(this) 
             }

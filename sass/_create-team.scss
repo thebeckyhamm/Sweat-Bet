@@ -4,7 +4,7 @@
 
 .create-team-form {
     margin: .5rem;
-    @include bp($kid-bear) {
+    @include bp($mama-bear) {
         float: left;
         width: calc(70% - 1rem);
         
@@ -24,7 +24,7 @@
     background-color: white;
     padding: 1rem;
     margin: .5rem;
-    @include bp($kid-bear) {
+    @include bp($mama-bear) {
         float: left;
         width: calc(30% - 1rem);
         

@@ -276,7 +276,7 @@ views.Select = Select;
 
         render: function() {
             return (
-                React.createElement("div", {class: "main create-team"}, 
+                React.createElement("div", {className: "main create-team clearfix"}, 
                     React.createElement("div", {className: "create-team-form"}, 
                         React.createElement("form", {onSubmit: this.onSubmit, className: "form"}, 
                             React.createElement("h2", null, "Create your team"), 
@@ -298,7 +298,7 @@ views.Select = Select;
                                 name: "weeks", 
                                 defaultValue: "12"}), 
                             React.createElement("div", {className: "field"}, 
-                                React.createElement("label", null, "Date Completed"), 
+                                React.createElement("label", null, "Start Date"), 
                                 React.createElement(DatePicker, {
                                     selected: this.state.start_date, 
                                     onChange: this.handleStartDateChange, 
@@ -471,15 +471,30 @@ views.Select = Select;
 
         getTeam: function(model, index) {
             return (
-                React.createElement("li", {key: index}, React.createElement("button", {className: "button", onClick: this.selectTeam.bind(this, model)}, model.get("name")))
+                React.createElement("li", {key: index}, React.createElement("button", {className: "button button-primary", onClick: this.selectTeam.bind(this, model)}, model.get("name")))
             );
         },
 
         render: function() {
+            if (this.props.collection.length === 0) {
+                return (
+                    React.createElement("div", {className: "main"}, 
+                        React.createElement("div", {className: "join-team"}, 
+
+                            React.createElement("h2", null, "We're fresh out of teams."), 
+                            React.createElement("button", {className: "button button-primary", onClick: this.props.onCreateNew}, "Create your own.")
+                        )
+                    )
+
+                );
+            }
+
             return (
                 React.createElement("div", {className: "main"}, 
-                    React.createElement("h4", null, "Choose the team you'd like to join."), 
-                    React.createElement("ul", {className: "list list-buttons"}, this.props.collection.map(this.getTeam))
+                    React.createElement("div", {className: "join-team"}, 
+                        React.createElement("h4", null, "Choose the team you'd like to join."), 
+                        React.createElement("ul", {className: "list list-buttons"}, this.props.collection.map(this.getTeam))
+                    )
                 )
             );
         }
@@ -1078,15 +1093,20 @@ var TotalProgress = React.createBackboneClass({
             var profile = this.props.model.get("twitter_profile");
             console.log(profile);
             return (
-                React.createElement("div", {className: "main"}, 
-                React.createElement("div", {className: "profile"}, 
-                    React.createElement("h2", null, "My Profile"), 
-                    React.createElement("span", {className: "label"}, "Name:"), 
-                    React.createElement("span", null, this.props.model.get("name")), 
-                    React.createElement("br", null), 
-                    React.createElement("span", {className: "label"}, "Photo:"), 
-                    React.createElement("span", null, React.createElement("img", {src: profile.profile_image_url}))
-                )
+                React.createElement("section", null, 
+                    React.createElement("header", {className: "header-main"}, 
+                        React.createElement("h2", null, "My Profile")
+                    ), 
+                    React.createElement("div", {className: "main"}, 
+
+                        React.createElement("div", {className: "profile"}, 
+                            React.createElement("span", {className: "label"}, "Name:"), 
+                            React.createElement("span", null, this.props.model.get("name")), 
+                            React.createElement("br", null), 
+                            React.createElement("span", {className: "label"}, "Photo:"), 
+                            React.createElement("span", null, React.createElement("img", {src: profile.profile_image_url}))
+                        )
+                    )
                 )
             );
         }

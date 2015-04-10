@@ -347,6 +347,11 @@ hr {
   height: 1px;
   margin: 1rem 0; }
 
+.clearfix:after {
+  content: "";
+  clear: both;
+  display: table; }
+
 .grid:after {
   content: "";
   clear: both;
@@ -551,19 +556,22 @@ ul li.entry-lg {
   padding: .25em .5em;
   text-align: center; }
 
-.landing-page, .profile, .onboarding {
+.landing-page, .profile, .onboarding, .join-team {
   background-color: #F7C41F;
   padding: 2rem;
   margin: 0 auto;
   width: 75%; }
-  .landing-page h2, .profile h2, .onboarding h2 {
+  .landing-page h2, .profile h2, .onboarding h2, .join-team h2 {
     font-size: 3rem;
     margin: 0; }
-  .landing-page img, .profile img, .onboarding img {
+  .landing-page img, .profile img, .onboarding img, .join-team img {
     width: 50px; }
 
+.profile, .join-team {
+  background-color: white; }
+
 .profile .label {
-  color: white; }
+  color: #2E3234; }
 
 @media all and (min-width: 45em) {
   .greeting {
@@ -777,7 +785,7 @@ form {
 
 .create-team-form {
   margin: .5rem; }
-  @media all and (min-width: 30em) {
+  @media all and (min-width: 45em) {
     .create-team-form {
       float: left;
       width: calc(70% - 1rem); } }
@@ -792,7 +800,7 @@ form {
   background-color: white;
   padding: 1rem;
   margin: .5rem; }
-  @media all and (min-width: 30em) {
+  @media all and (min-width: 45em) {
     .create-team-sidebar {
       float: left;
       width: calc(30% - 1rem); } }

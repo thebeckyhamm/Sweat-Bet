@@ -18,7 +18,7 @@
     }
 }
 
-.landing-page, .profile, .onboarding {
+.landing-page, .profile, .onboarding, .join-team {
     background-color: $faktor;
     padding: 2rem;
     margin: 0 auto;
@@ -32,8 +32,12 @@
     }
 }
 
+.profile, .join-team {
+    background-color: white;
+}
+
 .profile .label {
-    color: white;
+    color: $dark-gray;
 }
 
 .greeting {
