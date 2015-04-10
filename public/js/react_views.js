@@ -214,8 +214,8 @@ views.Select = Select;
 
         render: function() {
             return (
-                React.createElement("div", null, 
-                    React.createElement("form", {onSubmit: this.onSubmit, className: "goal-form"}, 
+                React.createElement("div", {className: "main"}, 
+                    React.createElement("form", {onSubmit: this.onSubmit, className: "form goal-form"}, 
                         React.createElement("p", null, "Set up your weekly goal."), 
                         React.createElement(views.Input, {
                             label: "Goal Name", 
@@ -515,7 +515,16 @@ views.Select = Select;
 
     var AddYourGoals = React.createClass({displayName: "AddYourGoals",
         render: function() {
-            return React.createElement("h1", null, "You don't have any goals yet.", React.createElement("br", null), " Add some goals!");
+            return (
+            React.createElement("div", null, 
+                React.createElement("br", null), 
+                React.createElement("h1", {className: "text-center"}, 
+                    "You don't have any goals yet.", 
+                    React.createElement("br", null), 
+                    "Add some goals!"
+                )
+            )
+            );
         }
 
     });

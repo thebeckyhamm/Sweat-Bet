@@ -338,6 +338,9 @@ td, th {
 .text-right {
   text-align: right; }
 
+.text-center {
+  text-align: center; }
+
 hr {
   background-color: #949EA9;
   border: none;

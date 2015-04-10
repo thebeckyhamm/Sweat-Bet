@@ -2,7 +2,16 @@
 
     var AddYourGoals = React.createClass({
         render: function() {
-            return <h1>You don't have any goals yet.<br/> Add some goals!</h1>;
+            return (
+            <div>
+                <br /> 
+                <h1 className="text-center">
+                    You don't have any goals yet.
+                    <br/> 
+                    Add some goals!
+                </h1>
+            </div>
+            );
         }
 
     });

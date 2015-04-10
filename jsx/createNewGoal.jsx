@@ -20,8 +20,8 @@
 
         render: function() {
             return (
-                <div>
-                    <form onSubmit={this.onSubmit} className="goal-form">
+                <div className="main">
+                    <form onSubmit={this.onSubmit} className="form goal-form">
                         <p>Set up your weekly goal.</p>
                         <views.Input 
                             label="Goal Name" 
