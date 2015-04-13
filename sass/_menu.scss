@@ -1,17 +1,11 @@
 .menu-wrapper {
     display: block;
-    // display: none;
-    // @include bp($kid-bear) {
-    //     display: block;
-    // }
-    // &.active {
-    //     display: block;
-    // }
 }
 
 .main-menu {
     ul {
         background-color: $green;
+        box-shadow: inset 0 -3px 5px 0 darken($green, 5%), inset 0 3px 5px 0 darken($green, 5%); 
         align-items: center;
         margin: 0;
         padding: 0;

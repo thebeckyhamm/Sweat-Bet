@@ -9,6 +9,7 @@
 
 .header-meta {
     background-color: white;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, .2);
     padding: 1rem;
     display: flex;
     justify-content: space-between;
@@ -41,6 +42,7 @@
 
 .all-goals {
     background-color: white;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, .2);
     padding: 1rem;
     @include bp($kid-bear) {
         width: 70%;
