@@ -562,8 +562,11 @@ ul li.entry-lg {
   margin: 0 auto;
   width: 75%; }
   .landing-page h2, .profile h2, .onboarding h2, .join-team h2 {
-    font-size: 3rem;
-    margin: 0; }
+    font-size: 2.5rem; }
+    @media all and (min-width: 30em) {
+      .landing-page h2, .profile h2, .onboarding h2, .join-team h2 {
+        font-size: 3rem;
+        margin: 0; } }
   .landing-page img, .profile img, .onboarding img, .join-team img {
     width: 50px; }
 
