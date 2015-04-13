@@ -691,6 +691,7 @@ footer {
       width: 70%; } }
   .all-goals h3 {
     font-family: "clearSans", Helvetica, Arial, sans-serif;
+    letter-spacing: 0;
     margin: 0; }
   .all-goals h4 {
     margin-bottom: 0; }

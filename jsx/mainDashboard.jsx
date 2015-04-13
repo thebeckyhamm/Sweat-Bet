@@ -144,6 +144,10 @@
 
         getCompletionPercent: function(progress, end) {
             var percentComplete = ((progress / end) * 100).toFixed(1);
+            if (percentComplete < 0) {
+                percentComplete = 0;
+            }
+
             return percentComplete + "%";
         },
 
@@ -219,7 +223,6 @@
                                 )}
                             </div>
                             <div className="image"><img src="images/svg/cape1.svg" /></div>
-
                         </article>
 
 

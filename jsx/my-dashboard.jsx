@@ -1,16 +1,62 @@
 (function(views){
-    var SingleGoalProgress = React.createBackboneClass({
-        // getGoalDetail: function(goal_id, e) {
-        //     e.preventDefault();
-        //     app.trigger("get:goal:detail", goal_id);
 
-        // },
+    var AddYourEntries = React.createClass({
+        render: function() {
+            return (
+            <div>
+                <br /> 
+                <h1 className="text-center">
+                    You don't have any entries yet.
+                    <br/> 
+                    Add some entries!
+                </h1>
+            </div>
+            );
+        }
+
+    });
+
+    var AddYourGoals = React.createClass({
+        render: function() {
+            return (
+            <div>
+                <br /> 
+                <h1 className="text-center">
+                    You don't have any goals yet.
+                    <br/> 
+                    Add some goals!
+                </h1>
+            </div>
+            );
+        }
+
+    });
+
+    var CompetitionStartingSoon = React.createClass({
+        render: function() {
+            return (
+            <div>
+                <br /> 
+                <h1 className="text-center">
+                    The competition starts soon!
+                </h1>
+                <h2 className="text-center">
+                    Make sure you've entered all your goals.
+                </h2>
+            </div>
+            );
+        }
+
+    });
+
+    var SingleGoalProgress = React.createBackboneClass({
 
         getCurrentTotal: function(entries) {
             var entryNumbers = [];
             _.each(entries, function(obj) {
                 entryNumbers.push(parseInt(obj.number));
             });
+
             return _.reduce(entryNumbers, function(a, b) {
                 return a + b;
             });
@@ -25,46 +71,43 @@
             var goal = this.props.model.toJSON();
             var entries = goal.entries;
 
-            // get the end of the competition number
+            // get the end of competition number
             var totalGoal = goal.number * this.props.team.weeks;
 
             // if the entries object is empty
             if (_.isEmpty(entries)) {
-                var currentProgress = 0;
-                var percentComplete = "0%";
-                var progressStyle = {
-                    width: percentComplete 
-                }    
+                var userProgress = 0;
+                var userPercentComplete = "0%";
+  
             }
             else {
-                var currentProgress = this.getCurrentTotal(entries);
-                var percentComplete = this.getPercentComplete(currentProgress, totalGoal);
-                var progressStyle = {
-                    width: percentComplete 
-                }  
+                var userProgress = this.getCurrentTotal(entries);
+                var userPercentComplete = this.getPercentComplete(userProgress, totalGoal);
             }
 
-            // calculate the marker for how far along we are in the competition
-            var totalDays = this.props.team.weeks * 7 ;
-            var daysComplete = this.getPercentComplete(this.props.days, totalDays);
-
+            // construct the full goal name
             var goalName = goal.name + " " + 
                        goal.number + " " + 
                        goal.unit + " " + 
                        "per week";
 
-            var weekLine = {
-                marginLeft: daysComplete 
+            // style the progress bars
+            var progressStyle = {
+                width: userPercentComplete 
+            }  
+            var weeksStyle = {
+                marginLeft: this.props.completion
             }
+
             return (
                 <div className="goal-progress" key={this.props.key}>
                     <h4>{goalName}</h4>
-                    <div className="progress-container" data-percent={percentComplete}>
+                    <div className="progress-container" data-percent={userPercentComplete}>
                         <div className="progress-bar" style={progressStyle} />
-                        <div className="progress-week" style={weekLine} />
+                        <div className="progress-week" style={weeksStyle} />
 
                     </div>
-                    <span className="goal-info">{currentProgress} {goal.unit} completed out of {totalGoal} </span>
+                    <span className="goal-info">{userProgress} {goal.unit} completed out of {totalGoal} </span>
                 </div>
             );
         }
@@ -89,11 +132,11 @@ var TotalProgress = React.createBackboneClass({
     },
 
     getTotal: function(goals) {
-
+        // get all goal numbers
         var goalNumbers = _.map(goals, function(goal) {
             return parseInt(goal.number);
         });
-
+        // sum them together
         var total = _.reduce(goalNumbers, function(a, b) {
             return a + b;
         });
@@ -109,32 +152,22 @@ var TotalProgress = React.createBackboneClass({
 
     },
 
-    addMessage: function(weeksComplete, percentComplete) {
-        var weeks = weeksComplete.slice(0, weeksComplete.length-1);
-        var percent = percentComplete.slice(0, percentComplete.length-1);
+    addMessage: function(compComplete, userComplete) {
+        var comp = compComplete.slice(0, compComplete.length-1);
+        var user = userComplete.slice(0, userComplete.length-1);
 
-        var diff = percent - weeks;
+        var diff = user - comp;
 
         if (diff < -15) {
 
             var msgs = [
                 "Did you forget to add some entries?",
-                "Sleep in again?",
+                "Did you sleep in again?",
                 "Get back in that saddle!",
                 "Money is no object, right?",
                 ""
-
             ]
-            var rand = Math.floor(Math.random() * (3 - 0));
-            var msg = msgs[rand];
-
-            if (!(msg === "")) {
-                return <h4 className="progress-message"><span>{msg}</span></h4>;
-            }
-
-
         }
-
         else if (diff < -5 ) {
 
             var msgs = [
@@ -142,73 +175,71 @@ var TotalProgress = React.createBackboneClass({
                 "Sweating yet?",
                 ""
             ]
-            var rand = Math.floor(Math.random() * (3 - 0));
-            var msg = msgs[rand];
-
-            if (!(msg === "")) {
-                return <h4 className="progress-message"><span>{msg}</span></h4>;
-            }
         }
-
-        if (diff > 5) {
+        else if (diff > 5) {
             var msgs = [
                 "Kickin' butt and takin' names!",
                 "Get it!",
-                "Show me the money",
+                "Show me the money!",
                 "",
                 ""
-
             ]
-            var rand = Math.floor(Math.random() * (3 - 0));
-            var msg = msgs[rand];
+        }
+        else {
+            return;
+        }
 
-            if (!(msg === "")) {
-                return <h4 className="progress-message"><span>{msg}</span></h4>;
-            }
+        var rand = Math.floor(Math.random() * (3 - 0));
+        var msg = msgs[rand];
 
+        if (!(msg === "")) {
+            return <h4 className="progress-message"><span>{msg}</span></h4>;
         }
     },
 
     render: function() {
         var goals = this.props.collection.toJSON();
 
-
+        // get existing entries
         var entries = goals.map(function(goal) {
             return goal.entries;
         });
-
         var existingEntries = _.filter(entries, function(entry) {
             return !_.isEmpty(entry);
         });
 
-        var totalGoals = this.getTotal(goals);
-        var totalDays = this.props.team.weeks * 7;
-        console.log("total days", totalDays);
-        console.log("days", this.props.days);
-
-        var endAmount = totalGoals * totalDays;
-        var daysComplete = this.getPercentComplete(this.props.days, totalDays);
-
+        // get goal totals
+        var endGoals = this.getTotal(goals) * this.props.team.weeks;
+        // get total progress
         if (_.isEmpty(existingEntries)) {
-          var currentProgress = 0;
-          var percentComplete = "0%";
-          var progressStyle = {
-              width: percentComplete 
-          }    
+          var userProgress = 0;
+          var userPercentComplete = "0%";
         }
         else {
-            var currentProgress = this.getCurrentTotal(existingEntries);
-            var percentComplete = this.getPercentComplete(currentProgress, endAmount);
-            var progressStyle = {
-                width: percentComplete 
-            }  
+            var userProgress = this.getCurrentTotal(existingEntries);
+            var userPercentComplete = this.getPercentComplete(userProgress, endGoals);
         }
 
-        var weekLine = {
-            marginLeft: daysComplete 
+        // set progress bar styles
+        var progressStyle = {
+            width: userPercentComplete 
+        }  
+        var weeksStyle = {
+            marginLeft: this.props.completion 
         }
 
-        var message = this.addMessage(daysComplete, percentComplete);
+        var message = this.addMessage(this.props.completion, userPercentComplete);
+
+        if (this.getTotal(goals) === undefined) {
+            return <AddYourGoals />;
+        }
+        if (userPercentComplete === "0%" && parseInt(this.props.completion) <= 0) {
+            return <CompetitionStartingSoon />; 
+        }
+
+        if (userPercentComplete === "0%" && parseInt(this.props.completion) > 0) {
+            return <AddYourEntries />; 
+        }
 
 
         return (
@@ -216,9 +247,9 @@ var TotalProgress = React.createBackboneClass({
             <div className="goal-progress">
                 {message}
                 <h3>Total Progress</h3>
-                <div className="progress-container" data-percent={percentComplete}>
+                <div className="progress-container" data-percent={userPercentComplete}>
                     <div className="progress-bar" style={progressStyle} />
-                    <div className="progress-week" style={weekLine} />
+                    <div className="progress-week" style={weeksStyle} />
                 </div>
             </div>
         );
@@ -228,24 +259,42 @@ var TotalProgress = React.createBackboneClass({
 
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(team, currentWeek, daysFromStart, model, index) {
+        getGoal: function(team, currentWeek, competitionCompletion, model, index) {
             return <SingleGoalProgress 
                     key={index} 
                     model={model} 
                     team={team}
                     week={currentWeek}
-                    days={daysFromStart} />;
+                    completion={competitionCompletion} />;
         },
 
-        getTotal: function(team, currentWeek, daysFromStart) {
+        getTotal: function(team, competitionCompletion) {
             return <TotalProgress 
                     collection={this.props.collection} 
                     team={team} 
-                    week={currentWeek}
-                    days={daysFromStart} />
+                    completion={competitionCompletion} />
         },
 
-        goalButton: function(daysFromStart) {
+        getCompletionPercent: function(progress, end) {
+            var percentComplete = ((progress / end) * 100).toFixed(1);
+
+            if (percentComplete < 0) {
+                percentComplete = 0;
+            }
+            return percentComplete + "%";
+        },
+
+        getCurrentWeek: function(daysFromStart, startDate) {
+            var currentWeek = Math.ceil(daysFromStart / 7);
+
+            // account for days before competition begins
+            if (currentWeek <= 0) {
+                currentWeek = "Competition starts " + startDate.fromNow(); 
+            }
+            return currentWeek;
+        },
+
+        buttonToggle: function(daysFromStart) {
             if (daysFromStart < 0) {
                 return (
                     <button 
@@ -254,10 +303,7 @@ var TotalProgress = React.createBackboneClass({
                     </button>
                 )
             }
-        },
-
-        entryButton: function(daysFromStart) {
-            if (daysFromStart >= 0) {
+            else if (daysFromStart >= 0) {
                 return (
                     <button className="button button-primary"
                         onClick={this.props.addEntry}>+ Entry
@@ -270,19 +316,18 @@ var TotalProgress = React.createBackboneClass({
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.datepicker);
+            // get dates and progress for days and weeks
+            var startDate = moment(team.datepicker);
             var now = moment();
 
-            var daysFromStart = now.diff(start_date, 'days');
+            var totalDays = team.weeks * 7;
+            var daysFromStart = now.diff(startDate, 'days');
 
-            var currentWeek = Math.ceil(daysFromStart / 7);
-            if (currentWeek === 0) {
-                currentWeek = "Competition starts " + start_date.fromNow(); 
-            }
+            var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
+            var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
 
-
+            // get additional user information to display
             var profile = app.currentUser.get("twitter_profile");
-
 
             return (
                 <section>
@@ -309,16 +354,23 @@ var TotalProgress = React.createBackboneClass({
                             </div>
 
                             <div className="button-toggle-sm">  
-                                {this.goalButton(daysFromStart)}
-                                {this.entryButton(daysFromStart)}
+                                {this.buttonToggle(daysFromStart)}
                             </div>
 
                         </div>
                         <article className="all-goals">
-                            <div>{this.getTotal(team, currentWeek, daysFromStart)}</div>
+                            <div>{this.getTotal(team, competitionCompletion)}</div>
                             <hr />
                             <h3>Individual Goals</h3>
-                            <div>{this.props.collection.map(this.getGoal.bind(this, team, currentWeek, daysFromStart))}</div>
+                            <div>{this.props.collection.map(
+                                    this.getGoal.bind(
+                                        this, 
+                                        team, 
+                                        currentWeek,
+                                        competitionCompletion 
+                                    )
+                                )}
+                            </div>
                         </article>
 
                     </div>
