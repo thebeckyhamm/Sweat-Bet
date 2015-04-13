@@ -45,8 +45,8 @@
             }
 
             // calculate the marker for how far along we are in the competition
-            var totalWeeks = this.props.team.weeks;
-            var weeksComplete = this.getPercentComplete(this.props.week, totalWeeks);
+            var totalDays = this.props.team.weeks * 7 ;
+            var daysComplete = this.getPercentComplete(this.props.days, totalDays);
 
             var goalName = goal.name + " " + 
                        goal.number + " " + 
@@ -54,7 +54,7 @@
                        "per week";
 
             var weekLine = {
-                marginLeft: weeksComplete 
+                marginLeft: daysComplete 
             }
             return (
                 <div className="goal-progress" key={this.props.key}>
@@ -182,11 +182,12 @@ var TotalProgress = React.createBackboneClass({
         });
 
         var totalGoals = this.getTotal(goals);
-        var totalWeeks = this.props.team.weeks;
+        var totalDays = this.props.team.weeks * 7;
+        console.log("total days", totalDays);
+        console.log("days", this.props.days);
 
-        var endAmount = totalGoals * totalWeeks;
-        var weeksComplete = this.getPercentComplete(this.props.week, totalWeeks);
-
+        var endAmount = totalGoals * totalDays;
+        var daysComplete = this.getPercentComplete(this.props.days, totalDays);
 
         if (_.isEmpty(existingEntries)) {
           var currentProgress = 0;
@@ -204,10 +205,10 @@ var TotalProgress = React.createBackboneClass({
         }
 
         var weekLine = {
-            marginLeft: weeksComplete 
+            marginLeft: daysComplete 
         }
 
-        var message = this.addMessage(weeksComplete, percentComplete);
+        var message = this.addMessage(daysComplete, percentComplete);
 
 
         return (
@@ -227,19 +228,21 @@ var TotalProgress = React.createBackboneClass({
 
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(team, currentWeek, model, index) {
+        getGoal: function(team, currentWeek, daysFromStart, model, index) {
             return <SingleGoalProgress 
                     key={index} 
                     model={model} 
                     team={team}
-                    week={currentWeek} />;
+                    week={currentWeek}
+                    days={daysFromStart} />;
         },
 
-        getTotal: function(team, currentWeek) {
+        getTotal: function(team, currentWeek, daysFromStart) {
             return <TotalProgress 
                     collection={this.props.collection} 
                     team={team} 
-                    week={currentWeek} />
+                    week={currentWeek}
+                    days={daysFromStart} />
         },
 
         goalButton: function(daysFromStart) {
@@ -312,10 +315,10 @@ var TotalProgress = React.createBackboneClass({
 
                         </div>
                         <article className="all-goals">
-                            <div>{this.getTotal(team, currentWeek)}</div>
+                            <div>{this.getTotal(team, currentWeek, daysFromStart)}</div>
                             <hr />
                             <h3>Individual Goals</h3>
-                            <div>{this.props.collection.map(this.getGoal.bind(this, team, currentWeek))}</div>
+                            <div>{this.props.collection.map(this.getGoal.bind(this, team, currentWeek, daysFromStart))}</div>
                         </article>
 
                     </div>

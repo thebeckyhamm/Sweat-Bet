@@ -552,14 +552,17 @@ views.Select = Select;
                 return g.entries_sum;
             });
 
+            // get non-empty values
             entriesSummed = _.filter(entriesSummed, function(g) {
                 return g;
             });
 
+            // sum values together
             var currentTotal = _.reduce(entriesSummed, function(a, b) {
                 return a + b;
             });
 
+            // validation check
             if (currentTotal === undefined) {
                 currentTotal = 0;
             }
@@ -569,56 +572,55 @@ views.Select = Select;
         },
 
         getCompetitionTotal: function(user) {
-
+            // return number value for each goal (ie 10 miles, 2 lbs)
             var goals = _.map(user.goals, function(g) {
                 return parseInt(g.number);
             });
+
+            // sum them together
             var goalsTotal = _.reduce(goals, function(a, b) {
                 return a + b;
             });
+
+            // multiply by number of weeks
             return goalsTotal * this.props.team.weeks;
 
         },
 
         getPercentComplete: function(progress, end) {
             var percentComplete = ((progress / end) * 100).toFixed(1);
-            return percentComplete + "%";
-        },
-
-        getCorrectPage: function(goalsCount, user) {
-
-        },
-
-        render: function() {
-            var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-            var user = this.props.model.toJSON();
-
-            // use in parentheses beside user name
-            var goalsCount = user.goals.length;
-
-            var competitionTotal = this.getCompetitionTotal(user);
-
-            var currentTotal = this.getCurrentTotal(user);
-
-            var percentComplete = this.getPercentComplete(currentTotal, competitionTotal);
+            percentComplete = percentComplete + "%";
 
             if (percentComplete === "NaN%") {
                 percentComplete = "0%";
             }
 
-            var getCorrect = this.getCorrectPage(goalsCount, user);
+            return percentComplete;
+        },
 
-            var weeksComplete = this.getPercentComplete(this.props.week, this.props.team.weeks);
+        render: function() {
+            var user = this.props.model.toJSON();
 
+            // get totals for user
+            var goalsCount = user.goals.length;
+            var competitionTotal = this.getCompetitionTotal(user);
+            var currentTotal = this.getCurrentTotal(user);
+
+            // get percent complete
+            var percentComplete = this.getPercentComplete(currentTotal, competitionTotal);
+
+            // set styles for progress bars
             var percentStyle = {
                 width: percentComplete
             };
 
             var weeksStyle = {
-                marginLeft: weeksComplete
+                marginLeft: this.props.completion
             };
 
             var currentUser = app.currentUser.get("_id");
+
+            // if you are the current user and have no goals
             if (goalsCount === 0 && (currentUser === user._id)) {
                 return React.createElement(AddYourGoals, null);
             }
@@ -628,8 +630,7 @@ views.Select = Select;
                   React.createElement("div", {className: "goal-progress"}, 
                         React.createElement("h3", {className: "goal-name"}, user.name, " (", goalsCount, " goals)"), 
                         React.createElement("div", {className: "progress-container", "data-percent": percentComplete}, 
-                                React.createElement("div", {className: "progress-bar", style: percentStyle}), 
-                          
+                            React.createElement("div", {className: "progress-bar", style: percentStyle}), 
                             React.createElement("div", {className: "progress-week", style: weeksStyle})
                       )
                   )  
@@ -640,35 +641,19 @@ views.Select = Select;
 
     });
 
-    var DataPane = React.createBackboneClass({
 
-        getUserProgress: function(team, currentWeek, model, index) {
+    views.MainDash = React.createBackboneClass({
+
+        getUserProgress: function(team, competitionCompletion, model, index) {
             return React.createElement(UserProgress, {
                     model: model, 
                     key: index, 
                     team: team, 
-                    week: currentWeek})
+                    completion: competitionCompletion})
         },
 
-        render: function() {
-
-            return (
-                React.createElement("article", {className: "all-goals"}, 
-                    React.createElement("div", null, this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek))), 
-                    React.createElement("div", {className: "image"}, React.createElement("img", {src: "images/svg/cape1.svg"}))
-
-                )
-            );
-            
-        }
-
-    });
-
-
-    views.MainDash = React.createBackboneClass({
-
-        goalButton: function(daysFromStart) {
-            if (daysFromStart <= 0) {
+        buttonToggle: function(daysFromStart) {
+            if (daysFromStart < 0) {
                 return (
                     React.createElement("button", {
                         className: "button button-primary", 
@@ -676,13 +661,7 @@ views.Select = Select;
                     )
                 )
             }
-            else {
-                return;
-            }
-        },
-
-        entryButton: function(daysFromStart) {
-            if (daysFromStart >= 0) {
+            else if (daysFromStart >= 0) {
                 return (
                     React.createElement("button", {className: "button button-primary", 
                         onClick: this.props.addEntry}, "+ Entry"
@@ -691,25 +670,42 @@ views.Select = Select;
             }
         },
 
+        getCompletionPercent: function(progress, end) {
+            var percentComplete = ((progress / end) * 100).toFixed(1);
+            return percentComplete + "%";
+        },
+
+        getCurrentWeek: function(daysFromStart, startDate) {
+            var currentWeek = Math.ceil(daysFromStart / 7);
+
+            // account for days before competition begins
+            if (currentWeek <= 0) {
+                currentWeek = "Competition starts " + startDate.fromNow(); 
+            }
+            return currentWeek;
+        },
+
         render: function() {
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.datepicker);
+            // calculate current and total days and weeks
+            var startDate = moment(team.datepicker);
             var now = moment();
 
-            var end_date = moment(team.start_date).add((team.weeks * 7), "days").calendar();
+            var endDate = moment(team.startDate).add((team.weeks * 7), "days").calendar();
 
-            var daysFromStart = now.diff(start_date, 'days');
+            var totalDays = team.weeks * 7;
+            var daysFromStart = now.diff(startDate, 'days');
 
-            var currentWeek = Math.ceil(daysFromStart / 7);
+            var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
+            var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
 
-            if (currentWeek === 0) {
-                currentWeek = "Competition starts " + start_date.fromNow(); 
-            }
+            // User and team data to display
             var totalPot = team.number * this.props.collection.length;
 
             var profile = app.currentUser.get("twitter_profile");
+
 
             return (
                 React.createElement("section", null, 
@@ -738,11 +734,21 @@ views.Select = Select;
                             ), 
 
                             React.createElement("div", {className: "button-toggle-sm"}, 
-                                this.goalButton(daysFromStart), 
-                                this.entryButton(daysFromStart)
+                                this.buttonToggle(daysFromStart)
                             )
                         ), 
-                        React.createElement(DataPane, {collection: this.props.collection, team: team, currentWeek: currentWeek})
+                        React.createElement("article", {className: "all-goals"}, 
+                            React.createElement("div", null, this.props.collection.map(
+                                    this.getUserProgress.bind(
+                                        this, 
+                                        team, 
+                                        competitionCompletion
+                                    )
+                                )
+                            ), 
+                            React.createElement("div", {className: "image"}, React.createElement("img", {src: "images/svg/cape1.svg"}))
+
+                        )
 
 
                     )
@@ -802,8 +808,8 @@ views.Select = Select;
             }
 
             // calculate the marker for how far along we are in the competition
-            var totalWeeks = this.props.team.weeks;
-            var weeksComplete = this.getPercentComplete(this.props.week, totalWeeks);
+            var totalDays = this.props.team.weeks * 7 ;
+            var daysComplete = this.getPercentComplete(this.props.days, totalDays);
 
             var goalName = goal.name + " " + 
                        goal.number + " " + 
@@ -811,7 +817,7 @@ views.Select = Select;
                        "per week";
 
             var weekLine = {
-                marginLeft: weeksComplete 
+                marginLeft: daysComplete 
             }
             return (
                 React.createElement("div", {className: "goal-progress", key: this.props.key}, 
@@ -939,11 +945,12 @@ var TotalProgress = React.createBackboneClass({
         });
 
         var totalGoals = this.getTotal(goals);
-        var totalWeeks = this.props.team.weeks;
+        var totalDays = this.props.team.weeks * 7;
+        console.log("total days", totalDays);
+        console.log("days", this.props.days);
 
-        var endAmount = totalGoals * totalWeeks;
-        var weeksComplete = this.getPercentComplete(this.props.week, totalWeeks);
-
+        var endAmount = totalGoals * totalDays;
+        var daysComplete = this.getPercentComplete(this.props.days, totalDays);
 
         if (_.isEmpty(existingEntries)) {
           var currentProgress = 0;
@@ -961,10 +968,10 @@ var TotalProgress = React.createBackboneClass({
         }
 
         var weekLine = {
-            marginLeft: weeksComplete 
+            marginLeft: daysComplete 
         }
 
-        var message = this.addMessage(weeksComplete, percentComplete);
+        var message = this.addMessage(daysComplete, percentComplete);
 
 
         return (
@@ -984,19 +991,21 @@ var TotalProgress = React.createBackboneClass({
 
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(team, currentWeek, model, index) {
+        getGoal: function(team, currentWeek, daysFromStart, model, index) {
             return React.createElement(SingleGoalProgress, {
                     key: index, 
                     model: model, 
                     team: team, 
-                    week: currentWeek});
+                    week: currentWeek, 
+                    days: daysFromStart});
         },
 
-        getTotal: function(team, currentWeek) {
+        getTotal: function(team, currentWeek, daysFromStart) {
             return React.createElement(TotalProgress, {
                     collection: this.props.collection, 
                     team: team, 
-                    week: currentWeek})
+                    week: currentWeek, 
+                    days: daysFromStart})
         },
 
         goalButton: function(daysFromStart) {
@@ -1069,10 +1078,10 @@ var TotalProgress = React.createBackboneClass({
 
                         ), 
                         React.createElement("article", {className: "all-goals"}, 
-                            React.createElement("div", null, this.getTotal(team, currentWeek)), 
+                            React.createElement("div", null, this.getTotal(team, currentWeek, daysFromStart)), 
                             React.createElement("hr", null), 
                             React.createElement("h3", null, "Individual Goals"), 
-                            React.createElement("div", null, this.props.collection.map(this.getGoal.bind(this, team, currentWeek)))
+                            React.createElement("div", null, this.props.collection.map(this.getGoal.bind(this, team, currentWeek, daysFromStart)))
                         )
 
                     )

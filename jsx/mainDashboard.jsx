@@ -24,14 +24,17 @@
                 return g.entries_sum;
             });
 
+            // get non-empty values
             entriesSummed = _.filter(entriesSummed, function(g) {
                 return g;
             });
 
+            // sum values together
             var currentTotal = _.reduce(entriesSummed, function(a, b) {
                 return a + b;
             });
 
+            // validation check
             if (currentTotal === undefined) {
                 currentTotal = 0;
             }
@@ -41,56 +44,55 @@
         },
 
         getCompetitionTotal: function(user) {
-
+            // return number value for each goal (ie 10 miles, 2 lbs)
             var goals = _.map(user.goals, function(g) {
                 return parseInt(g.number);
             });
+
+            // sum them together
             var goalsTotal = _.reduce(goals, function(a, b) {
                 return a + b;
             });
+
+            // multiply by number of weeks
             return goalsTotal * this.props.team.weeks;
 
         },
 
         getPercentComplete: function(progress, end) {
             var percentComplete = ((progress / end) * 100).toFixed(1);
-            return percentComplete + "%";
-        },
-
-        getCorrectPage: function(goalsCount, user) {
-
-        },
-
-        render: function() {
-            var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-            var user = this.props.model.toJSON();
-
-            // use in parentheses beside user name
-            var goalsCount = user.goals.length;
-
-            var competitionTotal = this.getCompetitionTotal(user);
-
-            var currentTotal = this.getCurrentTotal(user);
-
-            var percentComplete = this.getPercentComplete(currentTotal, competitionTotal);
+            percentComplete = percentComplete + "%";
 
             if (percentComplete === "NaN%") {
                 percentComplete = "0%";
             }
 
-            var getCorrect = this.getCorrectPage(goalsCount, user);
+            return percentComplete;
+        },
 
-            var weeksComplete = this.getPercentComplete(this.props.week, this.props.team.weeks);
+        render: function() {
+            var user = this.props.model.toJSON();
 
+            // get totals for user
+            var goalsCount = user.goals.length;
+            var competitionTotal = this.getCompetitionTotal(user);
+            var currentTotal = this.getCurrentTotal(user);
+
+            // get percent complete
+            var percentComplete = this.getPercentComplete(currentTotal, competitionTotal);
+
+            // set styles for progress bars
             var percentStyle = {
                 width: percentComplete
             };
 
             var weeksStyle = {
-                marginLeft: weeksComplete
+                marginLeft: this.props.completion
             };
 
             var currentUser = app.currentUser.get("_id");
+
+            // if you are the current user and have no goals
             if (goalsCount === 0 && (currentUser === user._id)) {
                 return <AddYourGoals />;
             }
@@ -100,8 +102,7 @@
                   <div className="goal-progress">
                         <h3 className="goal-name">{user.name} ({goalsCount} goals)</h3>
                         <div className="progress-container" data-percent={percentComplete}>
-                                <div className="progress-bar" style={percentStyle} />
-                          
+                            <div className="progress-bar" style={percentStyle} />
                             <div className="progress-week" style={weeksStyle}  />
                       </div>
                   </div>  
@@ -112,35 +113,19 @@
 
     });
 
-    var DataPane = React.createBackboneClass({
 
-        getUserProgress: function(team, currentWeek, model, index) {
+    views.MainDash = React.createBackboneClass({
+
+        getUserProgress: function(team, competitionCompletion, model, index) {
             return <UserProgress 
                     model={model} 
                     key={index}
                     team={team} 
-                    week={currentWeek} />
+                    completion={competitionCompletion} />
         },
 
-        render: function() {
-
-            return (
-                <article className="all-goals">
-                    <div>{this.props.collection.map(this.getUserProgress.bind(this, this.props.team, this.props.currentWeek))}</div>
-                    <div className="image"><img src="images/svg/cape1.svg" /></div>
-
-                </article>
-            );
-            
-        }
-
-    });
-
-
-    views.MainDash = React.createBackboneClass({
-
-        goalButton: function(daysFromStart) {
-            if (daysFromStart <= 0) {
+        buttonToggle: function(daysFromStart) {
+            if (daysFromStart < 0) {
                 return (
                     <button 
                         className="button button-primary"
@@ -148,13 +133,7 @@
                     </button>
                 )
             }
-            else {
-                return;
-            }
-        },
-
-        entryButton: function(daysFromStart) {
-            if (daysFromStart >= 0) {
+            else if (daysFromStart >= 0) {
                 return (
                     <button className="button button-primary"
                         onClick={this.props.addEntry}>+ Entry
@@ -163,25 +142,42 @@
             }
         },
 
+        getCompletionPercent: function(progress, end) {
+            var percentComplete = ((progress / end) * 100).toFixed(1);
+            return percentComplete + "%";
+        },
+
+        getCurrentWeek: function(daysFromStart, startDate) {
+            var currentWeek = Math.ceil(daysFromStart / 7);
+
+            // account for days before competition begins
+            if (currentWeek <= 0) {
+                currentWeek = "Competition starts " + startDate.fromNow(); 
+            }
+            return currentWeek;
+        },
+
         render: function() {
             var team = this.props.getTeam();
             team = team.toJSON();
 
-            var start_date = moment(team.datepicker);
+            // calculate current and total days and weeks
+            var startDate = moment(team.datepicker);
             var now = moment();
 
-            var end_date = moment(team.start_date).add((team.weeks * 7), "days").calendar();
+            var endDate = moment(team.startDate).add((team.weeks * 7), "days").calendar();
 
-            var daysFromStart = now.diff(start_date, 'days');
+            var totalDays = team.weeks * 7;
+            var daysFromStart = now.diff(startDate, 'days');
 
-            var currentWeek = Math.ceil(daysFromStart / 7);
+            var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
+            var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
 
-            if (currentWeek === 0) {
-                currentWeek = "Competition starts " + start_date.fromNow(); 
-            }
+            // User and team data to display
             var totalPot = team.number * this.props.collection.length;
 
             var profile = app.currentUser.get("twitter_profile");
+
 
             return (
                 <section>
@@ -210,11 +206,21 @@
                             </div>
 
                             <div className="button-toggle-sm">  
-                                {this.goalButton(daysFromStart)}
-                                {this.entryButton(daysFromStart)}
+                                {this.buttonToggle(daysFromStart)}
                             </div>
                         </div>
-                        <DataPane collection={this.props.collection} team={team} currentWeek={currentWeek} />
+                        <article className="all-goals">
+                            <div>{this.props.collection.map(
+                                    this.getUserProgress.bind(
+                                        this, 
+                                        team, 
+                                        competitionCompletion
+                                    )
+                                )}
+                            </div>
+                            <div className="image"><img src="images/svg/cape1.svg" /></div>
+
+                        </article>
 
 
                     </div>
