@@ -244,23 +244,24 @@ app.Router = Backbone.Router.extend({
                 team = app.teams.get(app.currentUser.get("team_id"));
             }
         }
-        this.navigate("main-dashboard");
-        React.render(
-            React.createElement(app.views.MainDash, {
-                collection: app.users,
-                model: team,
-                addGoal: this.showGoalForm.bind(this),
-                addEntry: this.showEntryForm.bind(this)
-            }),
-            document.querySelector(".main-wrapper")
-        ); 
+        app.users.fetch().done(function() {
+            this.navigate("main-dashboard");
+            React.render(
+                React.createElement(app.views.MainDash, {
+                    collection: app.users,
+                    model: team,
+                    addGoal: this.showGoalForm.bind(this),
+                    addEntry: this.showEntryForm.bind(this)
+                }),
+                document.querySelector(".main-wrapper")
+            ); 
+            
+        }.bind(this));
     },
 
     showMyDash: function(team) {
-        console.log("team id in showmydash", app.currentUser.get("team_id"));
         if (app.currentUser.get("team_id")) {
             var team = app.teams.get(app.currentUser.get("team_id"));
-            console.log(team);
         }
         this.navigate("my-dashboard");
         React.render(
@@ -327,11 +328,9 @@ app.Router = Backbone.Router.extend({
     },
 
     addUserToTeam: function(model) {
-        console.log("saving", app.currentUser.id);
         app.currentUser.save({team_id: model.id},
             {
                 success: function() {
-                    console.log("saved", app.currentUser.id);
                     this.showMenu(model);
                     this.showMain(model);
                 }.bind(this) 

@@ -4,7 +4,6 @@
 
         render: function() {
             var profile = this.props.model.get("twitter_profile");
-            console.log(profile);
             return (
                 <section>
                     <header className="header-main">

@@ -33,8 +33,6 @@ ModelRouter.prototype = {
 
       var id = ObjectId(req.params.id);
 
-      console.log("updating", id);
-
       var query = req.body;
       delete query._id;
 

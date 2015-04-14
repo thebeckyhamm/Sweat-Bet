@@ -75,6 +75,7 @@
 
             // get totals for user
             var goalsCount = user.goals.length;
+            console.log("goalscount", goalsCount);
             var competitionTotal = this.getCompetitionTotal(user);
             var currentTotal = this.getCurrentTotal(user);
 
@@ -163,8 +164,9 @@
 
         render: function() {
             var team = this.props.model;
-
-            if (!team) {
+            var collection = this.props.collection;
+            console.log(collection);
+            if (!team || !collection.length) {
                 return (
                     <h1 className="text-center loading">
                         <img className="" src="images/svg/dumbbell.svg" />
@@ -192,7 +194,6 @@
             var totalPot = team.number * this.props.collection.length;
 
             var profile = app.currentUser.get("twitter_profile");
-
 
             return (
                 <section>

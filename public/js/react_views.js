@@ -593,6 +593,7 @@ views.Select = Select;
 
             // get totals for user
             var goalsCount = user.goals.length;
+            console.log("goalscount", goalsCount);
             var competitionTotal = this.getCompetitionTotal(user);
             var currentTotal = this.getCurrentTotal(user);
 
@@ -681,8 +682,9 @@ views.Select = Select;
 
         render: function() {
             var team = this.props.model;
-
-            if (!team) {
+            var collection = this.props.collection;
+            console.log(collection);
+            if (!team || !collection.length) {
                 return (
                     React.createElement("h1", {className: "text-center loading"}, 
                         React.createElement("img", {className: "", src: "images/svg/dumbbell.svg"}), 
@@ -710,7 +712,6 @@ views.Select = Select;
             var totalPot = team.number * this.props.collection.length;
 
             var profile = app.currentUser.get("twitter_profile");
-
 
             return (
                 React.createElement("section", null, 
@@ -1111,6 +1112,7 @@ var TotalProgress = React.createBackboneClass({
                     )
                 );
             }
+            console.log("my goals", this.props.collection.toJSON());
 
             team = team.toJSON();
 
@@ -1189,7 +1191,6 @@ var TotalProgress = React.createBackboneClass({
 
         render: function() {
             var profile = this.props.model.get("twitter_profile");
-            console.log(profile);
             return (
                 React.createElement("section", null, 
                     React.createElement("header", {className: "header-main"}, 

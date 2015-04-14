@@ -344,6 +344,7 @@ var TotalProgress = React.createBackboneClass({
                     </h1>
                 );
             }
+            console.log("my goals", this.props.collection.toJSON());
 
             team = team.toJSON();
 

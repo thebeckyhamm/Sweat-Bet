@@ -22,6 +22,7 @@ CollectionRouter.prototype = {
       }
 
       this.db.find(query).toArray(function(err, data){
+        // console.log("data", data);
         if(err) {
           res.status(500).json({error: err.toString()});
         }
@@ -35,14 +36,18 @@ CollectionRouter.prototype = {
           if (this.include) {
             // this is the associated data
             var fdb = this.include.db;
+            console.log("fdb", fdb);
             // this is the key on the assoc. data that ties each record
             var fkey = this.include.fkey;
+            console.log("fkey", fkey);
+
             // this is what we call it when we assign the associated reocrds
             var as = this.include.as;
+            console.log("as", as);
 
             // get all the (goal) ids from the records we just fetched
             var ids = data.map(function(d){
-              return d._id;
+              return d._id.toString();
             });
             
             // build the query for the include
@@ -70,7 +75,10 @@ CollectionRouter.prototype = {
             // qry looks like {goal_id: {"$in" : [1,2,3,4]}}
 
             // find all the included records
+            console.log("------------");
+            console.log("qry", qry);
             fdb.find(qry).toArray(function(err, fdata){
+              console.log("fdata", fdata);
               if(err) {
                 res.status(500).json({error: err.toString()});
               } else {
@@ -79,7 +87,7 @@ CollectionRouter.prototype = {
                   
                   // get assoc records (entries) for each record (goal)
                   record[as] = fdata.filter(function(frecord){
-                    return frecord[fkey] === record._id;
+                    return frecord[fkey] === record._id.toString();
                   });
                   
                   return record;
