@@ -19,7 +19,7 @@
     }
 }
 
-.landing-page, .profile, .onboarding, .join-team {
+.landing-page, .profile, .onboarding, .join-team, .loading {
     background-color: $faktor;
     box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, .2);
     padding: 2rem;
@@ -35,6 +35,11 @@
     img {
         width: 50px;
     }
+}
+
+.loading {
+    background-color: transparent;
+    box-shadow: none;
 }
 
 .profile, .join-team {

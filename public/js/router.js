@@ -18,26 +18,19 @@ app.Router = Backbone.Router.extend({
         // create teams
         app.teams = new app.models.Teams();
 
-        app.teams.fetch().done(function() {
-            this.showHeader();
-        }.bind(this));
+        // app.teams.fetch().done(function(){
+        //     app.trigger("teams:fetched");
+        // }); 
 
         app.users = new app.models.Users();
-
-        app.users.fetch();
 
         app.goals = new app.models.Goals(null, {
             user: app.currentUser
         });
 
-        // render header and landing page
-
-
-        React.render(
-            React.createElement(app.views.LandingPage),
-            document.querySelector(".main-wrapper")
-        );
-
+        this.showHeader();
+        this.showLandingPage();
+        
 
         this.listenTo(app, "fetch:users:collection", function(goalInfo) {
             app.users.fetch().done(function(){
@@ -55,7 +48,8 @@ app.Router = Backbone.Router.extend({
         this.listenTo(app, "sign:in", function(){
             app.teams.fetch().done(function(){
                 app.trigger("teams:fetched");
-            }.bind(this)); 
+                console.log("teams fetched");
+            }); 
         });
 
         this.listenTo(app, "sign:out", function(){
@@ -75,23 +69,27 @@ app.Router = Backbone.Router.extend({
         //------ --------------- ------//
 
         this.listenTo(app, "teams:fetched", function() {
-            this.showHeader();
-            // check if user has a team id
+            // console.log("user id is", app.currentUser.get("_id"));
+            // // check if user has a team id
+            // if (_.isEmpty(app.currentUser.get("_id"))) {
+            //     this.showLandingPage();
+            // }
             if (app.currentUser.get("team_id")) {
-                var team = app.currentUser.get("team_id");
+                var teamID = app.currentUser.get("team_id");
+                var team = app.teams.get(teamID);
                 console.log("User has a team");
                 // if so, show them their main dashboard
                 React.render(
                     React.createElement(app.views.Menu, {
                         model: app.currentUser,
-                        team: app.teams.get(team),
+                        team: team,
                         addGoal: this.showGoalForm.bind(this),
                         addEntry: this.showEntryForm.bind(this)
                     }),
                     document.querySelector(".nav")
                 );
 
-                this.showMain();
+                this.showMain(team);
             }
             else {
                 // if not, ask them to create or join a team
@@ -207,13 +205,13 @@ app.Router = Backbone.Router.extend({
         );
     },
 
-    showMenu: function() {
-        var team = app.currentUser.get("team_id");
+    showMenu: function(team) {
+        // var team = app.currentUser.get("team_id");
 
         React.render(
             React.createElement(app.views.Menu, {
                 model: app.currentUser,
-                team: app.teams.get(team),
+                team: team,
                 addGoal: this.showGoalForm.bind(this),
                 addEntry: this.showEntryForm.bind(this)
             }),
@@ -240,12 +238,17 @@ app.Router = Backbone.Router.extend({
     },
 
 
-    showMain: function() {
+    showMain: function(team) {
+        if (!team) {
+            if (app.currentUser.get("team_id")) {
+                team = app.teams.get(app.currentUser.get("team_id"));
+            }
+        }
         this.navigate("main-dashboard");
         React.render(
             React.createElement(app.views.MainDash, {
                 collection: app.users,
-                getTeam: this.getTeam,
+                model: team,
                 addGoal: this.showGoalForm.bind(this),
                 addEntry: this.showEntryForm.bind(this)
             }),
@@ -253,14 +256,19 @@ app.Router = Backbone.Router.extend({
         ); 
     },
 
-    showMyDash: function() {
+    showMyDash: function(team) {
+        console.log("team id in showmydash", app.currentUser.get("team_id"));
+        if (app.currentUser.get("team_id")) {
+            var team = app.teams.get(app.currentUser.get("team_id"));
+            console.log(team);
+        }
         this.navigate("my-dashboard");
         React.render(
             React.createElement(app.views.MyDash, {
                 collection: app.goals,
+                model: team,
                 addGoal: this.showGoalForm.bind(this),
-                addEntry: this.showEntryForm.bind(this),
-                getTeam: this.getTeam
+                addEntry: this.showEntryForm.bind(this)
             }),
             document.querySelector(".main-wrapper")
         ); 
@@ -319,11 +327,13 @@ app.Router = Backbone.Router.extend({
     },
 
     addUserToTeam: function(model) {
+        console.log("saving", app.currentUser.id);
         app.currentUser.save({team_id: model.id},
             {
                 success: function() {
-                    this.showMenu();
-                    this.showMain();
+                    console.log("saved", app.currentUser.id);
+                    this.showMenu(model);
+                    this.showMain(model);
                 }.bind(this) 
             }
         );

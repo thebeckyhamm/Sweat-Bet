@@ -1,3 +1,5 @@
+var ObjectId = require("mongodb").ObjectId;
+
 function ModelRouter(db) {
   var Router = require("express").Router;
   this.db = db;
@@ -13,7 +15,10 @@ ModelRouter.prototype = {
 
     // SHOW
     this.router.get("/:id", function(req, res) {
-      this.db.findOne({_id: req.params.id}, function(err, data){
+
+      var id = ObjectId(req.params.id);
+
+      this.db.findOne({_id: id}, function(err, data){
         if(err) {
           res.status(500).json({error: err.toString()});
         }
@@ -25,12 +30,20 @@ ModelRouter.prototype = {
 
     // UPDATE
     this.router.put("/:id", function(req, res){
-      this.db.update({_id: req.params.id}, req.body, {}, function(err){
+
+      var id = ObjectId(req.params.id);
+
+      console.log("updating", id);
+
+      var query = req.body;
+      delete query._id;
+
+      this.db.update({_id: id}, {$set: query}, function(err){
         if(err) {
           res.status(500).json({error: err.toString()});
           return;
         }
-        this.db.findOne({_id: req.params.id}, function(err, data){
+        this.db.findOne({_id: id}, function(err, data){
           if(err) {
             res.status(500).json({error: err.toString()});
           }
@@ -43,7 +56,9 @@ ModelRouter.prototype = {
 
     // DESTROY
     this.router.delete("/:id", function(req, res){
-      this.db.remove({_id: req.params.id}, {}, function(err){
+      var id = ObjectId(req.params.id);
+
+      this.db.remove({_id: id}, function(err){
         if(err) {
           res.status(500).json({error: err.toString()});
         }

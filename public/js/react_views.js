@@ -680,7 +680,17 @@ views.Select = Select;
         },
 
         render: function() {
-            var team = this.props.getTeam();
+            var team = this.props.model;
+
+            if (!team) {
+                return (
+                    React.createElement("h1", {className: "text-center loading"}, 
+                        React.createElement("img", {className: "", src: "images/svg/dumbbell.svg"}), 
+                    "Loading..."
+                    )
+                );
+            }
+
             team = team.toJSON();
 
             // calculate current and total days and weeks
@@ -1091,7 +1101,17 @@ var TotalProgress = React.createBackboneClass({
         },
 
         render: function() {
-            var team = this.props.getTeam();
+            var team = this.props.model;
+
+            if (!team) {
+                return (
+                    React.createElement("h1", {className: "text-center loading"}, 
+                        React.createElement("img", {src: "images/svg/dumbbell.svg"}), 
+                    "Loading..."
+                    )
+                );
+            }
+
             team = team.toJSON();
 
             // get dates and progress for days and weeks

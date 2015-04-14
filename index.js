@@ -93,8 +93,10 @@ function setupServer(db) {
   app.get("/find_user_by_twitter_id/:twitter_id", function(req, res){
       usersDB.findOne({twitter_id: Number(req.params.twitter_id)}, function(err, data){
           if (err) {
+              console.log("err:", err);
               res.status(500).json({error: err.toString()});
           } else {
+            
               // console.log("data from find user", data);
               // console.log(data.length);
               res.json(data);

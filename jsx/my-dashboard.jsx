@@ -334,7 +334,17 @@ var TotalProgress = React.createBackboneClass({
         },
 
         render: function() {
-            var team = this.props.getTeam();
+            var team = this.props.model;
+
+            if (!team) {
+                return (
+                    <h1 className="text-center loading">
+                        <img src="images/svg/dumbbell.svg" />
+                    Loading...
+                    </h1>
+                );
+            }
+
             team = team.toJSON();
 
             // get dates and progress for days and weeks

@@ -162,7 +162,17 @@
         },
 
         render: function() {
-            var team = this.props.getTeam();
+            var team = this.props.model;
+
+            if (!team) {
+                return (
+                    <h1 className="text-center loading">
+                        <img className="" src="images/svg/dumbbell.svg" />
+                    Loading...
+                    </h1>
+                );
+            }
+
             team = team.toJSON();
 
             // calculate current and total days and weeks

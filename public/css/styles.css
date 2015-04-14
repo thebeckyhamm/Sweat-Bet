@@ -574,20 +574,24 @@ ul li.entry-lg {
   padding: .25em .5em;
   text-align: center; }
 
-.landing-page, .profile, .onboarding, .join-team {
+.landing-page, .profile, .onboarding, .join-team, .loading {
   background-color: #F7C41F;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.2);
   padding: 2rem;
   margin: 0 auto;
   width: 75%; }
-  .landing-page h2, .profile h2, .onboarding h2, .join-team h2 {
+  .landing-page h2, .profile h2, .onboarding h2, .join-team h2, .loading h2 {
     font-size: 2.5rem; }
     @media all and (min-width: 30em) {
-      .landing-page h2, .profile h2, .onboarding h2, .join-team h2 {
+      .landing-page h2, .profile h2, .onboarding h2, .join-team h2, .loading h2 {
         font-size: 3rem;
         margin: 0; } }
-  .landing-page img, .profile img, .onboarding img, .join-team img {
+  .landing-page img, .profile img, .onboarding img, .join-team img, .loading img {
     width: 50px; }
+
+.loading {
+  background-color: transparent;
+  box-shadow: none; }
 
 .profile, .join-team {
   background-color: white; }

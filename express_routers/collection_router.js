@@ -21,7 +21,7 @@ CollectionRouter.prototype = {
         query[this.scope] = req.params.id;
       }
 
-      this.db.find(query, function(err, data){
+      this.db.find(query).toArray(function(err, data){
         if(err) {
           res.status(500).json({error: err.toString()});
         }
@@ -70,7 +70,7 @@ CollectionRouter.prototype = {
             // qry looks like {goal_id: {"$in" : [1,2,3,4]}}
 
             // find all the included records
-            fdb.find(qry, function(err, fdata){
+            fdb.find(qry).toArray(function(err, fdata){
               if(err) {
                 res.status(500).json({error: err.toString()});
               } else {
@@ -100,11 +100,14 @@ CollectionRouter.prototype = {
 
     // CREATE
     this.router.post("/", function(req, res){
-      this.db.insert(req.body, function(err, data){
+      console.log("creating new record");
+      this.db.insert(req.body, function(err, result){
         if(err) {
           res.status(500).json({error: err.toString()});
         }
         else {
+          var data = result.ops[0]
+          console.log("created", data);
           res.json(data);
         }
       });
