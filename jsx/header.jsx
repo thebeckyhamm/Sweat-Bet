@@ -35,8 +35,8 @@
             this.setState({activeMenu: ""});
         },
 
-        goalButton: function(daysFromStart) {
-            if (daysFromStart < 0) {
+        buttonToggle: function(minsFromStart) {
+            if (minsFromStart < 0) {
                 return (
                     <button 
                         className="button"
@@ -44,23 +44,13 @@
                     </button>
                 )
             }
-            else {
-                return;
-            }
-        },
-
-        entryButton: function(daysFromStart) {
-            if (daysFromStart >= 0) {
+            else if (minsFromStart >= 0) {
                 return (
                     <button className="button"
                         onClick={this.props.addEntry}>+ Entry
                     </button>
                 )
             }
-        },
-
-        componentDidMount: function() {
-
         },
 
         render: function() {
@@ -71,6 +61,7 @@
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
+            var minsFromStart = now.diff(start_date, 'minutes');
 
             var menuClass = "menu-wrapper " + this.state.activeMenu;
 
@@ -89,8 +80,7 @@
                             <a href="#" onClick={this.goToProfile}>My Profile</a>
                         </li>
                         <li className="entry-lg">
-                            {this.goalButton(daysFromStart)}
-                            {this.entryButton(daysFromStart)}
+                            {this.buttonToggle(minsFromStart)}
                         </li>
 
                     </ul>

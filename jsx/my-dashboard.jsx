@@ -294,8 +294,8 @@ var TotalProgress = React.createBackboneClass({
             return currentWeek;
         },
 
-        buttonToggle: function(daysFromStart) {
-            if (daysFromStart < 0) {
+        buttonToggle: function(minsFromStart) {
+            if (minsFromStart < 0) {
                 return (
                     <button 
                         className="button button-primary"
@@ -303,7 +303,7 @@ var TotalProgress = React.createBackboneClass({
                     </button>
                 )
             }
-            else if (daysFromStart >= 0) {
+            else if (minsFromStart >= 0) {
                 return (
                     <button className="button button-primary"
                         onClick={this.props.addEntry}>+ Entry
@@ -322,6 +322,7 @@ var TotalProgress = React.createBackboneClass({
 
             var totalDays = team.weeks * 7;
             var daysFromStart = now.diff(startDate, 'days');
+            var minsFromStart = now.diff(startDate, 'minutes');
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
@@ -354,7 +355,7 @@ var TotalProgress = React.createBackboneClass({
                             </div>
 
                             <div className="button-toggle-sm">  
-                                {this.buttonToggle(daysFromStart)}
+                                {this.buttonToggle(minsFromStart)}
                             </div>
 
                         </div>

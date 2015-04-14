@@ -695,7 +695,7 @@ footer {
   background-color: white;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.2);
   padding: 1rem; }
-  @media all and (min-width: 30em) {
+  @media all and (min-width: 45em) {
     .all-goals {
       width: 70%; } }
   .all-goals h3 {
@@ -772,6 +772,17 @@ form {
   -webkit-appearance: none;
   border-radius: 0;
   position: relative; }
+
+.field-select {
+  position: relative; }
+
+.field-select:before {
+  content: "\25BE";
+  color: white;
+  position: absolute;
+  right: .5em;
+  top: 1em;
+  z-index: 1; }
 
 .field ::-webkit-input-placeholder {
   color: rgba(255, 255, 255, 0.5); }

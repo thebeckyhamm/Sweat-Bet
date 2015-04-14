@@ -362,8 +362,8 @@ views.Select = Select;
             this.setState({activeMenu: ""});
         },
 
-        goalButton: function(daysFromStart) {
-            if (daysFromStart < 0) {
+        buttonToggle: function(minsFromStart) {
+            if (minsFromStart < 0) {
                 return (
                     React.createElement("button", {
                         className: "button", 
@@ -371,23 +371,13 @@ views.Select = Select;
                     )
                 )
             }
-            else {
-                return;
-            }
-        },
-
-        entryButton: function(daysFromStart) {
-            if (daysFromStart >= 0) {
+            else if (minsFromStart >= 0) {
                 return (
                     React.createElement("button", {className: "button", 
                         onClick: this.props.addEntry}, "+ Entry"
                     )
                 )
             }
-        },
-
-        componentDidMount: function() {
-
         },
 
         render: function() {
@@ -398,6 +388,7 @@ views.Select = Select;
             var now = moment();
 
             var daysFromStart = now.diff(start_date, 'days');
+            var minsFromStart = now.diff(start_date, 'minutes');
 
             var menuClass = "menu-wrapper " + this.state.activeMenu;
 
@@ -416,8 +407,7 @@ views.Select = Select;
                             React.createElement("a", {href: "#", onClick: this.goToProfile}, "My Profile")
                         ), 
                         React.createElement("li", {className: "entry-lg"}, 
-                            this.goalButton(daysFromStart), 
-                            this.entryButton(daysFromStart)
+                            this.buttonToggle(minsFromStart)
                         )
 
                     )
@@ -652,8 +642,10 @@ views.Select = Select;
                     completion: competitionCompletion})
         },
 
-        buttonToggle: function(daysFromStart) {
-            if (daysFromStart < 0) {
+        buttonToggle: function(minsFromStart) {
+            console.log(minsFromStart);
+            if (minsFromStart < 0) {
+                console.log("minutes are negative!");
                 return (
                     React.createElement("button", {
                         className: "button button-primary", 
@@ -661,7 +653,7 @@ views.Select = Select;
                     )
                 )
             }
-            else if (daysFromStart >= 0) {
+            else if (minsFromStart >= 0) {
                 return (
                     React.createElement("button", {className: "button button-primary", 
                         onClick: this.props.addEntry}, "+ Entry"
@@ -701,6 +693,8 @@ views.Select = Select;
 
             var totalDays = team.weeks * 7;
             var daysFromStart = now.diff(startDate, 'days');
+            var minsFromStart = now.diff(startDate, 'minutes');
+            console.log(minsFromStart);
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
@@ -738,7 +732,7 @@ views.Select = Select;
                             ), 
 
                             React.createElement("div", {className: "button-toggle-sm"}, 
-                                this.buttonToggle(daysFromStart)
+                                this.buttonToggle(minsFromStart)
                             )
                         ), 
                         React.createElement("article", {className: "all-goals"}, 
@@ -1060,8 +1054,8 @@ var TotalProgress = React.createBackboneClass({
             return currentWeek;
         },
 
-        buttonToggle: function(daysFromStart) {
-            if (daysFromStart < 0) {
+        buttonToggle: function(minsFromStart) {
+            if (minsFromStart < 0) {
                 return (
                     React.createElement("button", {
                         className: "button button-primary", 
@@ -1069,7 +1063,7 @@ var TotalProgress = React.createBackboneClass({
                     )
                 )
             }
-            else if (daysFromStart >= 0) {
+            else if (minsFromStart >= 0) {
                 return (
                     React.createElement("button", {className: "button button-primary", 
                         onClick: this.props.addEntry}, "+ Entry"
@@ -1088,6 +1082,7 @@ var TotalProgress = React.createBackboneClass({
 
             var totalDays = team.weeks * 7;
             var daysFromStart = now.diff(startDate, 'days');
+            var minsFromStart = now.diff(startDate, 'minutes');
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
@@ -1120,7 +1115,7 @@ var TotalProgress = React.createBackboneClass({
                             ), 
 
                             React.createElement("div", {className: "button-toggle-sm"}, 
-                                this.buttonToggle(daysFromStart)
+                                this.buttonToggle(minsFromStart)
                             )
 
                         ), 
@@ -1166,9 +1161,13 @@ var TotalProgress = React.createBackboneClass({
                         React.createElement("div", {className: "profile"}, 
                             React.createElement("span", {className: "label"}, "Name:"), 
                             React.createElement("span", null, this.props.model.get("name")), 
-                            React.createElement("br", null), 
+                            React.createElement("br", null), React.createElement("br", null), 
                             React.createElement("span", {className: "label"}, "Photo:"), 
-                            React.createElement("span", null, React.createElement("img", {src: profile.profile_image_url}))
+                            React.createElement("span", null, React.createElement("img", {src: profile.profile_image_url})), 
+                            React.createElement("br", null), React.createElement("br", null), 
+                            React.createElement("span", {className: "label"}, "Paid up:"), 
+                            React.createElement("span", null, "You guys are handling payment on your own. Make sure you give your $$ to the team organizer.")
+
                         )
                     )
                 )
