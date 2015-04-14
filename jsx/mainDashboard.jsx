@@ -125,9 +125,7 @@
         },
 
         buttonToggle: function(minsFromStart) {
-            console.log(minsFromStart);
             if (minsFromStart < 0) {
-                console.log("minutes are negative!");
                 return (
                     <button 
                         className="button button-primary"
@@ -176,7 +174,6 @@
             var totalDays = team.weeks * 7;
             var daysFromStart = now.diff(startDate, 'days');
             var minsFromStart = now.diff(startDate, 'minutes');
-            console.log(minsFromStart);
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);

@@ -49,6 +49,13 @@
 
     });
 
+    var DeleteButton = React.createClass({
+
+        render: function() {
+            return <span className="button-delete" onClick={this.props.onDeleteClick}>x</span>;
+        }
+    });
+
     var SingleGoalProgress = React.createBackboneClass({
 
         getCurrentTotal: function(entries) {
@@ -65,6 +72,17 @@
         getPercentComplete: function(progress, end) {
             var percentComplete = ((progress / end) * 100).toFixed(1);
             return percentComplete + "%";
+        },
+
+        getDeleteButton: function(mins) {
+            if (mins < 0) {
+                return <DeleteButton onDeleteClick={this.onDeleteClick} />;
+            }
+        },
+
+        onDeleteClick: function() {
+            var goal = this.props.model.toJSON();
+            app.trigger("remove:goal", goal._id);
         },
 
         render: function() {
@@ -99,10 +117,12 @@
                 marginLeft: this.props.completion
             }
 
+
             return (
                 <div className="goal-progress" key={this.props.key}>
                     <h4>{goalName}</h4>
                     <div className="progress-container" data-percent={userPercentComplete}>
+                        <span>{this.getDeleteButton(this.props.mins)}</span>
                         <div className="progress-bar" style={progressStyle} />
                         <div className="progress-week" style={weeksStyle} />
 
@@ -259,12 +279,13 @@ var TotalProgress = React.createBackboneClass({
 
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(team, currentWeek, competitionCompletion, model, index) {
+        getGoal: function(team, currentWeek, minsFromStart, competitionCompletion, model, index) {
             return <SingleGoalProgress 
                     key={index} 
                     model={model} 
                     team={team}
                     week={currentWeek}
+                    mins={minsFromStart}
                     completion={competitionCompletion} />;
         },
 
@@ -368,6 +389,7 @@ var TotalProgress = React.createBackboneClass({
                                         this, 
                                         team, 
                                         currentWeek,
+                                        minsFromStart,
                                         competitionCompletion 
                                     )
                                 )}

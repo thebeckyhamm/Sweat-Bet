@@ -21,14 +21,20 @@
     position: relative;
     width: 100%;
     &:before {
+        bottom: 0;
+        color: white;
         content: attr(data-percent);
-          padding: 0.25em;
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 2em;
-          font-family: $heading-font;
-          color: white;
+        font-family: $heading-font;
+        padding: 0.25em;
+        position: absolute;
+        top: 0;
+        width: 2em;
+    }
+    &:hover {
+        .button-delete {
+            background: $rosy;
+            color: white;
+        }
     }
 }
 

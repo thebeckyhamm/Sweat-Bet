@@ -461,6 +461,21 @@ ul li.entry-lg {
   .button-toggle-sm {
     display: none; } }
 
+.button-delete {
+  background: rgba(148, 158, 169, 0.3);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  height: 20px;
+  line-height: 1;
+  position: absolute;
+  right: .25em;
+  text-align: center;
+  top: .5em;
+  width: 20px; }
+
 .header-bar {
   background-color: #2E3234;
   box-shadow: inset 0 -3px 10px 0 #161819;
@@ -632,13 +647,16 @@ footer {
   position: relative;
   width: 100%; }
   .progress-container:before {
+    bottom: 0;
+    color: white;
     content: attr(data-percent);
+    font-family: "League Gothic", Helvetica, Arial, sans-serif;
     padding: 0.25em;
     position: absolute;
     top: 0;
-    bottom: 0;
-    width: 2em;
-    font-family: "League Gothic", Helvetica, Arial, sans-serif;
+    width: 2em; }
+  .progress-container:hover .button-delete {
+    background: #FF003D;
     color: white; }
 
 .progress-bar {

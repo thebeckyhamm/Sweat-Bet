@@ -138,6 +138,15 @@ app.Router = Backbone.Router.extend({
             });
         });
 
+        this.listenTo(app, "remove:goal", function(goalID) {
+            var removeGoal = app.goals.remove(goalID);
+            removeGoal.destroy(null, {
+                success: function() {
+                    this.showMyDash();
+                }.bind(this)  
+            });
+        });
+
 
 
         //------ --------------- ------//

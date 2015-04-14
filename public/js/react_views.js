@@ -643,9 +643,7 @@ views.Select = Select;
         },
 
         buttonToggle: function(minsFromStart) {
-            console.log(minsFromStart);
             if (minsFromStart < 0) {
-                console.log("minutes are negative!");
                 return (
                     React.createElement("button", {
                         className: "button button-primary", 
@@ -694,7 +692,6 @@ views.Select = Select;
             var totalDays = team.weeks * 7;
             var daysFromStart = now.diff(startDate, 'days');
             var minsFromStart = now.diff(startDate, 'minutes');
-            console.log(minsFromStart);
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
@@ -809,6 +806,13 @@ views.Select = Select;
 
     });
 
+    var DeleteButton = React.createClass({displayName: "DeleteButton",
+
+        render: function() {
+            return React.createElement("span", {className: "button-delete", onClick: this.props.onDeleteClick}, "x");
+        }
+    });
+
     var SingleGoalProgress = React.createBackboneClass({
 
         getCurrentTotal: function(entries) {
@@ -825,6 +829,17 @@ views.Select = Select;
         getPercentComplete: function(progress, end) {
             var percentComplete = ((progress / end) * 100).toFixed(1);
             return percentComplete + "%";
+        },
+
+        getDeleteButton: function(mins) {
+            if (mins < 0) {
+                return React.createElement(DeleteButton, {onDeleteClick: this.onDeleteClick});
+            }
+        },
+
+        onDeleteClick: function() {
+            var goal = this.props.model.toJSON();
+            app.trigger("remove:goal", goal._id);
         },
 
         render: function() {
@@ -859,10 +874,12 @@ views.Select = Select;
                 marginLeft: this.props.completion
             }
 
+
             return (
                 React.createElement("div", {className: "goal-progress", key: this.props.key}, 
                     React.createElement("h4", null, goalName), 
                     React.createElement("div", {className: "progress-container", "data-percent": userPercentComplete}, 
+                        React.createElement("span", null, this.getDeleteButton(this.props.mins)), 
                         React.createElement("div", {className: "progress-bar", style: progressStyle}), 
                         React.createElement("div", {className: "progress-week", style: weeksStyle})
 
@@ -1019,12 +1036,13 @@ var TotalProgress = React.createBackboneClass({
 
     views.MyDash = React.createBackboneClass({
 
-        getGoal: function(team, currentWeek, competitionCompletion, model, index) {
+        getGoal: function(team, currentWeek, minsFromStart, competitionCompletion, model, index) {
             return React.createElement(SingleGoalProgress, {
                     key: index, 
                     model: model, 
                     team: team, 
                     week: currentWeek, 
+                    mins: minsFromStart, 
                     completion: competitionCompletion});
         },
 
@@ -1128,6 +1146,7 @@ var TotalProgress = React.createBackboneClass({
                                         this, 
                                         team, 
                                         currentWeek,
+                                        minsFromStart,
                                         competitionCompletion 
                                     )
                                 )
