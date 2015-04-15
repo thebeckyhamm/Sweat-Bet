@@ -182,6 +182,13 @@
             }
 
             team = team.toJSON();
+            var filteredUsers = collection.filter(function(model) {
+                return model.get("team_id") === team._id;
+            });
+
+            // var filteredUsers = _.filter(collection.toJSON(), function(user) {
+            //     return user["team_id"] === team._id;
+            // });
 
             // calculate current and total days and weeks
             var startDate = moment(team.datepicker);
@@ -197,7 +204,7 @@
             var currentWeek = this.getCurrentWeek(daysFromStart, minsFromStart, startDate);
 
             // User and team data to display
-            var totalPot = team.number * this.props.collection.length;
+            var totalPot = team.number * filteredUsers.length;
 
             var profile = app.currentUser.get("twitter_profile");
 
@@ -232,7 +239,7 @@
                             </div>
                         </div>
                         <article className="all-goals">
-                            <div>{this.props.collection.map(
+                            <div>{filteredUsers.map(
                                     this.getUserProgress.bind(
                                         this, 
                                         team, 

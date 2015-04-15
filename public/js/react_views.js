@@ -475,7 +475,20 @@ views.Select = Select;
         },
 
         render: function() {
-            if (this.props.collection.length === 0) {
+            var test = _.map(this.props.collection.toJSON(), function(team) {
+                return moment(team.datepicker);
+            });
+
+            var now = moment();
+
+            var teamsToStart = 0;
+            _.each(test, function(d) {
+                if (now.diff(d, 'minutes') <= 0 ) {
+                    teamsToStart++;
+                }
+            });
+
+            if (this.props.collection.length === 0 || !teamsToStart) {
                 return (
                     React.createElement("div", {className: "main"}, 
                         React.createElement("div", {className: "join-team"}, 
@@ -709,6 +722,13 @@ views.Select = Select;
             }
 
             team = team.toJSON();
+            var filteredUsers = collection.filter(function(model) {
+                return model.get("team_id") === team._id;
+            });
+
+            // var filteredUsers = _.filter(collection.toJSON(), function(user) {
+            //     return user["team_id"] === team._id;
+            // });
 
             // calculate current and total days and weeks
             var startDate = moment(team.datepicker);
@@ -724,7 +744,7 @@ views.Select = Select;
             var currentWeek = this.getCurrentWeek(daysFromStart, minsFromStart, startDate);
 
             // User and team data to display
-            var totalPot = team.number * this.props.collection.length;
+            var totalPot = team.number * filteredUsers.length;
 
             var profile = app.currentUser.get("twitter_profile");
 
@@ -759,7 +779,7 @@ views.Select = Select;
                             )
                         ), 
                         React.createElement("article", {className: "all-goals"}, 
-                            React.createElement("div", null, this.props.collection.map(
+                            React.createElement("div", null, filteredUsers.map(
                                     this.getUserProgress.bind(
                                         this, 
                                         team, 

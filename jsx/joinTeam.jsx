@@ -21,7 +21,20 @@
         },
 
         render: function() {
-            if (this.props.collection.length === 0) {
+            var test = _.map(this.props.collection.toJSON(), function(team) {
+                return moment(team.datepicker);
+            });
+
+            var now = moment();
+
+            var teamsToStart = 0;
+            _.each(test, function(d) {
+                if (now.diff(d, 'minutes') <= 0 ) {
+                    teamsToStart++;
+                }
+            });
+
+            if (this.props.collection.length === 0 || !teamsToStart) {
                 return (
                     <div className="main">
                         <div className="join-team">
