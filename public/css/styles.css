@@ -500,8 +500,9 @@ ul li.entry-lg {
       display: none; } }
 
 .logo {
-  margin: 0;
-  padding: .25rem; }
+  font-size: 12px; }
+  .logo img {
+    width: 170px; }
 
 .menu-wrapper {
   display: block; }

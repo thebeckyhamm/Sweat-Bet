@@ -439,7 +439,7 @@ views.Select = Select;
                 React.createElement("div", {className: "header-wrapper"}, 
                     React.createElement("div", {className: "header-bar"}, 
                         this.showMenuButton(), 
-                        React.createElement("h1", {className: "logo"}, "SweatBet"), 
+                        React.createElement("h1", {className: "logo"}, React.createElement("img", {src: "images/sweatbet-logo.svg"})), 
                         React.createElement("div", {className: "header-admin"}, 
                             React.createElement(views.LogInOut, {model: this.props.model})
                         )

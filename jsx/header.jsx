@@ -112,7 +112,7 @@
                 <div className="header-wrapper">
                     <div className="header-bar">
                         {this.showMenuButton()}
-                        <h1 className="logo">SweatBet</h1>
+                        <h1 className="logo"><img src="images/sweatbet-logo.svg" /></h1>
                         <div className="header-admin">
                             <views.LogInOut model={this.props.model} />
                         </div>  
