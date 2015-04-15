@@ -460,9 +460,18 @@ views.Select = Select;
         },
 
         getTeam: function(model, index) {
-            return (
-                React.createElement("li", {key: index}, React.createElement("button", {className: "button button-primary", onClick: this.selectTeam.bind(this, model)}, model.get("name")))
-            );
+            var startDate = moment(model.get("datepicker"));
+            var now = moment();
+
+            // if the start date has already passed
+            if (now.diff(startDate, 'minutes') > 0) {
+                return;
+            }
+            else {
+                return (
+                    React.createElement("li", {key: index}, React.createElement("button", {className: "button button-primary", onClick: this.selectTeam.bind(this, model)}, model.get("name")))
+                ); 
+            }
         },
 
         render: function() {
@@ -1021,11 +1030,11 @@ var TotalProgress = React.createBackboneClass({
         if (this.getTotal(goals) === undefined) {
             return React.createElement(AddYourGoals, null);
         }
-        if (userPercentComplete === "0%" && parseInt(this.props.completion) <= 0) {
+        if (userPercentComplete === "0%" && (this.props.mins < 0)) {
             return React.createElement(CompetitionStartingSoon, null); 
         }
 
-        if (userPercentComplete === "0%" && parseInt(this.props.completion) > 0) {
+        if (userPercentComplete === "0%" && (this.props.mins >= 0)) {
             return React.createElement(AddYourEntries, null); 
         }
 
@@ -1057,16 +1066,16 @@ var TotalProgress = React.createBackboneClass({
                     completion: competitionCompletion});
         },
 
-        getTotal: function(team, competitionCompletion) {
+        getTotal: function(team, minsFromStart, competitionCompletion) {
             return React.createElement(TotalProgress, {
                     collection: this.props.collection, 
                     team: team, 
+                    mins: minsFromStart, 
                     completion: competitionCompletion})
         },
 
         getCompletionPercent: function(progress, end) {
-            var percentComplete = ((progress / end) * 100).toFixed(1);
-
+            var percentComplete = ((progress / end) * 100).toFixed(3);
             if (percentComplete < 0) {
                 percentComplete = 0;
             }
@@ -1112,7 +1121,6 @@ var TotalProgress = React.createBackboneClass({
                     )
                 );
             }
-            console.log("my goals", this.props.collection.toJSON());
 
             team = team.toJSON();
 
@@ -1121,10 +1129,11 @@ var TotalProgress = React.createBackboneClass({
             var now = moment();
 
             var totalDays = team.weeks * 7;
-            var daysFromStart = now.diff(startDate, 'days');
+            var daysFromStart = now.diff(startDate, 'days'); 
             var minsFromStart = now.diff(startDate, 'minutes');
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
+
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
 
             // get additional user information to display
@@ -1160,7 +1169,7 @@ var TotalProgress = React.createBackboneClass({
 
                         ), 
                         React.createElement("article", {className: "all-goals"}, 
-                            React.createElement("div", null, this.getTotal(team, competitionCompletion)), 
+                            React.createElement("div", null, this.getTotal(team, minsFromStart, competitionCompletion)), 
                             React.createElement("hr", null), 
                             React.createElement("h3", null, "Individual Goals"), 
                             React.createElement("div", null, this.props.collection.map(

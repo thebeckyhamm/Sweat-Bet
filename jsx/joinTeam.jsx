@@ -6,9 +6,18 @@
         },
 
         getTeam: function(model, index) {
-            return (
-                <li key={index}><button className="button button-primary" onClick={this.selectTeam.bind(this, model)}>{model.get("name")}</button></li>
-            );
+            var startDate = moment(model.get("datepicker"));
+            var now = moment();
+
+            // if the start date has already passed
+            if (now.diff(startDate, 'minutes') > 0) {
+                return;
+            }
+            else {
+                return (
+                    <li key={index}><button className="button button-primary" onClick={this.selectTeam.bind(this, model)}>{model.get("name")}</button></li>
+                ); 
+            }
         },
 
         render: function() {

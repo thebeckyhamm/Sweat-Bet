@@ -253,11 +253,11 @@ var TotalProgress = React.createBackboneClass({
         if (this.getTotal(goals) === undefined) {
             return <AddYourGoals />;
         }
-        if (userPercentComplete === "0%" && parseInt(this.props.completion) <= 0) {
+        if (userPercentComplete === "0%" && (this.props.mins < 0)) {
             return <CompetitionStartingSoon />; 
         }
 
-        if (userPercentComplete === "0%" && parseInt(this.props.completion) > 0) {
+        if (userPercentComplete === "0%" && (this.props.mins >= 0)) {
             return <AddYourEntries />; 
         }
 
@@ -289,16 +289,16 @@ var TotalProgress = React.createBackboneClass({
                     completion={competitionCompletion} />;
         },
 
-        getTotal: function(team, competitionCompletion) {
+        getTotal: function(team, minsFromStart, competitionCompletion) {
             return <TotalProgress 
                     collection={this.props.collection} 
                     team={team} 
+                    mins={minsFromStart}
                     completion={competitionCompletion} />
         },
 
         getCompletionPercent: function(progress, end) {
-            var percentComplete = ((progress / end) * 100).toFixed(1);
-
+            var percentComplete = ((progress / end) * 100).toFixed(3);
             if (percentComplete < 0) {
                 percentComplete = 0;
             }
@@ -344,7 +344,6 @@ var TotalProgress = React.createBackboneClass({
                     </h1>
                 );
             }
-            console.log("my goals", this.props.collection.toJSON());
 
             team = team.toJSON();
 
@@ -353,10 +352,11 @@ var TotalProgress = React.createBackboneClass({
             var now = moment();
 
             var totalDays = team.weeks * 7;
-            var daysFromStart = now.diff(startDate, 'days');
+            var daysFromStart = now.diff(startDate, 'days'); 
             var minsFromStart = now.diff(startDate, 'minutes');
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
+
             var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
 
             // get additional user information to display
@@ -392,7 +392,7 @@ var TotalProgress = React.createBackboneClass({
 
                         </div>
                         <article className="all-goals">
-                            <div>{this.getTotal(team, competitionCompletion)}</div>
+                            <div>{this.getTotal(team, minsFromStart, competitionCompletion)}</div>
                             <hr />
                             <h3>Individual Goals</h3>
                             <div>{this.props.collection.map(
