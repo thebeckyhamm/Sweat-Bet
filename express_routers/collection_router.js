@@ -36,14 +36,12 @@ CollectionRouter.prototype = {
           if (this.include) {
             // this is the associated data
             var fdb = this.include.db;
-            console.log("fdb", fdb);
+
             // this is the key on the assoc. data that ties each record
             var fkey = this.include.fkey;
-            console.log("fkey", fkey);
 
             // this is what we call it when we assign the associated reocrds
             var as = this.include.as;
-            console.log("as", as);
 
             // get all the (goal) ids from the records we just fetched
             var ids = data.map(function(d){
@@ -54,31 +52,9 @@ CollectionRouter.prototype = {
             var qry = {}
             qry[fkey] = { "$in": ids};
 
-            // ids: [1,2,3,4]
-
-            // goals
-            // [
-            //   {_id 1, ...},
-            //   {_id 2, ...},
-            //   {_id 3, ...},
-            //   {_id 4, ...},
-            // ]
-
-            // entries
-            // [
-            //   {_id: 56, goal_id: 1 ...},
-            //   {_id: 57, goal_id: 2 ...},
-            //   {_id: 58, goal_id: 3 ...},
-            //   {_id: 59, goal_id: 4 ...},
-            // ]
-
-            // qry looks like {goal_id: {"$in" : [1,2,3,4]}}
 
             // find all the included records
-            console.log("------------");
-            console.log("qry", qry);
             fdb.find(qry).toArray(function(err, fdata){
-              console.log("fdata", fdata);
               if(err) {
                 res.status(500).json({error: err.toString()});
               } else {
@@ -108,14 +84,12 @@ CollectionRouter.prototype = {
 
     // CREATE
     this.router.post("/", function(req, res){
-      console.log("creating new record");
       this.db.insert(req.body, function(err, result){
         if(err) {
           res.status(500).json({error: err.toString()});
         }
         else {
           var data = result.ops[0]
-          console.log("created", data);
           res.json(data);
         }
       });

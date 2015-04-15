@@ -1,8 +1,5 @@
 var express   = require("express");
-var DataStore = require("nedb");
 var Mongo     = require("mongodb").MongoClient;
-
-var url = "mongodb://heroku_app35837159:4gs7ru8odn6qntvik1iqvmlfsp@ds061651.mongolab.com:61651/heroku_app35837159?replicaSet=rs-ds06165"
 
 // used for setting the database path
 var path = require("path");
@@ -16,10 +13,7 @@ app.use(express.static("public"));
 
 if (process.env.MONGOLAB_URI) {
   connectWithMongo();
-} else {
-  connectWithNedb();
-}
-
+} 
 
 function connectWithMongo() {
   var url = process.env.MONGOLAB_URI;
@@ -39,33 +33,6 @@ function connectWithMongo() {
       goals: goalsDB,
       entries: entryDB,
     });
-  });
-}
-
-function connectWithNedb() {
-  console.log("connecting with nedb");
-
-  // create a db with the correct filepath name
-  // pass in the name when creating the db
-  var db = function(name) {
-    var filepath = path.join(__dirname, "nedb", name);
-    return new DataStore({
-      filename: filepath,
-      autoload: true
-    });
-  }
-
-  // 4 dbs: teams, users, goals, and entries
-  var teamsDB = db("teams");
-  var usersDB = db("users");
-  var goalsDB = db("user_goals");
-  var entryDB = db("goal_entries");
-
-  setupServer({
-    teams: teamsDB,
-    users: usersDB,
-    goals: goalsDB,
-    entries: entryDB,
   });
 }
 
