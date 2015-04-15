@@ -305,13 +305,20 @@ var TotalProgress = React.createBackboneClass({
             return percentComplete + "%";
         },
 
-        getCurrentWeek: function(daysFromStart, startDate) {
-            var currentWeek = Math.ceil(daysFromStart / 7);
+        getCurrentWeek: function(daysFromStart, minsFromStart, startDate) {
+            var currentWeek;
 
-            // account for days before competition begins
-            if (currentWeek <= 0) {
+            if (minsFromStart < 0) {
                 currentWeek = "Competition starts " + startDate.fromNow(); 
             }
+            else if (minsFromStart >=0 && minsFromStart < 1440) {
+                currentWeek = 1;
+            }
+            else {
+                currentWeek = Math.ceil(daysFromStart / 7);
+
+            }
+            
             return currentWeek;
         },
 
@@ -357,7 +364,7 @@ var TotalProgress = React.createBackboneClass({
 
             var competitionCompletion = this.getCompletionPercent(daysFromStart, totalDays);
 
-            var currentWeek = this.getCurrentWeek(daysFromStart, startDate);
+            var currentWeek = this.getCurrentWeek(daysFromStart, minsFromStart, startDate);
 
             // get additional user information to display
             var profile = app.currentUser.get("twitter_profile");

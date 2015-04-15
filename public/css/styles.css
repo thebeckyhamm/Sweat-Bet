@@ -329,7 +329,8 @@ td, th {
 @media all and (min-width: 30em) {
   .flex {
     display: flex;
-    align-items: stretch; } }
+    align-items: stretch;
+    justify-content: center; } }
 
 @media all and (min-width: 30em) {
   .order-1 {
